@@ -15,7 +15,7 @@ body:
         However, if you find that an old, closed issue still persists in the latest version,
         you should open a new issue using the form below instead of commenting on the old issue.
 
-        作者牺牲业余时间，非全职开发此项目。您的[赞助](https://hufe.club/donate.jpg)不仅能支持项目的持续发展，还能激励作者加快此bug的解决。赞助时可以备注bug id
+        작성자가 여가 시간을 할애하여 이 프로젝트를 개발하고 있습니다. 여러분의 [후원](https://hufe.club/donate.jpg)은 프로젝트의 지속적인 발전을 지원할 뿐만 아니라 작성자가 이 버그를 더 빨리 해결하도록 동기를 부여합니다. 후원 시 버그 ID를 메모로 남겨주세요
   - type: input
     id: version
     attributes:
