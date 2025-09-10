@@ -81,8 +81,8 @@ export interface ITableElement {
   trId?: string
   tableId?: string
   conceptId?: string
-  pagingId?: string // 用于区分拆分的表格同属一个源表格
-  pagingIndex?: number // 拆分的表格索引
+  pagingId?: string // 분할된 테이블이 하나의 소스 테이블에 속함을 구분하는 데 사용
+  pagingIndex?: number // 분할된 테이블 인덱스
 }
 
 export type ITable = ITableAttr & ITableRule & ITableElement

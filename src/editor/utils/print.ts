@@ -22,7 +22,7 @@ function convertPxToPaperSize(width: number, height: number) {
       height: '210mm'
     }
   }
-  // 其他默认不转换
+  // 기타 기본적으로 변환하지 않음
   return {
     size: '',
     width: `${width}px`,
@@ -41,7 +41,7 @@ export function printImageBase64(
 ) {
   const { width, height, direction = PaperDirection.VERTICAL } = options
   const iframe = document.createElement('iframe')
-  // 离屏渲染
+  // 오프스크린 렌더링
   iframe.style.visibility = 'hidden'
   iframe.style.position = 'absolute'
   iframe.style.left = '0'
@@ -85,7 +85,7 @@ export function printImageBase64(
     doc.write(`${style.outerHTML}${container.innerHTML}`)
     contentWindow.print()
     doc.close()
-    // 移除iframe
+    // iframe 제거
     window.addEventListener(
       'mouseover',
       () => {

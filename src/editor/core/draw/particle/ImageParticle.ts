@@ -41,14 +41,14 @@ export class ImageParticle {
         }
       }
     }
-    // 获取正文图片列表
+    // 본문 이미지 목록 가져오기
     getImageList(this.draw.getOriginalMainElementList())
     return imageList
   }
 
   public createFloatImage(element: IElement) {
     const { scale } = this.options
-    // 复用浮动元素
+    // 떠 있는 요소 재사용
     let floatImageContainer = this.floatImageContainer
     let floatImage = this.floatImage
     if (!floatImageContainer) {
@@ -65,7 +65,7 @@ export class ImageParticle {
     floatImageContainer.style.display = 'none'
     floatImage.style.width = `${element.width! * scale}px`
     floatImage.style.height = `${element.height! * scale}px`
-    // 浮动图片初始信息
+    // 떠 있는 이미지 초기 정보
     const height = this.draw.getHeight()
     const pageGap = this.draw.getPageGap()
     const preY = this.draw.getPageNo() * (height + pageGap)
@@ -78,7 +78,7 @@ export class ImageParticle {
   public dragFloatImage(movementX: number, movementY: number) {
     if (!this.floatImageContainer) return
     this.floatImageContainer.style.display = 'block'
-    // 之前的坐标加移动长度
+    // 이전 좌표에 이동 거리 추가
     const x = parseFloat(this.floatImageContainer.style.left) + movementX
     const y = parseFloat(this.floatImageContainer.style.top) + movementY
     this.floatImageContainer.style.left = `${x}px`
@@ -138,9 +138,9 @@ export class ImageParticle {
         img.onload = () => {
           this.imageCache.set(element.value, img)
           resolve(element)
-          // 因图片加载异步，图片加载后可能属于上一次渲染方法
+          // 이미지 로딩이 비동기이므로, 로딩 후 이전 렌더링에 속할 수 있음
           if (cacheRenderCount !== this.draw.getRenderCount()) return
-          // 衬于文字下方图片需要重新首先绘制
+          // 텍스트 아래 떠 있는 이미지는 다시 먼저 그려야 함
           if (element.imgDisplay === ImageDisplay.FLOAT_BOTTOM) {
             this.draw.render({
               isCompute: false,

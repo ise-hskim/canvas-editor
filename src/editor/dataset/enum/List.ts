@@ -4,14 +4,14 @@ export enum ListType {
 }
 
 export enum UlStyle {
-  DISC = 'disc', // 实心圆点
-  CIRCLE = 'circle', // 空心圆点
-  SQUARE = 'square', // 实心方块
-  CHECKBOX = 'checkbox' // 复选框
+  DISC = 'disc', // 진한 원형 불릿점
+  CIRCLE = 'circle', // 빈 원형 불릿점
+  SQUARE = 'square', // 진한 사각형 불릿점
+  CHECKBOX = 'checkbox' // 체크박스
 }
 
 export enum OlStyle {
-  DECIMAL = 'decimal' // 阿拉伯数字
+  DECIMAL = 'decimal' // 아라비아 숫자
 }
 
 export enum ListStyle {

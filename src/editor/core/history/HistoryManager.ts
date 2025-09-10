@@ -6,7 +6,7 @@ export class HistoryManager {
   private maxRecordCount: number
 
   constructor(draw: Draw) {
-    // 忽略第一次历史记录
+    // 첫 번째 히스토리 기록 무시
     this.maxRecordCount = draw.getOptions().historyMaxRecordCount + 1
   }
 

@@ -282,7 +282,7 @@ export class Draw {
     this.lazyRenderIntersectionObserver = null
     this.printModeData = null
 
-    // 打印模式优先设置打印数据
+    // 인쇄 모드에서 우선적으로 인쇄 데이터 설정
     if (this.mode === EditorMode.PRINT) {
       this.setPrintData()
     }
@@ -293,14 +293,14 @@ export class Draw {
     })
   }
 
-  // 设置打印数据
+  // 인쇄 데이터 설정
   public setPrintData() {
     this.printModeData = {
       header: this.header.getElementList(),
       main: this.elementList,
       footer: this.footer.getElementList()
     }
-    // 过滤控件辅助元素
+    // 컨트롤 보조 요소 필터링
     const clonePrintModeData = deepClone(this.printModeData)
     const editorDataKeys: (keyof IEditorData)[] = ['header', 'main', 'footer']
     editorDataKeys.forEach(key => {
@@ -311,7 +311,7 @@ export class Draw {
     this.setEditorData(clonePrintModeData)
   }
 
-  // 还原打印数据
+  // 인쇄 데이터 복원
   public clearPrintData() {
     if (this.printModeData) {
       this.setEditorData(this.printModeData)
@@ -329,11 +329,11 @@ export class Draw {
 
   public setMode(payload: EditorMode) {
     if (this.mode === payload) return
-    // 设置打印模式
+    // 인쇄 모드 설정
     if (payload === EditorMode.PRINT) {
       this.setPrintData()
     }
-    // 取消打印模式
+    // 인쇄 모드 취소
     if (this.mode === EditorMode.PRINT) {
       this.clearPrintData()
     }
@@ -368,7 +368,7 @@ export class Draw {
     if (this.mode === EditorMode.DESIGN) return false
     const { startIndex, endIndex } = this.range.getRange()
     const elementList = this.getElementList()
-    // 优先判断表格单元格
+    // 테이블 셀 우선 판단
     if (this.getTd()?.disabled) return true
     if (startIndex === endIndex) {
       const startElement = elementList[startIndex]
@@ -712,9 +712,9 @@ export class Draw {
       editorOptions: this.options
     })
     let curIndex = -1
-    // 判断是否在控件内
+    // 컨트롤 내부에 있는지 판단
     let activeControl = this.control.getActiveControl()
-    // 光标在控件内如果当前没有被激活，需要手动激活
+    // 커서가 컨트롤 내부에 있으나 현재 활성화되지 않았다면 수동으로 활성화 필요
     if (!activeControl && this.control.getIsRangeWithinControl()) {
       this.control.initControl()
       activeControl = this.control.getActiveControl()
@@ -733,7 +733,7 @@ export class Draw {
       }
       this.spliceElementList(elementList, start, 0, payload)
       curIndex = startIndex + payload.length
-      // 列表前如有换行符则删除-因为列表内已存在
+      // 목록 앞에 줄바꿈이 있으면 삭제 - 목록 내부에 이미 존재하기 때문
       const preElement = elementList[start - 1]
       if (
         payload[0].listId &&
@@ -790,7 +790,7 @@ export class Draw {
     const { isIgnoreDeletedRule = false } = options || {}
     const { group, modeRule } = this.options
     if (deleteCount > 0) {
-      // 当最后元素与开始元素列表信息不一致时：清除当前列表信息
+      // 마지막 요소와 시작 요소의 목록 정보가 일치하지 않을 때: 현재 목록 정보 제거
       const endIndex = start + deleteCount
       const endElement = elementList[endIndex]
       const endElementListId = endElement?.listId
@@ -813,7 +813,7 @@ export class Draw {
           startIndex++
         }
       }
-      // 非明确忽略删除规则 && 非设计模式 && 非光标在控件内(控件内控制) =》 校验删除规则
+      // 명시적 삭제 규칙 무시 아님 && 디자인 모드 아님 && 커서가 컨트롤 내부에 있지 않음(컨트롤 내부 제어) => 삭제 규칙 검증
       if (
         !isIgnoreDeletedRule &&
         !this.isDesignMode() &&
@@ -845,7 +845,7 @@ export class Draw {
         elementList.splice(start, deleteCount)
       }
     }
-    // 循环添加，避免使用解构影响性能
+    // 루프로 추가, 구조 분해 사용으로 성능 영향 방지
     if (items?.length) {
       for (let i = 0; i < items.length; i++) {
         elementList.splice(start + i, 0, items[i])
@@ -947,11 +947,11 @@ export class Draw {
 
   public async getDataURL(payload: IGetImageOption = {}): Promise<string[]> {
     const { pixelRatio, mode } = payload
-    // 放大像素比
+    // 픽셀 비율 확대
     if (pixelRatio) {
       this.setPagePixelRatio(pixelRatio)
     }
-    // 不同模式
+    // 다른 모드
     const currentMode = this.mode
     const isSwitchMode = !!mode && currentMode !== mode
     if (isSwitchMode) {
@@ -965,7 +965,7 @@ export class Draw {
     })
     await this.imageObserver.allSettled()
     const dataUrlList = this.pageList.map(c => c.toDataURL())
-    // 还原
+    // 복원
     if (pixelRatio) {
       this.setPagePixelRatio(null)
     }
@@ -1012,17 +1012,17 @@ export class Draw {
   public setPageMode(payload: PageMode) {
     if (!payload || this.options.pageMode === payload) return
     this.options.pageMode = payload
-    // 纸张大小重置
+    // 용지 크기 재설정
     if (payload === PageMode.PAGING) {
       const { height } = this.options
       const dpr = this.getPagePixelRatio()
       const canvas = this.pageList[0]
       canvas.style.height = `${height}px`
       canvas.height = height * dpr
-      // canvas尺寸发生变化，上下文被重置
+      // 캔버스 크기 변화로 컨텍스트 재설정
       this._initPageContext(this.ctxList[0])
     } else {
-      // 连页模式：移除懒加载监听&清空页眉页脚计算数据
+      // 연속 페이지 모드: 지연 로딩 모니터링 제거 & 헤더/푸터 계산 데이터 지우기
       this._disconnectLazyRender()
       this.header.recovery()
       this.footer.recovery()
@@ -1035,13 +1035,13 @@ export class Draw {
       curIndex: startIndex,
       isSubmitHistory: false
     })
-    // 重新定位避免事件监听丢失
+    // 이벤트 리스너 손실 방지를 위한 재위치
     if (!isCollapsed) {
       this.cursor.drawCursor({
         isShow: false
       })
     }
-    // 回调
+    // 콜백
     setTimeout(() => {
       if (this.listener.pageModeChange) {
         this.listener.pageModeChange(payload)
@@ -1218,7 +1218,7 @@ export class Draw {
       main,
       footer
     })
-    // 渲染&计算&清空历史记录
+    // 렌더링 & 계산 & 히스토리 기록 지우기
     this.historyManager.recovery()
     const curIndex = isSetCursor
       ? main?.length
@@ -1255,7 +1255,7 @@ export class Draw {
   }
 
   private _formatContainer() {
-    // 容器宽度需跟随纸张宽度
+    // 컴테이너 너비는 용지 너비를 따라야 함
     this.container.style.position = 'relative'
     this.container.style.width = `${this.getWidth()}px`
     this.container.setAttribute(EDITOR_COMPONENT, EditorComponent.MAIN)
@@ -1279,15 +1279,15 @@ export class Draw {
     canvas.style.marginBottom = `${this.getPageGap()}px`
     canvas.setAttribute('data-index', String(pageNo))
     this.pageContainer.append(canvas)
-    // 调整分辨率
+    // 해상도 조정
     const dpr = this.getPagePixelRatio()
     canvas.width = width * dpr
     canvas.height = height * dpr
     canvas.style.cursor = 'text'
     const ctx = canvas.getContext('2d')!
-    // 初始化上下文配置
+    // 컨텍스트 초기 설정
     this._initPageContext(ctx)
-    // 缓存上下文
+    // 컨텍스트 캐시
     this.pageList.push(canvas)
     this.ctxList.push(ctx)
   }
@@ -1295,7 +1295,7 @@ export class Draw {
   private _initPageContext(ctx: CanvasRenderingContext2D) {
     const dpr = this.getPagePixelRatio()
     ctx.scale(dpr, dpr)
-    // 重置以下属性是因部分浏览器(chrome)会应用css样式
+    // 일부 브라우저(chrome)가 CSS 스타일을 적용하기 때문에 다음 속성들을 재설정
     ctx.letterSpacing = '0px'
     ctx.wordSpacing = '0px'
     ctx.direction = 'ltr'
@@ -1344,7 +1344,7 @@ export class Draw {
     const defaultBasicRowMarginHeight = this.getDefaultBasicRowMarginHeight()
     const canvas = document.createElement('canvas')
     const ctx = canvas.getContext('2d') as CanvasRenderingContext2D
-    // 计算列表偏移宽度
+    // 목록 오프셋 너비 계산
     const listStyleMap = this.listParticle.computeListStyle(ctx, elementList)
     const rowList: IRow[] = []
     if (elementList.length) {
@@ -1358,14 +1358,14 @@ export class Draw {
         rowFlex: elementList?.[0]?.rowFlex || elementList?.[1]?.rowFlex
       })
     }
-    // 起始位置及页码计算
+    // 시작 위치 및 페이지 번호 계산
     let x = startX
     let y = startY
     let pageNo = 0
-    // 列表位置
+    // 목록 위치
     let listId: string | undefined
     let listIndex = 0
-    // 控件最小宽度
+    // 컨트롤 최소 너비
     let controlRealWidth = 0
     for (let i = 0; i < elementList.length; i++) {
       const curRow: IRow = rowList[rowList.length - 1]
@@ -1378,13 +1378,13 @@ export class Draw {
         boundingBoxAscent: 0,
         boundingBoxDescent: 0
       }
-      // 实际可用宽度
+      // 실제 사용 가능한 너비
       const offsetX =
         curRow.offsetX ||
         (element.listId && listStyleMap.get(element.listId)) ||
         0
       const availableWidth = innerWidth - offsetX
-      // 增加起始位置坐标偏移量
+      // 시작 위치 좌표 오프셋 추가
       const isStartElement = curRow.elementList.length === 1
       x += isStartElement ? offsetX : 0
       y += isStartElement ? curRow.offsetY || 0 : 0
@@ -1401,7 +1401,7 @@ export class Draw {
         element.type === ElementType.IMAGE ||
         element.type === ElementType.LATEX
       ) {
-        // 浮动图片无需计算数据
+        // 떠있는 이미지는 데이터 계산 불필요
         if (
           element.imgDisplay === ImageDisplay.SURROUND ||
           element.imgDisplay === ImageDisplay.FLOAT_TOP ||
@@ -1413,7 +1413,7 @@ export class Draw {
         } else {
           const elementWidth = element.width! * scale
           const elementHeight = element.height! * scale
-          // 图片超出尺寸后自适应（图片大小大于可用宽度时）
+          // 이미지가 사이즈를 초과할 때 자동 조정 (이미지 크기가 사용 가능한 너비보다 클 때)
           if (elementWidth > availableWidth) {
             const adaptiveHeight =
               (elementHeight * availableWidth) / elementWidth
@@ -1432,8 +1432,8 @@ export class Draw {
       } else if (element.type === ElementType.TABLE) {
         const tdPaddingWidth = tdPadding[1] + tdPadding[3]
         const tdPaddingHeight = tdPadding[0] + tdPadding[2]
-        // 表格分页处理进度：https://github.com/Hufe921/canvas-editor/issues/41
-        // 查看后续表格是否属于同一个源表格-存在即合并
+        // 테이블 페이지 분할 처리 진행도: https://github.com/Hufe921/canvas-editor/issues/41
+        // 후속 테이블이 동일한 원본 테이블에 속하는지 확인 - 존재하면 병합
         if (element.pagingId) {
           let tableIndex = i + 1
           let combineCount = 0
@@ -1457,15 +1457,15 @@ export class Draw {
         }
         element.pagingIndex = element.pagingIndex ?? 0
         const trList = element.trList!
-        // 计算前移除上一次的高度
+        // 계산 전에 이전 높이 제거
         for (let t = 0; t < trList.length; t++) {
           const tr = trList[t]
           tr.height = tr.minHeight || defaultTrMinHeight
           tr.minHeight = tr.height
         }
-        // 计算表格行列
+        // 테이블 행열 계산
         this.tableParticle.computeRowColInfo(element)
-        // 计算表格内元素信息
+        // 테이블 내 요소 정보 계산
         for (let t = 0; t < trList.length; t++) {
           const tr = trList[t]
           for (let d = 0; d < tr.tdList.length; d++) {
@@ -1478,9 +1478,9 @@ export class Draw {
             })
             const rowHeight = rowList.reduce((pre, cur) => pre + cur.height, 0)
             td.rowList = rowList
-            // 移除缩放导致的行高变化-渲染时会进行缩放调整
+            // 렌더링 시 다시 스케일 조정되므로 스케일로 인한 행 높이 변화 제거
             const curTdHeight = rowHeight / scale + tdPaddingHeight
-            // 内容高度大于当前单元格高度需增加
+            // 콘텐츠 높이가 현재 셀 높이보다 클 때 증가 필요
             if (td.height! < curTdHeight) {
               const extraHeight = curTdHeight - td.height!
               const changeTr = trList[t + td.rowspan - 1]
@@ -1494,7 +1494,7 @@ export class Draw {
                 }
               })
             }
-            // 当前单元格最小高度及真实高度（包含跨列）
+            // 현재 셀의 최소 높이 및 실제 높이 (로우 스팬 포함)
             let curTdMinHeight = 0
             let curTdRealHeight = 0
             let i = 0
@@ -1509,7 +1509,7 @@ export class Draw {
             td.mainHeight = curTdHeight
           }
         }
-        // 单元格高度大于实际内容高度需减少
+        // 셀 높이가 실제 콘텐츠 높이보다 클 때 감소 필요
         const reduceTrList = this.tableParticle.getTrListGroupByCol(trList)
         for (let t = 0; t < reduceTrList.length; t++) {
           const tr = reduceTrList[t]
@@ -1519,7 +1519,7 @@ export class Draw {
             const curTdRealHeight = td.realHeight!
             const curTdHeight = td.mainHeight!
             const curTdMinHeight = td.realMinHeight!
-            // 获取最大可减少高度
+            // 최대 감소 가능한 높이 가져오기
             const curReduceHeight =
               curTdHeight < curTdMinHeight
                 ? curTdRealHeight - curTdMinHeight
@@ -1537,9 +1537,9 @@ export class Draw {
             })
           }
         }
-        // 需要重新计算表格内值
+        // 테이블 내 값을 다시 계산해야 함
         this.tableParticle.computeRowColInfo(element)
-        // 计算出表格高度
+        // 테이블 높이 계산
         const tableHeight = this.tableParticle.getTableHeight(element)
         const tableWidth = this.tableParticle.getTableWidth(element)
         element.width = tableWidth
@@ -1550,11 +1550,11 @@ export class Draw {
         metrics.height = elementHeight
         metrics.boundingBoxDescent = elementHeight
         metrics.boundingBoxAscent = -rowMargin
-        // 后一个元素也是表格则移除行间距
+        // 다음 요소도 테이블이면 행 간격 제거
         if (elementList[i + 1]?.type === ElementType.TABLE) {
           metrics.boundingBoxAscent -= rowMargin
         }
-        // 表格分页处理(拆分表格)
+        // 테이블 페이지 분할 처리 (테이블 분할)
         if (isPagingMode) {
           const height = this.getHeight()
           const marginHeight = this.getMainOuterHeight()
@@ -1571,24 +1571,24 @@ export class Draw {
               curPagePreHeight += row.height + rowOffsetY
             }
           }
-          // 当前剩余高度是否能容下当前表格第一行（可拆分）的高度，排除掉表头类型
+          // 현재 남은 높이가 현재 테이블의 첫 번째 행(분할 가능) 높이를 수용할 수 있는지, 테이블 헤더 유형 제외
           const rowMarginHeight = rowMargin * 2 * scale
           const firstTrHeight = element.trList![0].height! * scale
           if (
             curPagePreHeight + firstTrHeight + rowMarginHeight > height ||
             (element.pagingIndex !== 0 && element.trList![0].pagingRepeat)
           ) {
-            // 无可拆分行则切换至新页
+            // 분할 가능한 행이 없으면 새 페이지로 전환
             curPagePreHeight = marginHeight
           }
-          // 表格高度超过页面高度开始截断行
+          // 테이블 높이가 페이지 높이를 초과하면 행 잘라내기 시작
           if (curPagePreHeight + rowMarginHeight + elementHeight > height) {
             const trList = element.trList!
-            // 计算需要移除的行数
+            // 제거해야 할 행 수 계산
             let deleteStart = 0
             let deleteCount = 0
             let preTrHeight = 0
-            // 大于一行时再拆分避免循环
+            // 한 행 이상일 때만 분할하여 루프 방지
             if (trList.length > 1) {
               for (let r = 0; r < trList.length; r++) {
                 const tr = trList[r]
@@ -1597,7 +1597,7 @@ export class Draw {
                   curPagePreHeight + rowMarginHeight + preTrHeight + trHeight >
                   height
                 ) {
-                  // 当前行存在跨行中断-暂时忽略分页
+                  // 현재 행에 교차 중단이 있음 - 임시로 페이징 무시
                   const rowColCount = tr.tdList.reduce(
                     (pre, cur) => pre + cur.colspan,
                     0
@@ -1625,11 +1625,11 @@ export class Draw {
               element.height -= cloneTrHeight
               metrics.height -= cloneTrRealHeight
               metrics.boundingBoxDescent -= cloneTrRealHeight
-              // 追加拆分表格
+              // 분할된 테이블 추가
               const cloneElement = deepClone(element)
               cloneElement.pagingId = pagingId
               cloneElement.pagingIndex = element.pagingIndex! + 1
-              // 处理分页重复表头
+              // 페이징 반복 테이블 헤더 처리
               const repeatTrList = trList.filter(tr => tr.pagingRepeat)
               if (repeatTrList.length) {
                 const cloneRepeatTrList = deepClone(repeatTrList)
@@ -1641,11 +1641,11 @@ export class Draw {
               this.spliceElementList(elementList, i + 1, 0, [cloneElement])
             }
           }
-          // 表格经过分页处理-需要处理上下文
+          // 테이블이 페이징 처리됨 - 컨텍스트 처리 필요
           if (element.pagingId) {
             const positionContext = this.position.getPositionContext()
             if (positionContext.isTable) {
-              // 查找光标所在表格索引（根据trId搜索）
+              // 커서가 위치한 테이블 인덱스 찾기 (trId로 검색)
               let newPositionContextIndex = -1
               let newPositionContextTrIndex = -1
               let tableIndex = i
@@ -1717,7 +1717,7 @@ export class Draw {
         metrics.boundingBoxDescent = metrics.height
         metrics.boundingBoxAscent = 0
       } else {
-        // 设置上下标真实字体尺寸
+        // 상하첨자 실제 폰트 크기 설정
         const size = element.size || defaultSize
         if (
           element.type === ElementType.SUPERSCRIPT ||
@@ -1761,13 +1761,13 @@ export class Draw {
         left: 0,
         style: this.getElementFont(element, scale)
       })
-      // 暂时只考虑非换行场景：控件开始时统计宽度，结束时消费宽度及还原
+      // 임시로 비줄바꿈 시나리오만 고려: 컨트롤 시작 시 폭 통계, 종료 시 폭 소비 및 복원
       if (rowElement.control?.minWidth) {
         if (rowElement.controlComponent) {
           controlRealWidth += metrics.width
         }
         if (rowElement.controlComponent === ControlComponent.POSTFIX) {
-          // 设置最小宽度控件属性（字符偏移量）
+          // 최소 폭 컨트롤 속성 설정 (문자 오프셋)
           this.control.setMinWidthControlInfo({
             row: curRow,
             rowElement,
@@ -1777,17 +1777,17 @@ export class Draw {
           controlRealWidth = 0
         }
       }
-      // 超过限定宽度
+      // 제한 폭도 초과
       const preElement = elementList[i - 1]
       let nextElement = elementList[i + 1]
-      // 累计行宽 + 当前元素宽度 + 排版宽度(英文单词整体宽度 + 后面标点符号宽度)
+      // 누적 행 폭 + 현재 요소 폭 + 레이아웃 폭 (영어 단어 전체 폭 + 뒤에 오는 단여 기호 폭)
       let curRowWidth = curRow.width + metrics.width
       if (this.options.wordBreak === WordBreak.BREAK_WORD) {
         if (
           (!preElement?.type || preElement?.type === ElementType.TEXT) &&
           (!element.type || element.type === ElementType.TEXT)
         ) {
-          // 英文单词
+          // 영어 단어
           const word = `${preElement?.value || ''}${element.value}`
           if (this.WORD_LIKE_REG.test(word)) {
             const { width, endElement } = this.textParticle.measureWord(
@@ -1795,14 +1795,14 @@ export class Draw {
               elementList,
               i
             )
-            // 单词宽度大于行可用宽度，无需折行
+            // 단어 폭이 행 사용 가능 폭보다 큼, 줄바꿈 불필요
             const wordWidth = width * scale
             if (wordWidth <= availableWidth) {
               curRowWidth += wordWidth
               nextElement = endElement
             }
           }
-          // 标点符号
+          // 단여 기호
           const punctuationWidth = this.textParticle.measurePunctuationWidth(
             ctx,
             nextElement
@@ -1810,7 +1810,7 @@ export class Draw {
           curRowWidth += punctuationWidth * scale
         }
       }
-      // 列表信息
+      // 목록 정보
       if (element.listId) {
         if (element.listId !== listId) {
           listIndex = 0
@@ -1819,7 +1819,7 @@ export class Draw {
         }
       }
       listId = element.listId
-      // 计算四周环绕导致的元素偏移量
+      // 사방 둘러싸기로 인한 요소 오프셋 계산
       const surroundPosition = this.position.setSurroundPosition({
         pageNo,
         rowElement,
@@ -1836,7 +1836,7 @@ export class Draw {
       x = surroundPosition.x
       curRowWidth += surroundPosition.rowIncreaseWidth
       x += metrics.width
-      // 是否强制换行
+      // 강제 줄바꿈 여부
       const isForceBreak =
         element.type === ElementType.SEPARATOR ||
         element.type === ElementType.TABLE ||
@@ -1852,10 +1852,10 @@ export class Draw {
             element.controlComponent === ControlComponent.RADIO) &&
           preElement?.controlComponent === ControlComponent.VALUE) ||
         (i !== 0 && element.value === ZERO && !element.area?.hide)
-      // 是否宽度不足导致换行
+      // 너비 부족으로 인한 줄바꿈 여부
       const isWidthNotEnough = curRowWidth > availableWidth
       const isWrap = isForceBreak || isWidthNotEnough
-      // 新行数据处理
+      // 새 행 데이터 처리
       if (isWrap) {
         const row: IRow = {
           width: metrics.width,
@@ -1867,12 +1867,12 @@ export class Draw {
           rowFlex: elementList[i]?.rowFlex || elementList[i + 1]?.rowFlex,
           isPageBreak: element.type === ElementType.PAGE_BREAK
         }
-        // 控件缩进
+        // 컨트롤 들여쓰기
         if (
           rowElement.controlComponent !== ControlComponent.PREFIX &&
           rowElement.control?.indentation === ControlIndentation.VALUE_START
         ) {
-          // 查找到非前缀的第一个元素位置
+          // 비접두사의 첫 번째 요소 위치를 찾음
           const preStartIndex = curRow.elementList.findIndex(
             el =>
               el.controlId === rowElement.controlId &&
@@ -1889,13 +1889,13 @@ export class Draw {
             }
           }
         }
-        // 列表缩进
+        // 목록 들여쓰기
         if (element.listId) {
           row.isList = true
           row.offsetX = listStyleMap.get(element.listId!)
           row.listIndex = listIndex
         }
-        // Y轴偏移量
+        // Y축 오프셋
         row.offsetY =
           !isFromTable &&
           element.area?.top &&
@@ -1905,7 +1905,7 @@ export class Draw {
         rowList.push(row)
       } else {
         curRow.width += metrics.width
-        // 减小块元素前第一行空行行高
+        // 블록 요소 앞 첫 번째 빈 행의 행 높이 감소
         if (
           i === 0 &&
           (getIsBlockElement(elementList[1]) || !!elementList[1]?.areaId)
@@ -1918,18 +1918,18 @@ export class Draw {
         }
         curRow.elementList.push(rowElement)
       }
-      // 行结束时逻辑
+      // 행 종료 시 로직
       if (isWrap || i === elementList.length - 1) {
-        // 换行原因：宽度不足
+        // 줄 바꿈 이유: 너비 부족
         curRow.isWidthNotEnough = isWidthNotEnough && !isForceBreak
-        // 两端对齐、分散对齐
+        // 양쪽 정렬, 분산 정렬
         if (
           !curRow.isSurround &&
           (preElement?.rowFlex === RowFlex.JUSTIFY ||
             (preElement?.rowFlex === RowFlex.ALIGNMENT &&
               curRow.isWidthNotEnough))
         ) {
-          // 忽略换行符及尾部元素间隔设置
+          // 줄바꿈 문자 및 끝부 요소 간격 설정 무시
           const rowElementList =
             curRow.elementList[0]?.value === ZERO
               ? curRow.elementList.slice(1)
@@ -1943,7 +1943,7 @@ export class Draw {
           curRow.width = availableWidth
         }
       }
-      // 重新计算坐标、页码、下一行首行元素环绕交叉
+      // 좌표, 페이지 번호, 다음 행 첫 번째 요소 환요 교차 재계산
       if (isWrap) {
         x = startX
         y += curRow.height
@@ -1955,11 +1955,11 @@ export class Draw {
             element.type === ElementType.PAGE_BREAK)
         ) {
           y = startY
-          // 删除多余四周环绕型元素
+          // 여분의 사방 환요 유형 요소 삭제
           deleteSurroundElementList(surroundElementList, pageNo)
           pageNo += 1
         }
-        // 计算下一行第一个元素是否存在环绕交叉
+        // 다음 행의 첫 번째 요소에 환요 교차가 있는지 계산
         rowElement.left = 0
         const nextRow = rowList[rowList.length - 1]
         const surroundPosition = this.position.setSurroundPosition({
@@ -1994,7 +1994,7 @@ export class Draw {
     let pageNo = 0
     if (pageMode === PageMode.CONTINUITY) {
       pageRowList[0] = this.rowList
-      // 重置高度
+      // 높이 재설정
       pageHeight += this.rowList.reduce(
         (pre, cur) => pre + cur.height + (cur.offsetY || 0),
         0
@@ -2047,12 +2047,12 @@ export class Draw {
       for (let j = 0; j < curRow.elementList.length; j++) {
         const element = curRow.elementList[j]
         const preElement = curRow.elementList[j - 1]
-        // 高亮配置：元素 > 控件配置
+        // 하이라이트 설정: 요소 > 컨트롤 설정
         const highlight =
           element.highlight ||
           this.control.getControlHighlight(elementList, curRow.startIndex + j)
         if (highlight) {
-          // 高亮元素相连需立即绘制，并记录下一元素坐标
+          // 하이라이트 요소가 연속되면 즉시 그리고 다음 요소 좌표 기록
           if (
             preElement &&
             preElement.highlight &&
@@ -2060,24 +2060,24 @@ export class Draw {
           ) {
             this.highlight.render(ctx)
           }
-          // 当前元素位置信息记录
+          // 현재 요소 위치 정보 기록
           const {
             coordinate: {
               leftTop: [x, y]
             }
           } = positionList[curRow.startIndex + j]
-          // 元素向左偏移量
+          // 요소의 왼쪽 오프셋
           const offsetX = element.left || 0
           this.highlight.recordFillInfo(
             ctx,
             x - offsetX,
-            y + marginHeight - highlightMarginHeight, // 先减去行margin，再加上高亮margin
+            y + marginHeight - highlightMarginHeight, // 먼저 행 마진을 빼고 하이라이트 마진을 더함
             element.metrics.width + offsetX,
             curRow.height - 2 * marginHeight + 2 * highlightMarginHeight,
             highlight
           )
         } else if (preElement?.highlight) {
-          // 之前是高亮元素，当前不是需立即绘制
+          // 이전이 하이라이트 요소였지만 현재는 아니므로 즉시 그릴 필요
           this.highlight.render(ctx)
         }
       }
@@ -2086,9 +2086,9 @@ export class Draw {
   }
 
   public drawRow(ctx: CanvasRenderingContext2D, payload: IDrawRowPayload) {
-    // 优先绘制高亮元素
+    // 하이라이트 요소 우선 그리기
     this._drawHighlight(ctx, payload)
-    // 绘制元素、下划线、删除线、选区
+    // 요소, 밑줄, 취소선, 선택 영역 그리기
     const {
       scale,
       table: { tdPadding },
@@ -2109,7 +2109,7 @@ export class Draw {
     let index = startIndex
     for (let i = 0; i < rowList.length; i++) {
       const curRow = rowList[i]
-      // 选区绘制记录
+      // 선택 영역 그리기 기록
       const rangeRecord: IElementFillRect = {
         x: 0,
         y: 0,
@@ -2120,7 +2120,7 @@ export class Draw {
       for (let j = 0; j < curRow.elementList.length; j++) {
         const element = curRow.elementList[j]
         const metrics = element.metrics
-        // 当前元素位置信息
+        // 현재 요소 위치 정보
         const {
           ascent: offsetY,
           coordinate: {
@@ -2128,16 +2128,16 @@ export class Draw {
           }
         } = positionList[curRow.startIndex + j]
         const preElement = curRow.elementList[j - 1]
-        // 元素绘制
+        // 요소 그리기
         if (
           (element.hide || element.control?.hide || element.area?.hide) &&
           !this.isDesignMode()
         ) {
-          // 控件隐藏时不绘制
+          // 컨트롤이 숨겨져 있으면 그리지 않기
           this.textParticle.complete()
         } else if (element.type === ElementType.IMAGE) {
           this.textParticle.complete()
-          // 浮动图片单独绘制
+          // 떠있는 이미지는 따로 그리기
           if (
             element.imgDisplay !== ImageDisplay.SURROUND &&
             element.imgDisplay !== ImageDisplay.FLOAT_TOP &&
@@ -2160,13 +2160,13 @@ export class Draw {
           this.hyperlinkParticle.render(ctx, element, x, y + offsetY)
         } else if (element.type === ElementType.DATE) {
           const nextElement = curRow.elementList[j + 1]
-          // 释放之前的
+          // 이전 것 해제
           if (!preElement || preElement.dateId !== element.dateId) {
             this.textParticle.complete()
           }
           this.textParticle.record(ctx, element, x, y + offsetY)
           if (!nextElement || nextElement.dateId !== element.dateId) {
-            // 手动触发渲染
+            // 수동으로 렌더링 트리거
             this.textParticle.complete()
           }
         } else if (element.type === ElementType.SUPERSCRIPT) {
@@ -2212,19 +2212,19 @@ export class Draw {
           element.rowFlex === RowFlex.ALIGNMENT ||
           element.rowFlex === RowFlex.JUSTIFY
         ) {
-          // 如果是两端对齐，因canvas目前不支持letterSpacing需单独绘制文本
+          // 양쪽 정렬이면, canvas가 현재 letterSpacing을 지원하지 않으므로 텍스트를 따로 그리기
           this.textParticle.record(ctx, element, x, y + offsetY)
           this.textParticle.complete()
         } else if (element.type === ElementType.BLOCK) {
           this.textParticle.complete()
           this.blockParticle.render(pageNo, element, x, y + offsetY)
         } else {
-          // 如果当前元素设置左偏移，则上一元素立即绘制
+          // 현재 요소가 왼쪽 오프셋이 설정되었다면 이전 요소를 즉시 그리기
           if (element.left) {
             this.textParticle.complete()
           }
           this.textParticle.record(ctx, element, x, y + offsetY)
-          // 如果设置字宽、字间距、标点符号（避免浏览器排版缩小间距）需单独绘制
+          // 글자 너비, 자간, 구두점이 설정된 경우 (브라우저 레이아웃이 간격을 줄이는 것을 방지) 따로 그리기
           if (
             element.width ||
             element.letterSpacing ||
@@ -2233,7 +2233,7 @@ export class Draw {
             this.textParticle.complete()
           }
         }
-        // 换行符绘制
+        // 줄바꿈 문자 그리기
         if (
           isDrawLineBreak &&
           !isPrintMode &&
@@ -2243,16 +2243,16 @@ export class Draw {
         ) {
           this.lineBreakParticle.render(ctx, element, x, y + curRow.height / 2)
         }
-        // 边框绘制（目前仅支持控件）
+        // 테두리 그리기 (현재 컨트롤만 지원)
         if (element.control?.border) {
-          // 不同控件边框立刻绘制
+          // 다른 컨트롤 테두리는 즉시 그리기
           if (
             preElement?.control?.border &&
             preElement.controlId !== element.controlId
           ) {
             this.control.drawBorder(ctx)
           }
-          // 当前元素位置信息记录
+          // 현재 요소 위치 정보 기록
           const rowMargin = this.getElementRowMargin(element)
           this.control.recordBorderInfo(
             x,
@@ -2263,25 +2263,25 @@ export class Draw {
         } else if (preElement?.control?.border) {
           this.control.drawBorder(ctx)
         }
-        // 下划线记录
+        // 밑줄 기록
         if (element.underline || element.control?.underline) {
-          // 下标元素下划线单独绘制
+          // 아래 첨자 요소 밑줄은 따로 그리기
           if (
             preElement?.type === ElementType.SUBSCRIPT &&
             element.type !== ElementType.SUBSCRIPT
           ) {
             this.underline.render(ctx)
           }
-          // 行间距
+          // 행 간격
           const rowMargin = this.getElementRowMargin(element)
-          // 元素向左偏移量
+          // 요소의 왼쪽 오프셋
           const offsetX = element.left || 0
-          // 下标元素y轴偏移值
+          // 아래 첨자 요소 Y축 오프셋 값
           let offsetY = 0
           if (element.type === ElementType.SUBSCRIPT) {
             offsetY = this.subscriptParticle.getOffsetY(element)
           }
-          // 占位符不参与颜色计算
+          // 자리 표시자는 색상 계산에 참여하지 않음
           const color = element.control?.underline
             ? this.options.underlineColor
             : element.color
@@ -2297,11 +2297,11 @@ export class Draw {
         } else if (preElement?.underline || preElement?.control?.underline) {
           this.underline.render(ctx)
         }
-        // 删除线记录
+        // 취소선 기록
         if (element.strikeout) {
-          // 仅文本类元素支持删除线
+          // 텍스트류 요소만 취소선 지원
           if (!element.type || TEXTLIKE_ELEMENT_TYPE.includes(element.type)) {
-            // 字体大小不同时需立即绘制
+            // 글꼴 크기가 다른 경우 즉시 그리기
             if (
               preElement &&
               ((preElement.type === ElementType.SUBSCRIPT &&
@@ -2313,18 +2313,18 @@ export class Draw {
             ) {
               this.strikeout.render(ctx)
             }
-            // 基线文字测量信息
+            // 기준선 텍스트 측정 정보
             const standardMetrics = this.textParticle.measureBasisWord(
               ctx,
               this.getElementFont(element)
             )
-            // 文字渲染位置 + 基线文字下偏移量 - 一半文字高度
+            // 텍스트 렌더링 위치 + 기준선 텍스트 아래 오프셋 - 텍스트 높이의 절반
             let adjustY =
               y +
               offsetY +
               standardMetrics.actualBoundingBoxDescent * scale -
               metrics.height / 2
-            // 上下标位置调整
+            // 위아래 첨자 위치 조정
             if (element.type === ElementType.SUBSCRIPT) {
               adjustY += this.subscriptParticle.getOffsetY(element)
             } else if (element.type === ElementType.SUPERSCRIPT) {
@@ -2335,7 +2335,7 @@ export class Draw {
         } else if (preElement?.strikeout) {
           this.strikeout.render(ctx)
         }
-        // 选区记录
+        // 선택 영역 기록
         const {
           zone: currentZone,
           startIndex,
@@ -2348,12 +2348,12 @@ export class Draw {
           index <= endIndex
         ) {
           const positionContext = this.position.getPositionContext()
-          // 表格需限定上下文
+          // 표는 상하 문맥을 제한
           if (
             (!positionContext.isTable && !element.tdId) ||
             positionContext.tdId === element.tdId
           ) {
-            // 从行尾开始-绘制最小宽度
+            // 행 끝에서 시작 - 최소 너비 그리기
             if (startIndex === index) {
               const nextElement = elementList[startIndex + 1]
               if (nextElement && nextElement.value === ZERO) {
@@ -2364,11 +2364,11 @@ export class Draw {
               }
             } else {
               let rangeWidth = metrics.width
-              // 最小选区宽度
+              // 최소 선택 영역 너비
               if (rangeWidth === 0 && curRow.elementList.length === 1) {
                 rangeWidth = this.options.rangeMinWidth
               }
-              // 记录第一次位置、行高
+              // 첫 번째 위치, 행 높이 기록
               if (!rangeRecord.width) {
                 rangeRecord.x = x
                 rangeRecord.y = y
@@ -2378,12 +2378,12 @@ export class Draw {
             }
           }
         }
-        // 组信息记录
+        // 그룹 정보 기록
         if (!group.disabled && element.groupIds) {
           this.group.recordFillInfo(element, x, y, metrics.width, curRow.height)
         }
         index++
-        // 绘制表格内元素
+        // 표 내 요소 그리기
         if (element.type === ElementType.TABLE && !element.hide) {
           const tdPaddingWidth = tdPadding[1] + tdPadding[3]
           for (let t = 0; t < element.trList!.length; t++) {
@@ -2404,7 +2404,7 @@ export class Draw {
           }
         }
       }
-      // 绘制列表样式
+      // 목록 스타일 그리기
       if (curRow.isList) {
         this.listParticle.drawListStyle(
           ctx,
@@ -2412,14 +2412,14 @@ export class Draw {
           positionList[curRow.startIndex]
         )
       }
-      // 绘制文字、边框、下划线、删除线
+      // 텍스트, 테두리, 밑줄, 취소선 그리기
       this.textParticle.complete()
       this.control.drawBorder(ctx)
       this.underline.render(ctx)
       this.strikeout.render(ctx)
-      // 绘制批注样式
+      // 주석 스타일 그리기
       this.group.render(ctx)
-      // 绘制选区
+      // 선택 영역 그리기
       if (!isPrintMode) {
         if (rangeRecord.width && rangeRecord.height) {
           const { x, y, width, height } = rangeRecord
@@ -2496,33 +2496,33 @@ export class Draw {
     const isPrintMode = this.mode === EditorMode.PRINT
     const innerWidth = this.getInnerWidth()
     const ctx = this.ctxList[pageNo]
-    // 判断当前激活区域-非正文区域时元素透明度降低
+    // 현재 활성 영역 판단 - 비본문 영역일 때 요소 투명도 감소
     ctx.globalAlpha = !this.zone.isMainActive() ? inactiveAlpha : 1
     this._clearPage(pageNo)
-    // 绘制背景
+    // 배경 그리기
     this.background.render(ctx, pageNo)
-    // 绘制区域
+    // 영역 그리기
     if (!isPrintMode) {
       this.area.render(ctx, pageNo)
     }
-    // 绘制水印
+    // 워터마크 그리기
     if (pageMode !== PageMode.CONTINUITY && this.options.watermark.data) {
       this.waterMark.render(ctx, pageNo)
     }
-    // 绘制页边距
+    // 페이지 여백 그리기
     if (!isPrintMode) {
       this.margin.render(ctx, pageNo)
     }
-    // 渲染衬于文字下方元素
+    // 텍스트 아래에 위치한 요소 렌더링
     this._drawFloat(ctx, {
       pageNo,
       imgDisplays: [ImageDisplay.FLOAT_BOTTOM]
     })
-    // 控件高亮
+    // 컨트롤 하이라이트
     if (!isPrintMode) {
       this.control.renderHighlightList(ctx, pageNo)
     }
-    // 渲染元素
+    // 요소 렌더링
     const index = rowList[0]?.startIndex
     this.drawRow(ctx, {
       elementList,
@@ -2534,41 +2534,41 @@ export class Draw {
       zone: EditorZone.MAIN
     })
     if (this.getIsPagingMode()) {
-      // 绘制页眉
+      // 머리글 그리기
       if (!header.disabled) {
         this.header.render(ctx, pageNo)
       }
-      // 绘制页码
+      // 페이지 번호 그리기
       if (!pageNumber.disabled) {
         this.pageNumber.render(ctx, pageNo)
       }
-      // 绘制页脚
+      // 바닥글 그리기
       if (!footer.disabled) {
         this.footer.render(ctx, pageNo)
       }
     }
-    // 渲染浮于文字上方元素
+    // 텍스트 위에 위치한 요소 렌더링
     this._drawFloat(ctx, {
       pageNo,
       imgDisplays: [ImageDisplay.FLOAT_TOP, ImageDisplay.SURROUND]
     })
-    // 搜索匹配绘制
+    // 검색 매치 그리기
     if (!isPrintMode && this.search.getSearchKeyword()) {
       this.search.render(ctx, pageNo)
     }
-    // 绘制空白占位符
+    // 빈 공간 자리표시자 그리기
     if (this.elementList.length <= 1 && !this.elementList[0]?.listId) {
       this.placeholder.render(ctx)
     }
-    // 渲染行数
+    // 행 번호 렌더링
     if (!lineNumber.disabled) {
       this.lineNumber.render(ctx, pageNo)
     }
-    // 绘制页面边框
+    // 페이지 테두리 그리기
     if (!pageBorder.disabled) {
       this.pageBorder.render(ctx)
     }
-    // 绘制签章
+    // 서명 그리기
     this.badge.render(ctx, pageNo)
   }
 
@@ -2626,23 +2626,23 @@ export class Draw {
     let { curIndex } = payload || {}
     const innerWidth = this.getInnerWidth()
     const isPagingMode = this.getIsPagingMode()
-    // 缓存当前页数信息
+    // 현재 페이지 수 정보 캐시
     const oldPageSize = this.pageRowList.length
-    // 计算文档信息
+    // 문서 정보 계산
     if (isCompute) {
-      // 清空浮动元素位置信息
+      // 플로팅 요소 위치 정보 지우기
       this.position.setFloatPositionList([])
       if (isPagingMode) {
-        // 页眉信息
+        // 머리글 정보
         if (!header.disabled) {
           this.header.compute()
         }
-        // 页脚信息
+        // 바닥글 정보
         if (!footer.disabled) {
           this.footer.compute()
         }
       }
-      // 行信息
+      // 행 정보
       const margins = this.getMargins()
       const pageHeight = this.getHeight()
       const extraHeight = this.header.getExtraHeight()
@@ -2660,32 +2660,32 @@ export class Draw {
         surroundElementList,
         elementList: this.elementList
       })
-      // 页面信息
+      // 페이지 정보
       this.pageRowList = this._computePageList()
-      // 位置信息
+      // 위치 정보
       this.position.computePositionList()
-      // 区域信息
+      // 영역 정보
       this.area.compute()
       if (this.mode !== EditorMode.PRINT) {
-        // 搜索信息
+        // 검색 정보
         const searchKeyword = this.search.getSearchKeyword()
         if (searchKeyword) {
           this.search.compute(searchKeyword)
         }
-        // 控件关键词高亮
+        // 컨트롤 키워드 하이라이트
         this.control.computeHighlightList()
       }
     }
-    // 清除光标等副作用
+    // 커서 등 부작용 제거
     this.imageObserver.clearAll()
     this.cursor.recoveryCursor()
-    // 创建纸张
+    // 종이 생성
     for (let i = 0; i < this.pageRowList.length; i++) {
       if (!this.pageList[i]) {
         this._createPage(i)
       }
     }
-    // 移除多余页
+    // 여분 페이지 제거
     const curPageCount = this.pageRowList.length
     const prePageCount = this.pageList.length
     if (prePageCount > curPageCount) {
@@ -2695,36 +2695,36 @@ export class Draw {
         .splice(curPageCount, deleteCount)
         .forEach(page => page.remove())
     }
-    // 绘制元素
-    // 连续页因为有高度的变化会导致canvas渲染空白，需立即渲染，否则会出现闪动
+    // 요소 그리기
+    // 연속 페이지의 높이 변화로 인해 캔버스가 빈 공간을 렌더링하므로 즉시 렌더링해야 함, 그렇지 않으면 깜박임이 나타남
     if (isLazy && isPagingMode) {
       this._lazyRender()
     } else {
       this._immediateRender()
     }
-    // 光标重绘
+    // 커서 다시 그리기
     if (isSetCursor) {
       curIndex = this.setCursor(curIndex)
     } else if (this.range.getIsSelection()) {
-      // 存在选区时仅定位避免事件无法捕获
+      // 선택 영역이 있을 때는 이벤트를 캐치할 수 없도록 위치만 지정
       this.cursor.focus()
     }
-    // 历史记录用于undo、redo（非首次渲染内容变更 || 第一次存在光标时）
+    // 실행 취소, 다시 실행에 사용되는 기록 (첫 번째 렌더링이 아닌 콘텐츠 변경 || 커서가 첫 번째로 존재할 때)
     if (
       (isSubmitHistory && !isFirstRender) ||
       (curIndex !== undefined && this.historyManager.isStackEmpty())
     ) {
       this.submitHistory(curIndex)
     }
-    // 信息变动回调
+    // 정보 변경 콜백
     nextTick(() => {
-      // 选区样式
+      // 선택 영역 스타일
       this.range.setRangeStyle()
-      // 重新唤起弹窗类控件
+      // 팝업류 컨트롤을 다시 활성화
       if (isCompute && this.control.getActiveControl()) {
         this.control.reAwakeControl()
       }
-      // 表格工具重新渲染
+      // 테이블 도구 다시 렌더링
       if (
         isCompute &&
         !this.isReadonly() &&
@@ -2732,11 +2732,11 @@ export class Draw {
       ) {
         this.tableTool.render()
       }
-      // 页眉指示器重新渲染
+      // 머리글 지시기 다시 렌더링
       if (isCompute && !this.zone.isMainActive()) {
         this.zone.drawZoneIndicator()
       }
-      // 页数改变
+      // 페이지 수 변경
       if (oldPageSize !== this.pageRowList.length) {
         if (this.listener.pageSizeChange) {
           this.listener.pageSizeChange(this.pageRowList.length)
@@ -2745,7 +2745,7 @@ export class Draw {
           this.eventBus.emit('pageSizeChange', this.pageRowList.length)
         }
       }
-      // 文档内容改变
+      // 문서 콘텐츠 변경
       if ((isSubmitHistory || isSourceHistory) && !isInit) {
         if (this.listener.contentChange) {
           this.listener.contentChange()
@@ -2775,7 +2775,7 @@ export class Draw {
         curIndex !== undefined ? positionList[curIndex] : null
       )
     }
-    // 定位到图片元素并且位置发生变化
+    // 이미지 요소로 이동하고 위치가 변경됨
     let isShowCursor = true
     if (
       curIndex !== undefined &&
@@ -2833,13 +2833,13 @@ export class Draw {
   }
 
   public clearSideEffect() {
-    // 预览工具组件
+    // 미리보기 도구 컬포넌트
     this.getPreviewer().clearResizer()
-    // 表格工具组件
+    // 테이블 도구 컬포넌트
     this.getTableTool().dispose()
-    // 超链接弹窗
+    // 하이퍼링크 팝업
     this.getHyperlinkParticle().clearHyperlinkPopup()
-    // 日期控件
+    // 날짜 컨트롤
     this.getDateParticle().clearDatePicker()
   }
 }

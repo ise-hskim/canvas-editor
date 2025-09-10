@@ -3,7 +3,7 @@ import { LineNumberType } from '../enum/LineNumber'
 
 export const defaultLineNumberOption: Readonly<Required<ILineNumberOption>> = {
   size: 12,
-  font: 'Microsoft YaHei',
+  font: 'Malgun Gothic',
   color: '#000000',
   disabled: true,
   right: 20,

@@ -7,7 +7,7 @@ export class LineBreakParticle {
   private options: DeepRequired<IEditorOption>
   public static readonly WIDTH = 12
   public static readonly HEIGHT = 9
-  public static readonly GAP = 3 // 距离左边间隙
+  public static readonly GAP = 3 // 왼쪽 간격
 
   constructor(draw: Draw) {
     this.options = draw.getOptions()
@@ -25,27 +25,27 @@ export class LineBreakParticle {
     } = this.options
     ctx.save()
     ctx.beginPath()
-    // 换行符尺寸设置为9像素
+    // 줄바꿈 문자 크기를 9픽셀로 설정
     const top = y - (LineBreakParticle.HEIGHT * scale) / 2
     const left = x + element.metrics.width
-    // 移动位置并设置缩放
+    // 위치 이동 및 확대/축소 설정
     ctx.translate(left, top)
     ctx.scale(scale, scale)
-    // 样式设置
+    // 스타일 설정
     ctx.strokeStyle = color
     ctx.lineWidth = lineWidth
     ctx.lineCap = 'round'
     ctx.lineJoin = 'round'
     ctx.beginPath()
-    // 回车折线
+    // 엔터 화살표 껴은선
     ctx.moveTo(8, 0)
     ctx.lineTo(12, 0)
     ctx.lineTo(12, 6)
     ctx.lineTo(3, 6)
-    // 箭头向上
+    // 위로 향하는 화살표
     ctx.moveTo(3, 6)
     ctx.lineTo(6, 3)
-    // 箭头向下
+    // 아래로 향하는 화살표
     ctx.moveTo(3, 6)
     ctx.lineTo(6, 9)
     ctx.stroke()

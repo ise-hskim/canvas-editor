@@ -17,7 +17,7 @@ export function setRangeCache(host: CanvasEvent) {
   const draw = host.getDraw()
   const position = draw.getPosition()
   const rangeManager = draw.getRange()
-  // 缓存选区上下文信息
+  // 선택 영역 컨텍스트 정보 캐시
   host.isAllowDrag = true
   host.cacheRange = deepClone(rangeManager.getRange())
   host.cacheElementList = draw.getElementList()
@@ -27,7 +27,7 @@ export function setRangeCache(host: CanvasEvent) {
 
 export function hitCheckbox(element: IElement, draw: Draw) {
   const { checkbox, control } = element
-  // 复选框不在控件内独立控制
+  // 체크박스가 컨트롤 내부에 있지 않을 때 독립 제어
   if (!control) {
     draw.getCheckboxParticle().setSelect(element)
   } else {
@@ -49,7 +49,7 @@ export function hitCheckbox(element: IElement, draw: Draw) {
 
 export function hitRadio(element: IElement, draw: Draw) {
   const { radio, control } = element
-  // 单选框不在控件内独立控制
+  // 라디오버튼이 컨트롤 내부에 있지 않을 때 독립 제어
   if (!control) {
     draw.getRadioParticle().setSelect(element)
   } else {
@@ -66,7 +66,7 @@ export function mousedown(evt: MouseEvent, host: CanvasEvent) {
   const isReadonly = draw.isReadonly()
   const rangeManager = draw.getRange()
   const position = draw.getPosition()
-  // 存在选区时忽略右键点击
+  // 선택 영역이 있을 때 우클릭 무시
   const range = rangeManager.getRange()
   if (
     evt.button === MouseEventButton.RIGHT &&
@@ -74,7 +74,7 @@ export function mousedown(evt: MouseEvent, host: CanvasEvent) {
   ) {
     return
   }
-  // 是否是选区拖拽
+  // 선택 영역 드래그 여부
   if (!host.isAllowDrag) {
     if (!isReadonly && range.startIndex !== range.endIndex) {
       const isPointInRange = rangeManager.getIsPointInRange(
@@ -89,12 +89,12 @@ export function mousedown(evt: MouseEvent, host: CanvasEvent) {
   }
   const target = evt.target as HTMLDivElement
   const pageIndex = target.dataset.index
-  // 设置pageNo
+  // pageNo 설정
   if (pageIndex) {
     draw.setPageNo(Number(pageIndex))
   }
   host.isAllowSelection = true
-  // 缓存旧上下文信息
+  // 이전 컨텍스트 정보 캐시
   const oldPositionContext = deepClone(position.getPositionContext())
   const positionResult = position.adjustPositionContext({
     x: evt.offsetX,
@@ -111,7 +111,7 @@ export function mousedown(evt: MouseEvent, host: CanvasEvent) {
     tdValueIndex,
     hitLineStartIndex
   } = positionResult
-  // 记录选区开始位置
+  // 선택 영역 시작 위치 기록
   host.mouseDownStartPosition = {
     ...positionResult,
     index: isTable ? tdValueIndex! : index,
@@ -122,14 +122,14 @@ export function mousedown(evt: MouseEvent, host: CanvasEvent) {
   const positionList = position.getPositionList()
   const curIndex = isTable ? tdValueIndex! : index
   const curElement = elementList[curIndex]
-  // 绘制
+  // 렌더링
   const isDirectHitImage = !!(isDirectHit && isImage)
   const isDirectHitCheckbox = !!(isDirectHit && isCheckbox)
   const isDirectHitRadio = !!(isDirectHit && isRadio)
   if (~index) {
     let startIndex = curIndex
     let endIndex = curIndex
-    // shift激活时进行选区处理
+    // shift 활성 시 선택 영역 처리
     if (evt.shiftKey) {
       const { startIndex: oldStartIndex } = rangeManager.getRange()
       if (~oldStartIndex) {
@@ -145,7 +145,7 @@ export function mousedown(evt: MouseEvent, host: CanvasEvent) {
     }
     rangeManager.setRange(startIndex, endIndex)
     position.setCursorPosition(positionList[curIndex])
-    // 复选框
+    // 체크박스
     if (isDirectHitCheckbox && !isReadonly) {
       hitCheckbox(curElement, draw)
     } else if (isDirectHitRadio && !isReadonly) {
@@ -155,7 +155,7 @@ export function mousedown(evt: MouseEvent, host: CanvasEvent) {
       (curElement.control?.type === ControlType.CHECKBOX ||
         curElement.control?.type === ControlType.RADIO)
     ) {
-      // 向左查找
+      // 왼쪽으로 검색
       let preIndex = curIndex
       while (preIndex > 0) {
         const preElement = elementList[preIndex]
@@ -177,19 +177,19 @@ export function mousedown(evt: MouseEvent, host: CanvasEvent) {
           !isDirectHitImage && !isDirectHitCheckbox && !isDirectHitRadio
       })
     }
-    // 首字需定位到行首，非上一行最后一个字后
+    // 첫 번째 글자는 행 시작 위치로, 이전 행의 마지막 글자 뒤가 아니라
     if (hitLineStartIndex) {
       host.getDraw().getCursor().drawCursor({
         hitLineStartIndex
       })
     }
   }
-  // 预览工具组件
+  // 미리보기 도구 컴포넌트
   const previewer = draw.getPreviewer()
   previewer.clearResizer()
   if (isDirectHitImage) {
     const previewerDrawOption: IPreviewerDrawOption = {
-      // 只读或控件外表单模式禁用拖拽
+      // 읽기 전용 또는 컨트롤 외부 폼 모드에서 드래그 비활성화
       dragDisable:
         isReadonly ||
         (!curElement.controlId && draw.getMode() === EditorMode.FORM)
@@ -203,13 +203,13 @@ export function mousedown(evt: MouseEvent, host: CanvasEvent) {
       positionList[curIndex],
       previewerDrawOption
     )
-    // 光标事件代理丢失，重新定位
+    // 커서 이벤트 위임 손실, 다시 위치 지정
     draw.getCursor().drawCursor({
       isShow: false
     })
-    // 点击图片允许拖拽调整位置
+    // 이미지 클릭으로 위치 드래그 조정 허용
     setRangeCache(host)
-    // 浮动元素创建镜像图片
+    // 부동 요소 미러 이미지 생성
     if (
       curElement.imgDisplay === ImageDisplay.SURROUND ||
       curElement.imgDisplay === ImageDisplay.FLOAT_TOP ||
@@ -217,7 +217,7 @@ export function mousedown(evt: MouseEvent, host: CanvasEvent) {
     ) {
       draw.getImageParticle().createFloatImage(curElement)
     }
-    // 图片点击事件
+    // 이미지 클릭 이벤트
     const eventBus = draw.getEventBus()
     if (eventBus.isSubscribe('imageMousedown')) {
       eventBus.emit('imageMousedown', {
@@ -226,13 +226,13 @@ export function mousedown(evt: MouseEvent, host: CanvasEvent) {
       })
     }
   }
-  // 表格工具组件
+  // 테이블 도구 컴포넌트
   const tableTool = draw.getTableTool()
   tableTool.dispose()
   if (isTable && !isReadonly && draw.getMode() !== EditorMode.FORM) {
     tableTool.render()
   }
-  // 超链接
+  // 하이퍼링크
   const hyperlinkParticle = draw.getHyperlinkParticle()
   hyperlinkParticle.clearHyperlinkPopup()
   if (curElement.type === ElementType.HYPERLINK) {
@@ -242,7 +242,7 @@ export function mousedown(evt: MouseEvent, host: CanvasEvent) {
       hyperlinkParticle.drawHyperlinkPopup(curElement, positionList[curIndex])
     }
   }
-  // 日期控件
+  // 날짜 컨트롤
   const dateParticle = draw.getDateParticle()
   dateParticle.clearDatePicker()
   if (curElement.type === ElementType.DATE && !isReadonly) {

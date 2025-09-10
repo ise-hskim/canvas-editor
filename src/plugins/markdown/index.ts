@@ -1,4 +1,4 @@
-// 简化版markdown转IElement插件示例，代码仅为参考
+// 간소화된 마크다운을 IElement로 변환하는 플러그인 예시, 코드는 참고용입니다
 import Editor, {
   Command,
   ElementType,

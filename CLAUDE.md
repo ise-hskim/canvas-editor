@@ -81,3 +81,13 @@ The project uses Cypress for E2E testing. Test files are located in `cypress/e2e
 - Element formatting and positioning calculations are complex - changes to Draw class should be carefully tested
 - The project supports multiple rendering modes (Canvas and SVG - under development)
 - Git hooks run linting and type checking before commits
+
+## Ongoing Tasks
+
+### Code Localization
+- **Chinese to Korean Translation**: The codebase is being translated from Chinese comments to Korean
+- **Progress Tracking**: See TRANSLATION_CHECKLIST.md for detailed progress
+- **Translation Guidelines**: 
+  - Only translate comments and string literals, not variable names or code
+  - Maintain technical accuracy and consistency
+  - Preserve code structure and formatting

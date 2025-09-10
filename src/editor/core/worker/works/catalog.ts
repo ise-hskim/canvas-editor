@@ -66,7 +66,7 @@ function isTextLikeElement(element: IElement): boolean {
 
 function getCatalog(payload: IGetCatalogPayload): ICatalog | null {
   const { elementList, positionList } = payload
-  // 筛选标题
+  // 제목 필터링
   const titleElementList: ICatalogElement[] = []
   let t = 0
   while (t < elementList.length) {
@@ -135,7 +135,7 @@ function getCatalog(payload: IGetCatalogPayload): ICatalog | null {
     t++
   }
   if (!titleElementList.length) return null
-  // 查找到比最新元素大的标题时终止
+  // 최신 요소보다 큰 제목을 찾았을 때 종료
   const recursiveInsert = (
     title: ICatalogElement,
     catalogItem: ICatalogItem
@@ -156,9 +156,9 @@ function getCatalog(payload: IGetCatalogPayload): ICatalog | null {
       })
     }
   }
-  // 循环标题组
-  // 如果当前列表级别小于标题组最新标题级别：则递归查找最小级别并追加
-  // 如果大于：则直接追加至当前标题组
+  // 제목 그룹 루프
+  // 현재 목록 레벨이 제목 그룹의 최신 제목 레벨보다 작으면: 재귀로 최소 레벨을 찾고 추가
+  // 크면: 현재 제목 그룹에 직접 추가
   const catalog: ICatalog = []
   for (let e = 0; e < titleElementList.length; e++) {
     const title = titleElementList[e]

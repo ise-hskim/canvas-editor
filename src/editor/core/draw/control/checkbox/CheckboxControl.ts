@@ -34,7 +34,7 @@ export class CheckboxControl implements IControlInstance {
     const { startIndex } = this.control.getRange()
     const startElement = elementList[startIndex]
     const data: IElement[] = []
-    // 向左查找
+    // 왼쪽으로 검색
     let preIndex = startIndex
     while (preIndex > 0) {
       const preElement = elementList[preIndex]
@@ -50,7 +50,7 @@ export class CheckboxControl implements IControlInstance {
       }
       preIndex--
     }
-    // 向右查找
+    // 오른쪽으로 검색
     let nextIndex = startIndex + 1
     while (nextIndex < elementList.length) {
       const nextElement = elementList[nextIndex]
@@ -78,7 +78,7 @@ export class CheckboxControl implements IControlInstance {
     context: IControlContext = {},
     options: IControlRuleOption = {}
   ) {
-    // 校验是否可以设置
+    // 설정 가능 여부 검증
     if (
       !options.isIgnoreDisabledRule &&
       this.control.getIsDisabledControl(context)
@@ -89,7 +89,7 @@ export class CheckboxControl implements IControlInstance {
     const elementList = context.elementList || this.control.getElementList()
     const { startIndex } = context.range || this.control.getRange()
     const startElement = elementList[startIndex]
-    // 向左查找
+    // 왼쪽으로 검색
     let preIndex = startIndex
     while (preIndex > 0) {
       const preElement = elementList[preIndex]
@@ -106,7 +106,7 @@ export class CheckboxControl implements IControlInstance {
       }
       preIndex--
     }
-    // 向右查找
+    // 오른쪽으로 검색
     let nextIndex = startIndex + 1
     while (nextIndex < elementList.length) {
       const nextElement = elementList[nextIndex]
@@ -138,10 +138,10 @@ export class CheckboxControl implements IControlInstance {
       return null
     }
     const range = this.control.getRange()
-    // 收缩边界到Value内
+    // Value 내부로 경계 축소
     this.control.shrinkBoundary()
     const { startIndex, endIndex } = range
-    // 删除
+    // 삭제
     if (evt.key === KeyMap.Backspace || evt.key === KeyMap.Delete) {
       return this.control.removeControl(startIndex)
     }

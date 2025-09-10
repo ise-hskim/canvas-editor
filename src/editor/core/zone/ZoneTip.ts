@@ -29,7 +29,7 @@ export class ZoneTip {
     this.tipContent = tipContent
     this.isDisableMouseMove = true
     this.currentMoveZone = EditorZone.MAIN
-    // 监听区域
+    // 영역 모니터링
     const watchZones: EditorZone[] = []
     const { header, footer } = draw.getOptions()
     if (!header.disabled) {
@@ -56,7 +56,7 @@ export class ZoneTip {
             return
           }
           this.currentMoveZone = mousemoveZone
-          // 激活区域是正文，移动区域是页眉、页脚时绘制
+          // 활성 영역이 본문이고 이동 영역이 헤더, 푸터일 때 그리기
           this._updateZoneTip(
             this.zone.getZone() === EditorZone.MAIN &&
               (mousemoveZone === EditorZone.HEADER ||
@@ -69,7 +69,7 @@ export class ZoneTip {
         }
       }, 250)
     )
-    // mouseenter后mousemove有效，避免因节流导致的mouseleave后继续执行逻辑
+    // mouseenter 후 mousemove 유효, 스로틀로 인한 mouseleave 후 계속 실행 로직 방지
     this.pageContainer.addEventListener('mouseenter', () => {
       this.isDisableMouseMove = false
     })

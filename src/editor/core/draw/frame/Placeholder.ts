@@ -57,7 +57,7 @@ export class Placeholder {
     const innerWidth = this.draw.getInnerWidth()
     const margins = this.draw.getMargins()
     let startX = margins[3]
-    // 换行符绘制开启时，移动起始位置
+    // 줄바꿈 기호 그리기가 활성화된 경우 시작 위치 이동
     if (!lineBreak.disabled) {
       startX += (LineBreakParticle.WIDTH + LineBreakParticle.GAP) * scale
     }
@@ -81,7 +81,7 @@ export class Placeholder {
     const { placeholder = this.options.placeholder } = options || {}
     const { data, font, size, color, opacity } = placeholder
     this._recovery()
-    // 构建元素列表并格式化
+    // 요소 목록 생성 및 포맷
     this.elementList = [
       {
         value: data,
@@ -94,10 +94,10 @@ export class Placeholder {
       editorOptions: this.options,
       isForceCompensation: true
     })
-    // 计算
+    // 계산
     this._compute(options)
     const innerWidth = this.draw.getInnerWidth()
-    // 绘制
+    // 그리기
     ctx.save()
     ctx.globalAlpha = opacity
     this.draw.drawRow(ctx, {

@@ -27,13 +27,13 @@ export class PageBorder {
     ctx.strokeStyle = color
     ctx.lineWidth = lineWidth * scale
     const margins = this.draw.getMargins()
-    // x：左边距 - 左距离正文距离
+    // x: 왼쪽 여백 - 본문과의 왼쪽 거리
     const x = margins[3] - padding[3] * scale
-    // y：页眉上边距 + 页眉高度 - 上距离正文距离
+    // y: 헤더 상단 여백 + 헤더 높이 - 본문과의 상단 거리
     const y = margins[0] + this.header.getExtraHeight() - padding[0] * scale
-    // width：页面宽度 + 左右距离正文距离
+    // width: 페이지 너비 + 본문과의 좌우 거리
     const width = this.draw.getInnerWidth() + (padding[1] + padding[3]) * scale
-    // height：页面高度 - 正文起始位置 - 页脚高度 - 下边距 - 下距离正文距离
+    // height: 페이지 높이 - 본문 시작 위치 - 푸터 높이 - 하단 여백 - 본문과의 하단 거리
     const height =
       this.draw.getHeight() -
       y -

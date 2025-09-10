@@ -89,7 +89,7 @@ export class Background {
       img.onload = () => {
         this.imageCache.set(background.image, img)
         this._drawImage(ctx, img, width, height)
-        // 避免层级上浮，触发编辑器二次渲染
+        // 레이어 상승 방지, 에디터 재렌더링 트리거
         this.draw.render({
           isCompute: false,
           isSubmitHistory: false

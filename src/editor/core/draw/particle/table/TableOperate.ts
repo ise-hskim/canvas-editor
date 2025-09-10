@@ -80,7 +80,7 @@ export class TableOperate {
       colgroup,
       trList
     }
-    // 格式化element
+    // element 포매팅
     formatElementList([element], {
       editorOptions: this.options
     })
@@ -106,7 +106,7 @@ export class TableOperate {
     const element = originalElementList[index!]
     const curTrList = element.trList!
     const curTr = curTrList[trIndex!]
-    // 之前跨行的增加跨行数
+    // 이전 과 행 항목에 행 수 증가
     if (curTr.tdList.length < element.colgroup!.length) {
       const curTrNo = curTr.tdList[0].rowIndex!
       for (let t = 0; t < trIndex!; t++) {
@@ -119,7 +119,7 @@ export class TableOperate {
         }
       }
     }
-    // 增加当前行
+    // 현재 행 추가
     const newTrId = getUUID()
     const newTr: ITr = {
       height: curTr.height,
@@ -145,7 +145,7 @@ export class TableOperate {
       })
     }
     curTrList.splice(trIndex!, 0, newTr)
-    // 重新设置上下文
+    // 컨텍스트 재설정
     this.position.setPositionContext({
       isTable: true,
       index,
@@ -156,7 +156,7 @@ export class TableOperate {
       tableId
     })
     this.range.setRange(0, 0)
-    // 重新渲染
+    // 재렌더링
     this.draw.render({ curIndex: 0 })
     this.tableTool.render()
   }
@@ -171,7 +171,7 @@ export class TableOperate {
     const curTr = curTrList[trIndex!]
     const anchorTr =
       curTrList.length - 1 === trIndex ? curTr : curTrList[trIndex! + 1]
-    // 之前/当前行跨行的增加跨行数
+    // 이전/현재 행의 행 늘리기에 행 수 증가
     if (anchorTr.tdList.length < element.colgroup!.length) {
       const curTrNo = anchorTr.tdList[0].rowIndex!
       for (let t = 0; t < trIndex! + 1; t++) {
@@ -184,7 +184,7 @@ export class TableOperate {
         }
       }
     }
-    // 增加当前行
+    // 현재 행 추가
     const newTrId = getUUID()
     const newTr: ITr = {
       height: anchorTr.height,
@@ -210,7 +210,7 @@ export class TableOperate {
       })
     }
     curTrList.splice(trIndex! + 1, 0, newTr)
-    // 重新设置上下文
+    // 컨텍스트 재설정
     this.position.setPositionContext({
       isTable: true,
       index,
@@ -221,7 +221,7 @@ export class TableOperate {
       tableId: element.id
     })
     this.range.setRange(0, 0)
-    // 重新渲染
+    // 재렌더링
     this.draw.render({ curIndex: 0 })
   }
 
@@ -232,15 +232,15 @@ export class TableOperate {
     const colgroupWidth = colgroup.reduce((pre, cur) => pre + cur.width, 0)
     const width = this.draw.getOriginalInnerWidth()
     if (colgroupWidth > width) {
-      // 过滤大于最小宽度的列（可能减少宽度的列）
+      // 최소 넓이보다 큰 열 필터링 (넓이를 줄일 수 있는 열)
       const greaterMinWidthCol = colgroup.filter(
         col => col.width > defaultColMinWidth
       )
-      // 均分多余宽度
+      // 여분 넓이 균등 분배
       const adjustWidth = (colgroupWidth - width) / greaterMinWidthCol.length
       for (let g = 0; g < colgroup.length; g++) {
         const group = colgroup[g]
-        // 小于最小宽度的列不处理
+        // 최소 넓이보다 작은 열은 처리하지 않음
         if (group.width - adjustWidth >= defaultColMinWidth) {
           group.width -= adjustWidth
         }
@@ -256,7 +256,7 @@ export class TableOperate {
     const element = originalElementList[index!]
     const curTrList = element.trList!
     const curTdIndex = tdIndex!
-    // 增加列
+    // 열 추가
     for (let t = 0; t < curTrList.length; t++) {
       const tr = curTrList[t]
       const tdId = getUUID()
@@ -275,14 +275,14 @@ export class TableOperate {
         ]
       })
     }
-    // 重新计算宽度
+    // 너비 재계산
     const { defaultColMinWidth } = this.options.table
     const colgroup = element.colgroup!
     colgroup.splice(curTdIndex, 0, {
       width: defaultColMinWidth
     })
     this.adjustColWidth(element)
-    // 重新设置上下文
+    // 컨텍스트 재설정
     this.position.setPositionContext({
       isTable: true,
       index,
@@ -293,7 +293,7 @@ export class TableOperate {
       tableId
     })
     this.range.setRange(0, 0)
-    // 重新渲染
+    // 재렌더링
     this.draw.render({ curIndex: 0 })
     this.tableTool.render()
   }
@@ -306,7 +306,7 @@ export class TableOperate {
     const element = originalElementList[index!]
     const curTrList = element.trList!
     const curTdIndex = tdIndex! + 1
-    // 增加列
+    // 열 추가
     for (let t = 0; t < curTrList.length; t++) {
       const tr = curTrList[t]
       const tdId = getUUID()
@@ -325,14 +325,14 @@ export class TableOperate {
         ]
       })
     }
-    // 重新计算宽度
+    // 너비 재계산
     const { defaultColMinWidth } = this.options.table
     const colgroup = element.colgroup!
     colgroup.splice(curTdIndex, 0, {
       width: defaultColMinWidth
     })
     this.adjustColWidth(element)
-    // 重新设置上下文
+    // 컨텍스트 재설정
     this.position.setPositionContext({
       isTable: true,
       index,
@@ -343,7 +343,7 @@ export class TableOperate {
       tableId: element.id
     })
     this.range.setRange(0, 0)
-    // 重新渲染
+    // 재렌더링
     this.draw.render({ curIndex: 0 })
   }
 
@@ -356,12 +356,12 @@ export class TableOperate {
     const trList = element.trList!
     const curTr = trList[trIndex!]
     const curTdRowIndex = curTr.tdList[tdIndex!].rowIndex!
-    // 如果是最后一行，直接删除整个表格（如果是拆分表格按照正常逻辑走）
+    // 마지막 행인 경우 전체 테이블 삭제 (분할 테이블인 경우 정상 로직으로 처리)
     if (trList.length <= 1 && element.pagingIndex === 0) {
       this.deleteTable()
       return
     }
-    // 之前行缩小rowspan
+    // 이전 행 rowspan 축소
     for (let r = 0; r < curTdRowIndex; r++) {
       const tr = trList[r]
       const tdList = tr.tdList
@@ -372,7 +372,7 @@ export class TableOperate {
         }
       }
     }
-    // 补跨行
+    // 행 연결 보정
     for (let d = 0; d < curTr.tdList.length; d++) {
       const td = curTr.tdList[d]
       if (td.rowspan > 1) {
@@ -394,14 +394,14 @@ export class TableOperate {
         })
       }
     }
-    // 删除当前行
+    // 현재 행 삭제
     trList.splice(trIndex!, 1)
-    // 重新设置上下文
+    // 컨텍스트 재설정
     this.position.setPositionContext({
       isTable: false
     })
     this.range.clearRange()
-    // 重新渲染
+    // 재렌더링
     this.draw.render({
       curIndex: positionContext.index
     })
@@ -417,13 +417,13 @@ export class TableOperate {
     const curTrList = element.trList!
     const curTd = curTrList[trIndex!].tdList[tdIndex!]
     const curColIndex = curTd.colIndex!
-    // 如果是最后一列，直接删除整个表格
+    // 마지막 열인 경우 전체 테이블 삭제
     const moreTdTr = curTrList.find(tr => tr.tdList.length > 1)
     if (!moreTdTr) {
       this.deleteTable()
       return
     }
-    // 缩小colspan或删除与当前列重叠的单元格
+    // colspan 축소 또는 현재 열과 겹치는 셀 삭제
     for (let t = 0; t < curTrList.length; t++) {
       const tr = curTrList[t]
       for (let d = 0; d < tr.tdList.length; d++) {
@@ -441,12 +441,12 @@ export class TableOperate {
       }
     }
     element.colgroup?.splice(curColIndex, 1)
-    // 重新设置上下文
+    // 컨텍스트 재설정
     this.position.setPositionContext({
       isTable: false
     })
     this.range.setRange(0, 0)
-    // 重新渲染
+    // 재렌더링
     this.draw.render({
       curIndex: positionContext.index
     })
@@ -458,13 +458,13 @@ export class TableOperate {
     if (!positionContext.isTable) return
     const originalElementList = this.draw.getOriginalElementList()
     const tableElement = originalElementList[positionContext.index!]
-    // 需要删除的表格数量（拆分表格）及位置
+    // 삭제할 테이블 수량(분할 테이블) 및 위치
     let deleteCount = 1
     let deleteStartIndex = positionContext.index!
     if (tableElement.pagingId) {
-      // 开始删除的下标位置
+      // 삭제 시작 인덱스 위치
       deleteStartIndex = positionContext.index! - tableElement.pagingIndex!
-      // 计算删除的表格数量
+      // 삭제할 테이블 수량 계산
       for (let i = deleteStartIndex + 1; i < originalElementList.length; i++) {
         if (originalElementList[i].pagingId === tableElement.pagingId) {
           deleteCount++
@@ -473,7 +473,7 @@ export class TableOperate {
         }
       }
     }
-    // 删除
+    // 삭제
     originalElementList.splice(deleteStartIndex, deleteCount)
     const curIndex = deleteStartIndex - 1
     this.position.setPositionContext({
@@ -502,7 +502,7 @@ export class TableOperate {
     const curTrList = element.trList!
     let startTd = curTrList[startTrIndex!].tdList[startTdIndex!]
     let endTd = curTrList[endTrIndex!].tdList[endTdIndex!]
-    // 交换起始位置
+    // 시작 위치 교체
     if (startTd.x! > endTd.x! || startTd.y! > endTd.y!) {
       // prettier-ignore
       [startTd, endTd] = [endTd, startTd]
@@ -511,7 +511,7 @@ export class TableOperate {
     const endColIndex = endTd.colIndex! + (endTd.colspan - 1)
     const startRowIndex = startTd.rowIndex!
     const endRowIndex = endTd.rowIndex! + (endTd.rowspan - 1)
-    // 选区行列
+    // 선택 영역 행열
     const rowCol: ITd[][] = []
     for (let t = 0; t < curTrList.length; t++) {
       const tr = curTrList[t]
@@ -534,7 +534,7 @@ export class TableOperate {
       }
     }
     if (!rowCol.length) return
-    // 是否是矩形
+    // 사각형인지 여부
     const lastRow = rowCol[rowCol.length - 1]
     const leftTop = rowCol[0][0]
     const rightBottom = lastRow[lastRow.length - 1]
@@ -550,7 +550,7 @@ export class TableOperate {
         const tdStartY = td.y!
         const tdEndX = tdStartX + td.width!
         const tdEndY = tdStartY + td.height!
-        // 存在不符合项
+        // 부적합 항목 존재
         if (
           startX > tdStartX ||
           startY > tdStartY ||
@@ -561,7 +561,7 @@ export class TableOperate {
         }
       }
     }
-    // 合并单元格
+    // 셀 병합
     const mergeTdIdList: string[] = []
     const anchorTd = rowCol[0][0]
     const anchorElement = anchorTd.value[0]
@@ -570,12 +570,12 @@ export class TableOperate {
       for (let d = 0; d < tr.length; d++) {
         const td = tr[d]
         const isAnchorTd = t === 0 && d === 0
-        // 缓存待删除单元id并合并单元格内容
+        // 삭제할 셀 ID 캐시 및 셀 컨텐츠 병합
         if (!isAnchorTd) {
           mergeTdIdList.push(td.id!)
-          // 被合并单元格没内容时忽略换行符
+          // 병합될 셀에 컨텐츠가 없을 때 개행 문자 무시
           const startTdValueIndex = td.value.length > 1 ? 0 : 1
-          // 复制表格属性后追加
+          // 테이블 속성 복사 후 추가
           for (let d = startTdValueIndex; d < td.value.length; d++) {
             const tdElement = td.value[d]
             cloneProperty<IElement>(
@@ -586,11 +586,11 @@ export class TableOperate {
             anchorTd.value.push(tdElement)
           }
         }
-        // 列合并
+        // 열 병합
         if (t === 0 && d !== 0) {
           anchorTd.colspan += td.colspan
         }
-        // 行合并
+        // 행 병합
         if (t !== 0) {
           if (anchorTd.colIndex === td.colIndex) {
             anchorTd.rowspan += td.rowspan
@@ -598,7 +598,7 @@ export class TableOperate {
         }
       }
     }
-    // 移除多余单元格
+    // 여분 셀 제거
     for (let t = 0; t < curTrList.length; t++) {
       const tr = curTrList[t]
       let d = 0
@@ -611,7 +611,7 @@ export class TableOperate {
         d++
       }
     }
-    // 设置上下文信息
+    // 컨텍스트 정보 설정
     this.position.setPositionContext({
       ...positionContext,
       trIndex: anchorTd.trIndex,
@@ -619,7 +619,7 @@ export class TableOperate {
     })
     const curIndex = anchorTd.value.length - 1
     this.range.setRange(curIndex, curIndex)
-    // 重新渲染
+    // 재렌더링
     this.draw.render()
     this.tableTool.render()
   }
@@ -635,7 +635,7 @@ export class TableOperate {
     const curTd = curTr.tdList[tdIndex!]
     if (curTd.rowspan === 1 && curTd.colspan === 1) return
     const colspan = curTd.colspan
-    // 设置跨列
+    // 열 연결 설정
     if (curTd.colspan > 1) {
       for (let c = 1; c < curTd.colspan; c++) {
         const tdId = getUUID()
@@ -656,7 +656,7 @@ export class TableOperate {
       }
       curTd.colspan = 1
     }
-    // 设置跨行
+    // 행 연결 설정
     if (curTd.rowspan > 1) {
       for (let r = 1; r < curTd.rowspan; r++) {
         const tr = curTrList[trIndex! + r]
@@ -680,7 +680,7 @@ export class TableOperate {
       }
       curTd.rowspan = 1
     }
-    // 重新渲染
+    // 재렌더링
     const curIndex = curTd.value.length - 1
     this.range.setRange(curIndex, curIndex)
     this.draw.render()
@@ -690,7 +690,7 @@ export class TableOperate {
   public splitVerticalTableCell() {
     const positionContext = this.position.getPositionContext()
     if (!positionContext.isTable) return
-    // 暂时忽略跨行列选择
+    // 임시로 행열 연결 선택 무시
     const range = this.range.getRange()
     if (range.isCrossRowCol) return
     const { index, tdIndex, trIndex } = positionContext
@@ -699,17 +699,17 @@ export class TableOperate {
     const curTrList = element.trList!
     const curTr = curTrList[trIndex!]!
     const curTd = curTr.tdList[tdIndex!]
-    // 增加列属性
+    // 열 속성 추가
     element.colgroup!.splice(tdIndex! + 1, 0, {
       width: this.options.table.defaultColMinWidth
     })
-    // 同行增加td，非同行增加跨列数
+    // 같은 행에 td 추가, 다른 행에 colspan 수 증가
     for (let t = 0; t < curTrList.length; t++) {
       const tr = curTrList[t]
       let d = 0
       while (d < tr.tdList.length) {
         const td = tr.tdList[d]
-        // 非同行：存在交叉时增加跨列数
+        // 다른 행: 교차점이 있을 때 colspan 수 증가
         if (td.rowIndex !== curTd.rowIndex) {
           if (
             td.colIndex! <= curTd.colIndex! &&
@@ -718,7 +718,7 @@ export class TableOperate {
             td.colspan++
           }
         } else {
-          // 当前单元格：往右插入td
+          // 현재 셀: 오른쪽에 td 삽입
           if (td.id === curTd.id) {
             const tdId = getUUID()
             curTr.tdList.splice(d + curTd.colspan, 0, {
@@ -741,7 +741,7 @@ export class TableOperate {
         d++
       }
     }
-    // 重新渲染
+    // 재렌더링
     this.draw.render()
     this.tableTool.render()
   }
@@ -749,7 +749,7 @@ export class TableOperate {
   public splitHorizontalTableCell() {
     const positionContext = this.position.getPositionContext()
     if (!positionContext.isTable) return
-    // 暂时忽略跨行列选择
+    // 임시로 행열 연결 선택 무시
     const range = this.range.getRange()
     if (range.isCrossRowCol) return
     const { index, tdIndex, trIndex } = positionContext
@@ -758,9 +758,9 @@ export class TableOperate {
     const curTrList = element.trList!
     const curTr = curTrList[trIndex!]!
     const curTd = curTr.tdList[tdIndex!]
-    // 追加的行跳出循环
+    // 추가된 행은 루프에서 제외
     let appendTrIndex = -1
-    // 交叉行增加rowspan，当前单元格往下追加一行tr
+    // 교차 행에 rowspan 증가, 현재 셀 아래에 행 tr 추가
     let t = 0
     while (t < curTrList.length) {
       if (t === appendTrIndex) {
@@ -800,15 +800,15 @@ export class TableOperate {
           td.rowIndex! < curTd.rowIndex! + curTd.rowspan &&
           td.rowIndex! + td.rowspan >= curTd.rowIndex! + curTd.rowspan
         ) {
-          // 1. 循环td上方大于等于当前td上方 && 小于当前td的下方=>存在交叉
-          // 2. 循环td下方大于或等于当前td下方
+          // 1. 루프 td 상단이 현재 td 상단보다 크거나 같고 && 현재 td 하단보다 작음 => 교차점 존재
+          // 2. 루프 td 하단이 현재 td 하단보다 크거나 같음
           td.rowspan++
         }
         d++
       }
       t++
     }
-    // 重新渲染
+    // 재렌더링
     this.draw.render()
     this.tableTool.render()
   }
@@ -827,7 +827,7 @@ export class TableOperate {
         ) {
           continue
         }
-        // 重设垂直对齐方式
+        // 수직 정렬 방식 재설정
         td.verticalAlign = payload
       }
     }
@@ -881,7 +881,7 @@ export class TableOperate {
     const rowCol = this.tableParticle.getRangeRowCol()
     if (!rowCol) return
     const tdList = rowCol.flat()
-    // 存在则设置边框类型，否则取消设置
+    // 존재하면 테두리 유형 설정, 없으면 설정 취소
     const isSetBorderType = tdList.some(
       td => !td.borderTypes?.includes(payload)
     )
@@ -899,7 +899,7 @@ export class TableOperate {
           td.borderTypes.splice(borderTypeIndex, 1)
         }
       }
-      // 不存在边框设置时删除字段
+      // 테두리 설정이 없을 때 필드 삭제
       if (!td.borderTypes.length) {
         delete td.borderTypes
       }
@@ -914,7 +914,7 @@ export class TableOperate {
     const rowCol = this.tableParticle.getRangeRowCol()
     if (!rowCol) return
     const tdList = rowCol.flat()
-    // 存在则设置单元格斜线类型，否则取消设置
+    // 존재하면 셀 대각선 유형 설정, 없으면 설정 취소
     const isSetTdSlashType = tdList.some(
       td => !td.slashTypes?.includes(payload)
     )
@@ -932,7 +932,7 @@ export class TableOperate {
           td.slashTypes.splice(slashTypeIndex, 1)
         }
       }
-      // 不存在斜线设置时删除字段
+      // 대각선 설정이 없을 때 필드 삭제
       if (!td.slashTypes.length) {
         delete td.slashTypes
       }
@@ -967,7 +967,7 @@ export class TableOperate {
     const { startIndex, endIndex } = this.range.getRange()
     const originalElementList = this.draw.getOriginalElementList()
     const trList = originalElementList[index!].trList!
-    // 最后单元格位置
+    // 마지막 셀 위치
     const endTrIndex = trList.length - 1
     const endTdIndex = trList[endTrIndex].tdList.length - 1
     this.range.replaceRange({

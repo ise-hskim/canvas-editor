@@ -21,13 +21,13 @@ export class Previewer {
   private previewerDrawOption: IPreviewerDrawOption
   private curPosition: IElementPosition | null
   private eventBus: EventBus<EventBusMap>
-  // 图片列表
+  // 이미지 목록
   private imageList: IElement[]
   private curShowElement: IElement | null
   private imageCount: HTMLSpanElement | null
   private imagePre: HTMLElement | null
   private imageNext: HTMLElement | null
-  // 拖拽改变尺寸
+  // 드래그로 크기 변경
   private resizerSelection: HTMLDivElement
   private resizerHandleList: HTMLDivElement[]
   private resizerImageContainer: HTMLDivElement
@@ -38,7 +38,7 @@ export class Previewer {
   private mousedownX: number
   private mousedownY: number
   private curHandleIndex: number
-  // 预览选区
+  // 미리보기 선택 영역
   private previewerContainer: HTMLDivElement | null
   private previewerImage: HTMLImageElement | null
 
@@ -57,7 +57,7 @@ export class Previewer {
     this.imageCount = null
     this.imagePre = null
     this.imageNext = null
-    // 图片尺寸缩放
+    // 이미지 크기 확대/축소
     const {
       resizerSelection,
       resizerHandleList,
@@ -74,7 +74,7 @@ export class Previewer {
     this.height = 0
     this.mousedownX = 0
     this.mousedownY = 0
-    this.curHandleIndex = 0 // 默认右下角
+    this.curHandleIndex = 0 // 기본 오른쪽 하단
     this.previewerContainer = null
     this.previewerImage = null
   }
@@ -90,7 +90,7 @@ export class Previewer {
     const pageGap = this.draw.getPageGap()
     const pageNo = position?.pageNo ?? this.draw.getPageNo()
     const preY = pageNo * (height + pageGap)
-    // 优先使用浮动位置
+    // 플로팅 위치 우선 사용
     if (element.imgFloatPosition) {
       x = element.imgFloatPosition.x! * scale
       y = element.imgFloatPosition.y * scale + preY
@@ -109,13 +109,13 @@ export class Previewer {
 
   private _createResizerDom(): IPreviewerCreateResult {
     const { scale } = this.options
-    // 拖拽边框
+    // 드래그 테두리
     const resizerSelection = document.createElement('div')
     resizerSelection.classList.add(`${EDITOR_PREFIX}-resizer-selection`)
     resizerSelection.style.display = 'none'
     resizerSelection.style.borderColor = this.options.resizerColor
     resizerSelection.style.borderWidth = `${scale}px`
-    // 拖拽点
+    // 드래그 포인트
     const resizerHandleList: HTMLDivElement[] = []
     for (let i = 0; i < 8; i++) {
       const handleDom = document.createElement('div')
@@ -128,13 +128,13 @@ export class Previewer {
       resizerHandleList.push(handleDom)
     }
     this.container.append(resizerSelection)
-    // 尺寸查看
+    // 크기 보기
     const resizerSizeView = document.createElement('div')
     resizerSizeView.classList.add(`${EDITOR_PREFIX}-resizer-size-view`)
     const resizerSize = document.createElement('span')
     resizerSizeView.append(resizerSize)
     resizerSelection.append(resizerSizeView)
-    // 拖拽镜像
+    // 드래그 미러링
     const resizerImageContainer = document.createElement('div')
     resizerImageContainer.classList.add(`${EDITOR_PREFIX}-resizer-image`)
     resizerImageContainer.style.display = 'none'
@@ -151,7 +151,7 @@ export class Previewer {
   }
 
   private _keydown = () => {
-    // 有键盘事件触发时，主动销毁拖拽选区
+    // 키보드 이벤트 발생 시 드래그 선택 영역 능동 제거
     if (this.resizerSelection.style.display === 'block') {
       this.clearResizer()
       document.removeEventListener('keydown', this._keydown)
@@ -166,14 +166,14 @@ export class Previewer {
     this.mousedownY = evt.y
     const target = evt.target as HTMLDivElement
     this.curHandleIndex = Number(target.dataset.index)
-    // 改变光标
+    // 커서 변경
     const cursor = window.getComputedStyle(target).cursor
     document.body.style.cursor = cursor
     this.canvas.style.cursor = cursor
-    // 拖拽图片镜像
+    // 드래그 이미지 미러링
     this.resizerImage.src = this.curElementSrc
     this.resizerImageContainer.style.display = 'block'
-    // 优先使用浮动位置信息
+    // 플로팅 위치 정보 우선 사용
     const { x: resizerLeft, y: resizerTop } = this._getElementPosition(
       this.curElement,
       this.curPosition
@@ -182,13 +182,13 @@ export class Previewer {
     this.resizerImageContainer.style.top = `${resizerTop}px`
     this.resizerImage.style.width = `${this.curElement.width! * scale}px`
     this.resizerImage.style.height = `${this.curElement.height! * scale}px`
-    // 追加全局事件
+    // 전역 이벤트 추가
     const mousemoveFn = this._mousemove.bind(this)
     document.addEventListener('mousemove', mousemoveFn)
     document.addEventListener(
       'mouseup',
       () => {
-        // 改变尺寸
+        // 크기 변경
         if (this.curElement && !this.previewerDrawOption.dragDisable) {
           this.curElement.width = this.width
           this.curElement.height = this.height
@@ -197,7 +197,7 @@ export class Previewer {
             curIndex: this.curPosition?.index
           })
         }
-        // 还原副作用
+        // 부작용 복원
         this.resizerImageContainer.style.display = 'none'
         document.removeEventListener('mousemove', mousemoveFn)
         document.body.style.cursor = ''
@@ -261,24 +261,24 @@ export class Previewer {
         dx = this.mousedownX - evt.x
         break
     }
-    // 图片实际宽高（变化大小除掉缩放比例）
+    // 이미지 실제 넓이와 높이 (크기 변경 시 확대/축소 비율 제외)
     const dw = this.curElement.width! + dx / scale
     const dh = this.curElement.height! + dy / scale
     if (dw <= 0 || dh <= 0) return
     this.width = dw
     this.height = dh
-    // 图片显示宽高
+    // 이미지 표시 넓이와 높이
     const elementWidth = dw * scale
     const elementHeight = dh * scale
-    // 更新影子图片尺寸
+    // 그림자 이미지 크기 업데이트
     this.resizerImage.style.width = `${elementWidth}px`
     this.resizerImage.style.height = `${elementHeight}px`
-    // 更新预览包围框尺寸
+    // 미리보기 테두리 크기 업데이트
     this._updateResizerRect(elementWidth, elementHeight)
-    // 尺寸预览
+    // 크기 미리보기
     this._updateResizerSizeView(elementWidth, elementHeight)
     evt.preventDefault()
-    // 图片尺寸发生改变事件
+    // 이미지 크기 변경 이벤트
     if (this.eventBus.isSubscribe('imageSizeChange')) {
       this.eventBus.emit('imageSizeChange', {
         element: this.curElement
@@ -289,14 +289,14 @@ export class Previewer {
   private _drawPreviewer() {
     const previewerContainer = document.createElement('div')
     previewerContainer.classList.add(`${EDITOR_PREFIX}-image-previewer`)
-    // 关闭按钮
+    // 닫기 버튼
     const closeBtn = document.createElement('i')
     closeBtn.classList.add('image-close')
     closeBtn.onclick = () => {
       this._clearPreviewer()
     }
     previewerContainer.append(closeBtn)
-    // 图片
+    // 이미지
     const imgContainer = document.createElement('div')
     imgContainer.classList.add(`${EDITOR_PREFIX}-image-container`)
     const img = document.createElement('img')
@@ -305,14 +305,14 @@ export class Previewer {
     imgContainer.append(img)
     this.previewerImage = img
     previewerContainer.append(imgContainer)
-    // 操作栏
+    // 조작 메뉴바
     let x = 0
     let y = 0
     let scaleSize = 1
     let rotateSize = 0
     const menuContainer = document.createElement('div')
     menuContainer.classList.add(`${EDITOR_PREFIX}-image-menu`)
-    // 切换上下张图片
+    // 이전/다음 이미지 전환
     const navigateContainer = document.createElement('div')
     navigateContainer.classList.add('image-navigate')
     const imagePre = document.createElement('i')
@@ -346,7 +346,7 @@ export class Previewer {
     this.imageNext = imageNext
     navigateContainer.append(imageNext)
     menuContainer.append(navigateContainer)
-    // 缩放
+    // 확대/축소
     const zoomIn = document.createElement('i')
     zoomIn.classList.add('zoom-in')
     zoomIn.onclick = () => {
@@ -362,7 +362,7 @@ export class Previewer {
     }
     zoomOut.classList.add('zoom-out')
     menuContainer.append(zoomOut)
-    // 旋转
+    // 회전
     const rotate = document.createElement('i')
     rotate.classList.add('rotate')
     rotate.onclick = () => {
@@ -370,7 +370,7 @@ export class Previewer {
       this._setPreviewerTransform(scaleSize, rotateSize, x, y)
     }
     menuContainer.append(rotate)
-    // 恢复原始大小
+    // 원래 크기로 복원
     const originalSize = document.createElement('i')
     originalSize.classList.add('original-size')
     originalSize.onclick = () => {
@@ -381,7 +381,7 @@ export class Previewer {
       this._setPreviewerTransform(scaleSize, rotateSize, x, y)
     }
     menuContainer.append(originalSize)
-    // 下载图片
+    // 이미지 다운로드
     const imageDownload = document.createElement('i')
     imageDownload.classList.add('image-download')
     imageDownload.onclick = () => {
@@ -392,7 +392,7 @@ export class Previewer {
     previewerContainer.append(menuContainer)
     this.previewerContainer = previewerContainer
     document.body.append(previewerContainer)
-    // 拖拽调整位置
+    // 드래그로 위치 조정
     let startX = 0
     let startY = 0
     let isAllowDrag = false
@@ -418,28 +418,28 @@ export class Previewer {
       evt.preventDefault()
       evt.stopPropagation()
       if (evt.deltaY < 0) {
-        // 放大
+        // 확대
         scaleSize += 0.1
       } else {
-        // 缩小
+        // 축소
         if (scaleSize - 0.1 <= 0.1) return
         scaleSize -= 0.1
       }
       this._setPreviewerTransform(scaleSize, rotateSize, x, y)
     }
-    // 更新图片索引信息
+    // 이미지 인덱스 정보 업데이트
     this._updateImageNavigate()
   }
 
   private _updateImageNavigate() {
-    // 更新当前图片位置索引
+    // 현재 이미지 위치 인덱스 업데이트
     const currentIndex = this.imageList.findIndex(
       el => el.id === this.curShowElement?.id
     )
     this.imageCount!.innerText = `${currentIndex + 1} / ${
       this.imageList.length
     }`
-    // 更新按钮权限
+    // 버튼 권한 업데이트
     if (currentIndex <= 0) {
       this.imagePre!.classList.add('disabled')
     } else {
@@ -503,7 +503,7 @@ export class Previewer {
   }
 
   public render() {
-    // 图片工具配置禁用又非设计模式时不渲染
+    // 이미지 도구 설정이 비활성화되고 디자인 모드가 아닐 때 렌더링하지 않음
     const mode = this.draw.getMode()
     if (
       !this.curElement ||
@@ -515,10 +515,10 @@ export class Previewer {
     ) {
       return
     }
-    // 获取所有图片
+    // 모든 이미지 가져오기
     this.imageList = this.draw.getImageParticle().getOriginalMainImageList()
     this.curShowElement = this.curElement
-    // 渲染预览框
+    // 미리보기 프레임 렌더링
     this._drawPreviewer()
     document.body.style.overflow = 'hidden'
   }
@@ -528,7 +528,7 @@ export class Previewer {
     position: IElementPosition | null = null,
     options: IPreviewerDrawOption = {}
   ) {
-    // 图片工具配置禁用又非设计模式时不渲染
+    // 이미지 도구 설정이 비활성화되고 디자인 모드가 아닐 때 렌더링하지 않음
     const mode = this.draw.getMode()
     if (
       (element.imgToolDisabled && !this.draw.isDesignMode()) ||
@@ -539,12 +539,12 @@ export class Previewer {
     ) {
       return
     }
-    // 缓存配置
+    // 설정 캐시
     this.previewerDrawOption = options
     this.curElementSrc = element[options.srcKey || 'value'] || ''
-    // 更新渲染尺寸及位置
+    // 렌더링 크기 및 위치 업데이트
     this.updateResizer(element, position)
-    // 监听事件
+    // 이벤트 리스너 등록
     document.addEventListener('keydown', this._keydown)
   }
 
@@ -555,9 +555,9 @@ export class Previewer {
     const { scale } = this.options
     const elementWidth = element.width! * scale
     const elementHeight = element.height! * scale
-    // 尺寸预览
+    // 크기 미리보기
     this._updateResizerSizeView(elementWidth, elementHeight)
-    // 优先使用浮动位置信息
+    // 플로팅 위치 정보 우선 사용
     const { x: resizerLeft, y: resizerTop } = this._getElementPosition(
       element,
       position
@@ -565,10 +565,10 @@ export class Previewer {
     this.resizerSelection.style.left = `${resizerLeft}px`
     this.resizerSelection.style.top = `${resizerTop}px`
     this.resizerSelection.style.borderWidth = `${scale}px`
-    // 更新预览包围框尺寸
+    // 미리보기 테두리 크기 업데이트
     this._updateResizerRect(elementWidth, elementHeight)
     this.resizerSelection.style.display = 'block'
-    // 缓存基础信息
+    // 기본 정보 캐시
     this.curElement = element
     this.curPosition = position
     this.width = elementWidth

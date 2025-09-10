@@ -1,6 +1,6 @@
 import { CommandAdapt } from './CommandAdapt'
 
-// 通过CommandAdapt中转避免直接暴露编辑器上下文
+// CommandAdapt를 통해 에디터 컨텍스트를 직접 노출하지 않기 위해 중계
 export class Command {
   public executeMode: CommandAdapt['mode']
   public executeCut: CommandAdapt['cut']
@@ -140,7 +140,7 @@ export class Command {
   public getElementById: CommandAdapt['getElementById']
 
   constructor(adapt: CommandAdapt) {
-    // 全局命令
+    // 전역 명령
     this.executeMode = adapt.mode.bind(adapt)
     this.executeCut = adapt.cut.bind(adapt)
     this.executeCopy = adapt.copy.bind(adapt)
@@ -152,13 +152,13 @@ export class Command {
     this.executeSetPositionContext = adapt.setPositionContext.bind(adapt)
     this.executeForceUpdate = adapt.forceUpdate.bind(adapt)
     this.executeBlur = adapt.blur.bind(adapt)
-    // 撤销、重做、格式刷、清除格式
+    // 실행취소, 다시실행, 서식 복사, 서식 지우기
     this.executeUndo = adapt.undo.bind(adapt)
     this.executeRedo = adapt.redo.bind(adapt)
     this.executePainter = adapt.painter.bind(adapt)
     this.executeApplyPainterStyle = adapt.applyPainterStyle.bind(adapt)
     this.executeFormat = adapt.format.bind(adapt)
-    // 字体、字体大小、字体变大、字体变小、加粗、斜体、下划线、删除线、字体颜色、背景色
+    // 글꼴, 글꼴 크기, 글꼴 커지게, 글꼴 작게, 굵게, 기울임, 밑줄, 취소선, 글자 색상, 배경색
     this.executeFont = adapt.font.bind(adapt)
     this.executeSize = adapt.size.bind(adapt)
     this.executeSizeAdd = adapt.sizeAdd.bind(adapt)
@@ -171,12 +171,12 @@ export class Command {
     this.executeSubscript = adapt.subscript.bind(adapt)
     this.executeColor = adapt.color.bind(adapt)
     this.executeHighlight = adapt.highlight.bind(adapt)
-    // 标题、对齐方式、列表
+    // 제목, 정렬 방식, 목록
     this.executeTitle = adapt.title.bind(adapt)
     this.executeList = adapt.list.bind(adapt)
     this.executeRowFlex = adapt.rowFlex.bind(adapt)
     this.executeRowMargin = adapt.rowMargin.bind(adapt)
-    // 表格、图片上传、超链接、搜索、打印、图片操作
+    // 테이블, 이미지 업로드, 하이퍼링크, 검색, 인쇄, 이미지 조작
     this.executeInsertTable = adapt.insertTable.bind(adapt)
     this.executeInsertTableTopRow = adapt.insertTableTopRow.bind(adapt)
     this.executeInsertTableBottomRow = adapt.insertTableBottomRow.bind(adapt)
@@ -216,7 +216,7 @@ export class Command {
     this.executeReplaceImageElement = adapt.replaceImageElement.bind(adapt)
     this.executeSaveAsImageElement = adapt.saveAsImageElement.bind(adapt)
     this.executeChangeImageDisplay = adapt.changeImageDisplay.bind(adapt)
-    // 页面模式、页面缩放、纸张大小、纸张方向、页边距
+    // 페이지 모드, 페이지 확대/축소, 용지 크기, 용지 방향, 페이지 여백
     this.executePageMode = adapt.pageMode.bind(adapt)
     this.executePageScale = adapt.pageScale.bind(adapt)
     this.executePageScaleRecovery = adapt.pageScaleRecovery.bind(adapt)
@@ -225,16 +225,16 @@ export class Command {
     this.executePaperSize = adapt.paperSize.bind(adapt)
     this.executePaperDirection = adapt.paperDirection.bind(adapt)
     this.executeSetPaperMargin = adapt.setPaperMargin.bind(adapt)
-    // 签章
+    // 도장
     this.executeSetMainBadge = adapt.setMainBadge.bind(adapt)
     this.executeSetAreaBadge = adapt.setAreaBadge.bind(adapt)
-    // 区域
+    // 영역
     this.getAreaValue = adapt.getAreaValue.bind(adapt)
     this.executeInsertArea = adapt.insertArea.bind(adapt)
     this.executeSetAreaValue = adapt.setAreaValue.bind(adapt)
     this.executeSetAreaProperties = adapt.setAreaProperties.bind(adapt)
     this.executeLocationArea = adapt.locationArea.bind(adapt)
-    // 通用
+    // 일반
     this.executeInsertElementList = adapt.insertElementList.bind(adapt)
     this.executeAppendElementList = adapt.appendElementList.bind(adapt)
     this.executeUpdateElementById = adapt.updateElementById.bind(adapt)
@@ -253,7 +253,7 @@ export class Command {
     this.executeUpdateOptions = adapt.updateOptions.bind(adapt)
     this.executeInsertTitle = adapt.insertTitle.bind(adapt)
     this.executeFocus = adapt.focus.bind(adapt)
-    // 获取
+    // 가져오기
     this.getImage = adapt.getImage.bind(adapt)
     this.getOptions = adapt.getOptions.bind(adapt)
     this.getValue = adapt.getValue.bind(adapt)
@@ -278,7 +278,7 @@ export class Command {
     this.getTitleValue = adapt.getTitleValue.bind(adapt)
     this.getPositionContextByEvent = adapt.getPositionContextByEvent.bind(adapt)
     this.getElementById = adapt.getElementById.bind(adapt)
-    // 控件
+    // 컨트롤
     this.executeSetControlValue = adapt.setControlValue.bind(adapt)
     this.executeSetControlValueList = adapt.setControlValueList.bind(adapt)
     this.executeSetControlExtension = adapt.setControlExtension.bind(adapt)

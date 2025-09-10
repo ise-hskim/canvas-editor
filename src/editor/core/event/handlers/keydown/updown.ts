@@ -11,15 +11,15 @@ interface IGetNextPositionIndexPayload {
   isUp: boolean
   cursorX: number
 }
-// 根据当前位置索引查找上下行最接近的索引位置
+// 현재 위치 인덱스를 기반으로 위아래 행에서 가장 가까운 인덱스 위치 찾기
 function getNextPositionIndex(payload: IGetNextPositionIndexPayload) {
   const { positionList, index, isUp, rowNo, cursorX } = payload
   let nextIndex = -1
-  // 查找下一行位置列表
+  // 다음 행 위치 목록 찾기
   const probablePosition: IElementPosition[] = []
   if (isUp) {
     let p = index - 1
-    // 等于0的时候上一行是第一行
+    // 0일 때 이전 행은 첫 번째 행
     while (p >= 0) {
       const position = positionList[p]
       p--
@@ -41,7 +41,7 @@ function getNextPositionIndex(payload: IGetNextPositionIndexPayload) {
       probablePosition.push(position)
     }
   }
-  // 查找下一行位置：第一个存在交叉宽度的元素位置
+  // 다음 행 위치 찾기: 교차 너비가 있는 첫 번째 요소 위치
   for (let p = 0; p < probablePosition.length; p++) {
     const nextPosition = probablePosition[p]
     const {
@@ -71,10 +71,10 @@ export function updown(evt: KeyboardEvent, host: CanvasEvent) {
   const { startIndex, endIndex } = rangeManager.getRange()
   let positionList = position.getPositionList()
   const isUp = evt.key === KeyMap.Up
-  // 新的光标开始结束位置
+  // 새로운 커서 시작 종료 위치
   let anchorStartIndex = -1
   let anchorEndIndex = -1
-  // 单元格之间跳转及跳出表格逻辑
+  // 셀 간 이동 및 테이블 나가기 로직
   const positionContext = position.getPositionContext()
   if (
     !evt.shiftKey &&
@@ -84,7 +84,7 @@ export function updown(evt: KeyboardEvent, host: CanvasEvent) {
   ) {
     const { index, trIndex, tdIndex, tableId } = positionContext
     if (isUp) {
-      // 向上移动-第一行则移出到表格外，否则上一行相同列位置
+      // 위로 이동 - 첫 번째 행이면 테이블 밖으로 이동, 그렇지 않으면 이전 행 동일 열 위치
       if (trIndex === 0) {
         position.setPositionContext({
           isTable: false
@@ -93,12 +93,12 @@ export function updown(evt: KeyboardEvent, host: CanvasEvent) {
         anchorEndIndex = anchorStartIndex
         draw.getTableTool().dispose()
       } else {
-        // 查找上一行相同列索引位置信息
+        // 이전 행 동일 열 인덱스 위치 정보 찾기
         let preTrIndex = -1
         let preTdIndex = -1
         const originalElementList = draw.getOriginalElementList()
         const trList = originalElementList[index!].trList!
-        // 当前单元格所在列实际索引
+        // 현재 셀이 위치한 열의 실제 인덱스
         const curTdColIndex = trList[trIndex!].tdList[tdIndex!].colIndex!
         outer: for (let r = trIndex! - 1; r >= 0; r--) {
           const tr = trList[r]
@@ -133,7 +133,7 @@ export function updown(evt: KeyboardEvent, host: CanvasEvent) {
         draw.getTableTool().render()
       }
     } else {
-      // 向下移动-最后一行则移出表格外，否则下一行相同列位置
+      // 아래로 이동 - 마지막 행이면 테이블 밖으로 이동, 그렇지 않으면 다음 행 동일 열 위치
       const originalElementList = draw.getOriginalElementList()
       const trList = originalElementList[index!].trList!
       if (trIndex === trList.length - 1) {
@@ -144,10 +144,10 @@ export function updown(evt: KeyboardEvent, host: CanvasEvent) {
         anchorEndIndex = anchorStartIndex
         draw.getTableTool().dispose()
       } else {
-        // 查找下一行相同列索引位置信息
+        // 다음 행 동일 열 인덱스 위치 정보 찾기
         let nexTrIndex = -1
         let nextTdIndex = -1
-        // 当前单元格所在列实际索引
+        // 현재 셀이 위치한 열의 실제 인덱스
         const curTdColIndex = trList[trIndex!].tdList[tdIndex!].colIndex!
         outer: for (let r = trIndex! + 1; r < trList.length; r++) {
           const tr = trList[r]
@@ -183,9 +183,9 @@ export function updown(evt: KeyboardEvent, host: CanvasEvent) {
       }
     }
   } else {
-    // 普通元素及跳进表格逻辑
+    // 일반 요소 및 테이블 진입 로직
     let anchorPosition: IElementPosition = cursorPosition
-    // 扩大选区时，判断移动光标点
+    // 선택 영역 확대 시 이동 커서 위치 판단
     if (evt.shiftKey) {
       if (startIndex === cursorPosition.index) {
         anchorPosition = positionList[endIndex]
@@ -201,14 +201,14 @@ export function updown(evt: KeyboardEvent, host: CanvasEvent) {
         rightTop: [curRightX]
       }
     } = anchorPosition
-    // 向上时在首行、向下时在尾行则忽略
+    // 위로 이동 시 첫 번째 행, 아래로 이동 시 마지막 행이면 무시
     if (
       (isUp && rowIndex === 0) ||
       (!isUp && rowIndex === draw.getRowCount() - 1)
     ) {
       return
     }
-    // 查找下一行位置列表
+    // 다음 행 위치 목록 찾기
     const nextIndex = getNextPositionIndex({
       positionList,
       index,
@@ -217,7 +217,7 @@ export function updown(evt: KeyboardEvent, host: CanvasEvent) {
       cursorX: curRightX
     })
     if (nextIndex < 0) return
-    // shift则缩放选区
+    // shift 키로 선택 영역 조정
     anchorStartIndex = nextIndex
     anchorEndIndex = nextIndex
     if (evt.shiftKey) {
@@ -235,14 +235,14 @@ export function updown(evt: KeyboardEvent, host: CanvasEvent) {
         }
       }
     }
-    // 如果下一行是表格则进入单元格内
+    // 다음 행이 테이블이면 셀 내부로 진입
     const elementList = draw.getElementList()
     const nextElement = elementList[nextIndex]
     if (nextElement.type === ElementType.TABLE) {
       const { scale } = draw.getOptions()
       const margins = draw.getMargins()
       const trList = nextElement.trList!
-      // 查找进入的单元格及元素位置
+      // 진입할 셀 및 요소 위치 찾기
       let trIndex = -1
       let tdIndex = -1
       let tdPositionIndex = -1
@@ -260,8 +260,8 @@ export function updown(evt: KeyboardEvent, host: CanvasEvent) {
               const nextPositionIndex =
                 getNextPositionIndex({
                   positionList: tdPositionList,
-                  index: lastPosition.index + 1, // 虚拟起始位置+1（从左往右找）
-                  rowNo: lastPosition.rowNo - 1, // 虚拟起始行号-1（从下往上找）
+                  index: lastPosition.index + 1, // 가상 시작 위치+1 (왼쪽에서 오른쪽으로 찾기)
+                  rowNo: lastPosition.rowNo - 1, // 가상 시작 행 번호-1 (아래에서 위로 찾기)
                   isUp,
                   cursorX: curRightX
                 }) || lastPosition.index
@@ -285,8 +285,8 @@ export function updown(evt: KeyboardEvent, host: CanvasEvent) {
               const nextPositionIndex =
                 getNextPositionIndex({
                   positionList: tdPositionList,
-                  index: -1, // 虚拟起始位置-1（从右往左找）
-                  rowNo: -1, // 虚拟起始行号-1（从上往下找）
+                  index: -1, // 가상 시작 위치-1 (오른쪽에서 왼쪽으로 찾기)
+                  rowNo: -1, // 가상 시작 행 번호-1 (위에서 아래로 찾기)
                   isUp,
                   cursorX: curRightX
                 }) || 0
@@ -298,7 +298,7 @@ export function updown(evt: KeyboardEvent, host: CanvasEvent) {
           }
         }
       }
-      // 设置上下文
+      // 컨텍스트 설정
       if (~trIndex && ~tdIndex && ~tdPositionIndex) {
         const nextTr = trList[trIndex]
         const nextTd = nextTr.tdList[tdIndex]
@@ -318,7 +318,7 @@ export function updown(evt: KeyboardEvent, host: CanvasEvent) {
       }
     }
   }
-  // 执行跳转
+  // 이동 실행
   if (!~anchorStartIndex || !~anchorEndIndex) return
   if (anchorStartIndex > anchorEndIndex) {
     // prettier-ignore
@@ -332,7 +332,7 @@ export function updown(evt: KeyboardEvent, host: CanvasEvent) {
     isSubmitHistory: false,
     isCompute: false
   })
-  // 将光标移动到可视范围内
+  // 커서를 보이는 범위로 이동
   draw.getCursor().moveCursorToVisible({
     cursorPosition: positionList[isUp ? anchorStartIndex : anchorEndIndex],
     direction: isUp ? MoveDirection.UP : MoveDirection.DOWN

@@ -8,7 +8,7 @@ function dragover(evt: DragEvent | MouseEvent, host: CanvasEvent) {
   const isReadonly = draw.isReadonly()
   if (isReadonly) return
   evt.preventDefault()
-  // 非编辑器区禁止拖放
+  // 비에디터 영역에서 드래그 앤 드롭 금지
   const pageContainer = draw.getPageContainer()
   const editorRegion = findParent(
     evt.target as Element,
@@ -18,7 +18,7 @@ function dragover(evt: DragEvent | MouseEvent, host: CanvasEvent) {
   if (!editorRegion) return
   const target = evt.target as HTMLDivElement
   const pageIndex = target.dataset.index
-  // 设置pageNo
+  // pageNo 설정
   if (pageIndex) {
     draw.setPageNo(Number(pageIndex))
   }
@@ -29,7 +29,7 @@ function dragover(evt: DragEvent | MouseEvent, host: CanvasEvent) {
   })
   if (!positionContext) return
   const { isTable, tdValueIndex, index } = positionContext
-  // 设置选区及光标位置
+  // 선택 영역 및 커서 위치 설정
   const positionList = position.getPositionList()
   const curIndex = isTable ? tdValueIndex! : index
   if (~index) {
@@ -41,7 +41,7 @@ function dragover(evt: DragEvent | MouseEvent, host: CanvasEvent) {
   const {
     cursor: { dragColor, dragWidth, dragFloatImageDisabled }
   } = draw.getOptions()
-  // 拖拽图片是否定位光标
+  // 드래그한 이미지에 커서 위치 지정 여부
   if (dragFloatImageDisabled) {
     const dragElement = host.cacheElementList?.[host.cacheRange!.startIndex]
     if (

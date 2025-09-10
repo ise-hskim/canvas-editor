@@ -14,6 +14,6 @@ export enum TdBorder {
 }
 
 export enum TdSlash {
-  FORWARD = 'forward', // 正斜线 /
-  BACK = 'back' // 反斜线 \
+  FORWARD = 'forward', // 정사선 /
+  BACK = 'back' // 역사선 \
 }

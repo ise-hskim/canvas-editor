@@ -19,7 +19,7 @@ function pickText(elementList: IElement[]): string {
   let e = 0
   while (e < elementList.length) {
     const element = elementList[e]
-    // 表格、超链接递归处理
+    // 테이블, 하이퍼링크 재귀 처리
     if (element.type === ElementType.TABLE) {
       if (element.trList) {
         for (let t = 0; t < element.trList.length; t++) {
@@ -75,15 +75,15 @@ function pickText(elementList: IElement[]): string {
 
 function groupText(text: string): string[] {
   const characterList: string[] = []
-  // 英文或数字整体分隔为一个字数
+  // 영어 또는 숫자 전체를 하나의 글자 수로 분리
   const numberReg = /[0-9]/
   const letterReg = /[A-Za-z]/
   const blankReg = /\s/
-  // for of 循环字符
+  // for of 문자 루프
   let isPreLetter = false
   let isPreNumber = false
   let compositionText = ''
-  // 处理组合文本
+  // 조합 텍스트 처리
   function pushCompositionText() {
     if (compositionText) {
       characterList.push(compositionText)
@@ -120,13 +120,13 @@ function groupText(text: string): string[] {
 
 onmessage = evt => {
   const elementList = <IElement[]>evt.data
-  // 提取文本
+  // 텍스트 추출
   const originText = pickText(elementList)
-  // 过滤文本
+  // 텍스트 필터링
   const filterText = originText
     .replace(new RegExp(`^${ZERO}`), '')
     .replace(new RegExp(ZERO, 'g'), WRAP)
-  // 文本分组
+  // 텍스트 그룹화
   const textGroup = groupText(filterText)
   postMessage(textGroup.length)
 }

@@ -61,13 +61,13 @@ export class TableParticle {
     const originalElementList = this.draw.getOriginalElementList()
     const element = originalElementList[index!]
     const curTrList = element.trList!
-    // 非跨列直接返回光标所在单元格
+    // 비 크로스 열인 경우 커서가 있는 셀을 직접 반환
     if (!isCrossRowCol) {
       return [[curTrList[trIndex!].tdList[tdIndex!]]]
     }
     let startTd = curTrList[startTrIndex!].tdList[startTdIndex!]
     let endTd = curTrList[endTrIndex!].tdList[endTdIndex!]
-    // 交换起始位置
+    // 시작 위치 교체
     if (startTd.x! > endTd.x! || startTd.y! > endTd.y!) {
       // prettier-ignore
       [startTd, endTd] = [endTd, startTd]
@@ -76,7 +76,7 @@ export class TableParticle {
     const endColIndex = endTd.colIndex! + (endTd.colspan - 1)
     const startRowIndex = startTd.rowIndex!
     const endRowIndex = endTd.rowIndex! + (endTd.rowspan - 1)
-    // 选区行列
+    // 선택 영역 행열
     const rowCol: ITd[][] = []
     for (let t = 0; t < curTrList.length; t++) {
       const tr = curTrList[t]
@@ -112,7 +112,7 @@ export class TableParticle {
       borderExternalWidth
     } = payload
     const { scale } = this.options
-    // 外部边框单独设置
+    // 외부 테두리 별도 설정
     const lineWidth = ctx.lineWidth
     if (borderExternalWidth) {
       ctx.lineWidth = borderExternalWidth * scale
@@ -129,7 +129,7 @@ export class TableParticle {
       ctx.lineTo(x + width, y)
     }
     ctx.stroke()
-    // 还原边框设置
+    // 테두리 설정 복원
     if (borderExternalWidth) {
       ctx.lineWidth = lineWidth
     }
@@ -148,12 +148,12 @@ export class TableParticle {
     const height = td.height! * scale
     const x = Math.round(td.x! * scale + startX)
     const y = Math.round(td.y! * scale + startY)
-    // 正斜线 /
+    // 정사선 /
     if (td.slashTypes?.includes(TdSlash.FORWARD)) {
       ctx.moveTo(x + width, y)
       ctx.lineTo(x, y + height)
     }
-    // 反斜线 \
+    // 역사선 \
     if (td.slashTypes?.includes(TdSlash.BACK)) {
       ctx.moveTo(x, y)
       ctx.lineTo(x + width, y + height)
@@ -183,20 +183,20 @@ export class TableParticle {
     } = this.options
     const tableWidth = element.width! * scale
     const tableHeight = element.height! * scale
-    // 无边框
+    // 테두리 없음
     const isEmptyBorderType = borderType === TableBorder.EMPTY
-    // 仅外边框
+    // 외부 테두리만
     const isExternalBorderType = borderType === TableBorder.EXTERNAL
-    // 内边框
+    // 내부 테두리
     const isInternalBorderType = borderType === TableBorder.INTERNAL
     ctx.save()
-    // 虚线
+    // 점선
     if (borderType === TableBorder.DASH) {
       ctx.setLineDash([3, 3])
     }
     ctx.lineWidth = borderWidth * scale
     ctx.strokeStyle = borderColor || defaultBorderColor
-    // 渲染边框
+    // 테두리 렌더링
     if (!isEmptyBorderType && !isInternalBorderType) {
       this._drawOuterBorder({
         ctx,
@@ -208,16 +208,16 @@ export class TableParticle {
         isDrawFullBorder: isExternalBorderType
       })
     }
-    // 渲染单元格
+    // 셀 렌더링
     for (let t = 0; t < trList.length; t++) {
       const tr = trList[t]
       for (let d = 0; d < tr.tdList.length; d++) {
         const td = tr.tdList[d]
-        // 单元格内斜线
+        // 셀 내부 대각선
         if (td.slashTypes?.length) {
           this._drawSlash(ctx, td, startX, startY)
         }
-        // 没有设置单元格边框 && 没有设置表格边框则忽略
+        // 셀 테두리 설정이 없고 && 테이블 테두리 설정이 없으면 무시
         if (
           !td.borderTypes?.length &&
           (isEmptyBorderType || isExternalBorderType)
@@ -229,9 +229,9 @@ export class TableParticle {
         const x = Math.round(td.x! * scale + startX + width)
         const y = Math.round(td.y! * scale + startY)
         ctx.translate(0.5, 0.5)
-        // 绘制线条
+        // 선 그리기
         ctx.beginPath()
-        // 单元格边框
+        // 셀 테두리
         if (td.borderTypes?.includes(TdBorder.TOP)) {
           ctx.moveTo(x - width, y)
           ctx.lineTo(x, y)
@@ -252,16 +252,16 @@ export class TableParticle {
           ctx.lineTo(x - width, y + height)
           ctx.stroke()
         }
-        // 表格线
+        // 테이블 선
         if (!isEmptyBorderType && !isExternalBorderType) {
-          // 右边框
+          // 오른쪽 테두리
           if (
             !isInternalBorderType ||
             td.colIndex! + td.colspan < colgroup.length
           ) {
             ctx.moveTo(x, y)
             ctx.lineTo(x, y + height)
-            // 外部边框宽度设置时 => 最右边框宽度单独设置
+            // 외부 테두리 넓이 설정 시 => 최우측 테두리 넓이 별도 설정
             if (
               borderExternalWidth &&
               borderExternalWidth !== borderWidth &&
@@ -270,34 +270,34 @@ export class TableParticle {
               const lineWidth = ctx.lineWidth
               ctx.lineWidth = borderExternalWidth * scale
               ctx.stroke()
-              // 清空path
+              // path 비우기
               ctx.beginPath()
               ctx.lineWidth = lineWidth
             }
           }
-          // 下边框
+          // 하단 테두리
           if (
             !isInternalBorderType ||
             td.rowIndex! + td.rowspan < trList.length
           ) {
-            // 外部边框宽度设置时 => 立即绘制竖线
+            // 외부 테두리 너비 설정 시 => 즉시 세로선 그리기
             const isSetExternalBottomBorder =
               borderExternalWidth &&
               borderExternalWidth !== borderWidth &&
               td.rowIndex! + td.rowspan === trList.length
             if (isSetExternalBottomBorder) {
               ctx.stroke()
-              // 清空path
+              // path 비우기
               ctx.beginPath()
             }
             ctx.moveTo(x, y + height)
             ctx.lineTo(x - width, y + height)
-            // 外部边框宽度设置时 => 最下边框宽度单独设置
+            // 외부 테두리 너비 설정 시 => 최하단 테두리 너비 별도 설정
             if (isSetExternalBottomBorder) {
               const lineWidth = ctx.lineWidth
               ctx.lineWidth = borderExternalWidth * scale
               ctx.stroke()
-              // 清空path
+              // path 비우기
               ctx.beginPath()
               ctx.lineWidth = lineWidth
             }
@@ -394,26 +394,26 @@ export class TableParticle {
     let preX = 0
     for (let t = 0; t < trList.length; t++) {
       const tr = trList[t]
-      // 表格最后一行
+      // 테이블의 마지막 행
       const isLastTr = trList.length - 1 === t
-      // 当前行最小高度
+      // 현재 행의 최소 높이
       let rowMinHeight = 0
       for (let d = 0; d < tr.tdList.length; d++) {
         const td = tr.tdList[d]
-        // 计算当前td所属列索引
+        // 현재 td가 속하는 열 인덱스 계산
         let colIndex = 0
-        // 第一行td位置为当前列索引+上一个单元格colspan，否则从第一行开始计算列偏移量
+        // 첫 번째 행 td 위치는 현재 열 인덱스 + 이전 셀 colspan, 그렇지 않으면 첫 번째 행부터 열 오프셋 계산
         if (trList.length > 1 && t !== 0) {
-          // 当前列起始索引：以之前单元格为起始点
+          // 현재 열 시작 인덱스: 이전 셀을 시작점으로
           const preTd = tr.tdList[d - 1]
           const start = preTd ? preTd.colIndex! + preTd.colspan : d
           for (let c = start; c < colgroup.length; c++) {
-            // 查找相同索引列之前行数，相加判断是否位置被挤占
+            // 동일한 인덱스 열의 이전 행 수를 찾아 더하여 위치가 점유되었는지 판단
             const rowCount = this.getRowCountByColIndex(trList.slice(0, t), c)
-            // 不存在挤占则默认当前单元格可以存在该位置
+            // 점유가 없으면 기본적으로 현재 셀이 해당 위치에 존재할 수 있음
             if (rowCount === t) {
               colIndex = c
-              // 重置单元格起始位置坐标
+              // 셀 시작 위치 좌표 재설정
               let preColWidth = 0
               for (let preC = 0; preC < c; preC++) {
                 preColWidth += colgroup[preC].width
@@ -428,7 +428,7 @@ export class TableParticle {
             colIndex = preTd.colIndex! + preTd.colspan
           }
         }
-        // 计算格宽高
+        // 셀 너비와 높이 계산
         let width = 0
         for (let col = 0; col < td.colspan; col++) {
           width += colgroup[col + colIndex].width
@@ -438,13 +438,13 @@ export class TableParticle {
           const curTr = trList[row + t] || trList[t]
           height += curTr.height
         }
-        // y偏移量
+        // y 오프셋
         if (rowMinHeight === 0 || rowMinHeight > height) {
           rowMinHeight = height
         }
-        // 当前行最后一个td
+        // 현재 행의 마지막 td
         const isLastRowTd = tr.tdList.length - 1 === d
-        // 当前列最后一个td
+        // 현재 열의 마지막 td
         let isLastColTd = isLastTr
         if (!isLastColTd) {
           if (td.rowspan > 1) {
@@ -452,14 +452,14 @@ export class TableParticle {
             isLastColTd = td.rowspan - 1 === nextTrLength
           }
         }
-        // 当前表格最后一个td
+        // 현재 테이블의 마지막 td
         const isLastTd = isLastTr && isLastRowTd
         td.isLastRowTd = isLastRowTd
         td.isLastColTd = isLastColTd
         td.isLastTd = isLastTd
-        // 修改当前格clientBox
+        // 현재 셀 clientBox 수정
         td.x = preX
-        // 之前行相同列的高度
+        // 이전 행 동일 열의 높이
         let preY = 0
         for (let preR = 0; preR < t; preR++) {
           const preTdList = trList[preR].tdList
@@ -481,9 +481,9 @@ export class TableParticle {
         td.colIndex = colIndex
         td.trIndex = t
         td.tdIndex = d
-        // 当前列x轴累加
+        // 현재 열 x축 누적
         preX += width
-        // 一行中的最后td
+        // 한 행의 마지막 td
         if (isLastRowTd && !isLastTd) {
           preX = 0
         }
@@ -507,11 +507,11 @@ export class TableParticle {
       startTrIndex,
       endTrIndex
     } = this.range.getRange()
-    // 存在跨行/列
+    // 행/열 병합 존재
     if (!isCrossRowCol) return
     let startTd = trList[startTrIndex!].tdList[startTdIndex!]
     let endTd = trList[endTrIndex!].tdList[endTdIndex!]
-    // 交换起始位置
+    // 시작 위치 교체
     if (startTd.x! > endTd.x! || startTd.y! > endTd.y!) {
       // prettier-ignore
       [startTd, endTd] = [endTd, startTd]

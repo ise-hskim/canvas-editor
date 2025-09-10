@@ -17,14 +17,14 @@ export function input(data: string, host: CanvasEvent) {
   const cursorPosition = position.getCursorPosition()
   if (!data || !cursorPosition) return
   const isComposing = host.isComposing
-  // 正在合成文本进行非输入操作
+  // 텍스트 합성 중 비입력 작업 수행
   if (isComposing && host.compositionInfo?.value === data) return
   const rangeManager = draw.getRange()
   if (!rangeManager.getIsCanInput()) return
-  // 移除合成前，缓存设置的默认样式设置
+  // 합성 제거 전, 설정된 기본 스타일 설정 캐시
   const defaultStyle =
     rangeManager.getDefaultStyle() || host.compositionInfo?.defaultStyle || null
-  // 移除合成输入
+  // 합성 입력 제거
   removeComposingInput(host)
   if (!isComposing) {
     const cursor = draw.getCursor()
@@ -33,7 +33,7 @@ export function input(data: string, host: CanvasEvent) {
   const { TEXT, HYPERLINK, SUBSCRIPT, SUPERSCRIPT, DATE, TAB } = ElementType
   const text = data.replaceAll(`\n`, ZERO)
   const { startIndex, endIndex } = rangeManager.getRange()
-  // 格式化元素
+  // 요소 포맷팅
   const elementList = draw.getElementList()
   const copyElement = rangeManager.getRangeAnchorStyle(elementList, endIndex)
   if (!copyElement) return
@@ -47,7 +47,7 @@ export function input(data: string, host: CanvasEvent) {
       (!copyElement.title?.disabled && !copyElement.control?.disabled)
     ) {
       const nextElement = elementList[endIndex + 1]
-      // 文本、超链接、日期、上下标：复制所有信息（元素类型、样式、特殊属性）
+      // 텍스트, 하이퍼링크, 날짜, 위아래 첨자: 모든 정보 복사 (요소 유형, 스타일, 특수 속성)
       if (
         !copyElement.type ||
         copyElement.type === TEXT ||
@@ -57,7 +57,7 @@ export function input(data: string, host: CanvasEvent) {
         (copyElement.type === SUPERSCRIPT && nextElement?.type === SUPERSCRIPT)
       ) {
         EDITOR_ELEMENT_COPY_ATTR.forEach(attr => {
-          // 在分组外无需复制分组信息
+          // 그룹 외부에서는 그룹 정보 복사 불필요
           if (attr === 'groupIds' && !nextElement?.groupIds) return
           const value = copyElement[attr] as never
           if (value !== undefined) {
@@ -65,7 +65,7 @@ export function input(data: string, host: CanvasEvent) {
           }
         })
       }
-      // 仅复制样式：存在默认样式设置 || 无法匹配文本类元素时（TAB）
+      // 스타일만 복사: 기본 스타일 설정이 있거나 || 텍스트 유형 요소와 매치할 수 없는 경우 (TAB)
       if (defaultStyle || copyElement.type === TAB) {
         EDITOR_ELEMENT_STYLE_ATTR.forEach(attr => {
           const value =
@@ -82,7 +82,7 @@ export function input(data: string, host: CanvasEvent) {
     }
     return newElement
   })
-  // 控件-移除placeholder
+  // 컨트롤 - placeholder 제거
   const control = draw.getControl()
   let curIndex: number
   if (control.getActiveControl() && control.getIsRangeWithinControl()) {

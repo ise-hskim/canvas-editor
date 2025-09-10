@@ -7,5 +7,5 @@ export interface ITr {
   height: number
   tdList: ITd[]
   minHeight?: number
-  pagingRepeat?: boolean // 在各页顶端以标题行的形式重复出现
+  pagingRepeat?: boolean // 각 페이지 상단에 제목 행 형태로 반복 표시
 }

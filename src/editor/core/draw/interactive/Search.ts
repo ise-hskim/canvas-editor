@@ -109,10 +109,10 @@ export class Search {
     const height = this.draw.getHeight()
     const pageGap = this.draw.getPageGap()
     const preY = pageNo * (height + pageGap)
-    // 创建定位锚点
+    // 위치 앞커 생성
     const anchor = document.createElement('div')
     anchor.style.position = 'absolute'
-    // 扩大搜索词尺寸，使可视范围更广
+    // 검색어 크기 확대로 가시 범위 더 넓게
     const ANCHOR_OVERFLOW_SIZE = 50
     anchor.style.width = `${rightTop[0] - leftTop[0] + ANCHOR_OVERFLOW_SIZE}px`
     anchor.style.height = `${
@@ -121,7 +121,7 @@ export class Search {
     anchor.style.left = `${leftTop[0]}px`
     anchor.style.top = `${leftTop[1] + preY}px`
     this.draw.getContainer().append(anchor)
-    // 移动到可视范围
+    // 가시 범위로 이동
     anchor.scrollIntoView(false)
     anchor.remove()
   }
@@ -163,14 +163,14 @@ export class Search {
   ): ISearchResult[] {
     const keyword = payload.toLocaleLowerCase()
     const searchMatchList: ISearchResult[] = []
-    // 分组
+    // 그룹화
     const elementListGroup: {
       type: EditorContext
       elementList: IElement[]
       index: number
     }[] = []
     const originalElementListLength = originalElementList.length
-    // 查找表格所在位置
+    // 테이블 위치 찾기
     const tableIndexList = []
     for (let e = 0; e < originalElementListLength; e++) {
       const element = originalElementList[e]
@@ -203,7 +203,7 @@ export class Search {
       elementIndex = endIndex + 1
       i++
     }
-    // 搜索文本
+    // 텍스트 검색
     function searchClosure(
       payload: string | null,
       type: EditorContext,
@@ -310,11 +310,11 @@ export class Search {
         pageNo
       } = position
       if (pageNo !== pageIndex) continue
-      // 高亮并定位当前搜索词
+      // 현재 검색어 하이라이트 및 위치 이동
       const searchMatchIndexList = this.getSearchNavigateIndexList()
       if (searchMatchIndexList.includes(s)) {
         ctx.fillStyle = searchNavigateMatchColor
-        // 是否是第一个字符，则移动到可视范围
+        // 첫 번째 문자인지 확인하여 가시 범위로 이동
         const preSearchMatch = this.searchMatchList[s - 1]
         if (!preSearchMatch || preSearchMatch.groupId !== searchMatch.groupId) {
           this.searchNavigateScrollIntoView(position)
@@ -336,7 +336,7 @@ export class Search {
     if (isReadonly) return
     if (payload === undefined || payload === null) return
     let matchList = this.getSearchMatchList()
-    // 替换搜索项
+    // 검색 항목 치환
     const replaceIndex = option?.index
     if (isNumber(replaceIndex)) {
       const matchGroup: ISearchResult[][] = []
@@ -352,14 +352,14 @@ export class Search {
     }
     if (!matchList?.length) return
     const isDesignMode = this.draw.isDesignMode()
-    // 匹配index变化的差值
+    // 매치된 index 변화의 차이값
     let pageDiffCount = 0
     let tableDiffCount = 0
-    // 匹配搜索词的组标识
+    // 매치된 검색어의 그룹 식별자
     let curGroupId = ''
-    // 表格上下文
+    // 테이블 컨텍스트
     let curTdId = ''
-    // 搜索值 > 替换值：增加元素；搜索值 < 替换值：减少元素
+    // 검색값 > 치환값: 요소 증가; 검색값 < 치환값: 요소 감소
     let firstMatchIndex = -1
     const elementList = this.draw.getOriginalElementList()
     for (let m = 0; m < matchList.length; m++) {
@@ -373,10 +373,10 @@ export class Search {
         const curTableIndex = tableIndex! + pageDiffCount
         const tableElementList =
           elementList[curTableIndex].trList![trIndex!].tdList[tdIndex!].value
-        // 表格内元素
+        // 테이블 내부 요소
         const curIndex = index + tableDiffCount
         const tableElement = tableElementList[curIndex]
-        // 非设计模式下设置元素不可删除 || 控件结构元素 => 禁止替换
+        // 비 디자인 모드에서 요소 삭제 불가 설정 || 컨트롤 구조 요소 => 치환 금지
         if (
           !isDesignMode &&
           (tableElement?.control?.deletable === false ||
@@ -417,7 +417,7 @@ export class Search {
       } else {
         const curIndex = match.index + pageDiffCount
         const element = elementList[curIndex]
-        // 非设计模式下设置元素不可删除 || 控件结构元素 => 禁止替换
+        // 비 디자인 모드에서 요소 삭제 불가 설정 || 컨트롤 구조 요소 => 치환 금지
         if (
           (!isDesignMode &&
             (element?.control?.deletable === false ||
@@ -461,7 +461,7 @@ export class Search {
       curGroupId = match.groupId
     }
     if (!~firstMatchIndex) return
-    // 定位-首个被匹配关键词后
+    // 위치 지정 - 첫 번째 매치된 키워드 뒤
     const firstMatch = matchList[firstMatchIndex]
     const firstIndex = firstMatch.index + (payload.length - 1)
     if (firstMatch.type === EditorContext.TABLE) {
@@ -483,7 +483,7 @@ export class Search {
       })
     }
     this.draw.getRange().setRange(firstIndex, firstIndex)
-    // 重新渲染
+    // 다시 렌더링
     this.draw.render({
       curIndex: firstIndex
     })

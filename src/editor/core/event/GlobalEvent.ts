@@ -72,7 +72,7 @@ export class GlobalEvent {
 
   public clearSideEffect = (evt: Event) => {
     if (!this.cursor) return
-    // 编辑器内部dom
+    // 에디터 내부 DOM
     const target = <Element>(evt?.composedPath()[0] || evt.target)
     const pageList = this.draw.getPageList()
     const innerEditorDom = findParent(
@@ -81,7 +81,7 @@ export class GlobalEvent {
       true
     )
     if (innerEditorDom) return
-    // 编辑器外部组件dom
+    // 에디터 외부 컴포넌트 DOM
     const outerEditorDom = findParent(
       target,
       (node: Node & Element) =>
@@ -108,10 +108,10 @@ export class GlobalEvent {
   }
 
   public watchCursorActive() {
-    // 选区闭合&实际光标移出光标代理
+    // 선택 영역 폐쇄 & 실제 커서가 커서 프록시에서 떠남
     if (!this.range.getIsCollapsed()) return
     setTimeout(() => {
-      // 将模拟光标变成失活显示状态
+      // 시뮬레이션 커서를 비활성 디스플레이 상태로 변경
       if (!this.cursor?.getAgentIsActive()) {
         this.cursor?.drawCursor({
           isFocus: false,
@@ -122,7 +122,7 @@ export class GlobalEvent {
   }
 
   public setPageScale = (evt: WheelEvent) => {
-    // 设置禁用快捷键
+    // 단축키 비활성화 설정
     if (
       this.options.shortcutDisableKeys.includes(
         INTERNAL_SHORTCUT_KEY.PAGE_SCALE
@@ -130,18 +130,18 @@ export class GlobalEvent {
     ) {
       return
     }
-    // 仅在按下Ctrl键时生效
+    // Ctrl키를 누른 경우에만 효과적
     if (!evt.ctrlKey) return
     evt.preventDefault()
     const { scale } = this.options
     if (evt.deltaY < 0) {
-      // 放大
+      // 확대
       const nextScale = scale * 10 + 1
       if (nextScale <= 30) {
         this.draw.setPageScale(nextScale / 10)
       }
     } else {
-      // 缩小
+      // 축소
       const nextScale = scale * 10 - 1
       if (nextScale >= 5) {
         this.draw.setPageScale(nextScale / 10)
@@ -151,7 +151,7 @@ export class GlobalEvent {
 
   private _handleVisibilityChange = () => {
     if (document.visibilityState === 'visible') {
-      // 页面可见时重新渲染激活页面
+      // 페이지가 보일 때 활성 페이지를 다시 렌더링
       const range = this.range.getRange()
       const isSetCursor =
         !!~range.startIndex &&

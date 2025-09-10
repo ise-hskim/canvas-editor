@@ -46,23 +46,23 @@ export class Dialog {
 
   private _render() {
     const { title, data, onClose, onCancel, onConfirm } = this.options
-    // 渲染遮罩层
+    // 마스크 레이어 렌더링
     const mask = document.createElement('div')
     mask.classList.add('dialog-mask')
     mask.setAttribute(EDITOR_COMPONENT, EditorComponent.COMPONENT)
     document.body.append(mask)
-    // 渲染容器
+    // 컨테이너 렌더링
     const container = document.createElement('div')
     container.classList.add('dialog-container')
     container.setAttribute(EDITOR_COMPONENT, EditorComponent.COMPONENT)
-    // 弹窗
+    // 팝업
     const dialogContainer = document.createElement('div')
     dialogContainer.classList.add('dialog')
     container.append(dialogContainer)
-    // 标题容器
+    // 제목 컨테이너
     const titleContainer = document.createElement('div')
     titleContainer.classList.add('dialog-title')
-    // 标题&关闭按钮
+    // 제목 & 닫기 버튼
     const titleSpan = document.createElement('span')
     titleSpan.append(document.createTextNode(title))
     const titleClose = document.createElement('i')
@@ -75,15 +75,15 @@ export class Dialog {
     titleContainer.append(titleSpan)
     titleContainer.append(titleClose)
     dialogContainer.append(titleContainer)
-    // 选项容器
+    // 옵션 컨테이너
     const optionContainer = document.createElement('div')
     optionContainer.classList.add('dialog-option')
-    // 选项
+    // 옵션
     for (let i = 0; i < data.length; i++) {
       const option = data[i]
       const optionItemContainer = document.createElement('div')
       optionItemContainer.classList.add('dialog-option__item')
-      // 选项名称
+      // 옵션 이름
       if (option.label) {
         const optionName = document.createElement('span')
         optionName.append(document.createTextNode(option.label))
@@ -92,7 +92,7 @@ export class Dialog {
           optionName.classList.add('dialog-option__item--require')
         }
       }
-      // 选项输入框
+      // 옵션 입력창
       let optionInput:
         | HTMLInputElement
         | HTMLTextAreaElement
@@ -127,13 +127,13 @@ export class Dialog {
       this.inputList.push(optionInput)
     }
     dialogContainer.append(optionContainer)
-    // 按钮容器
+    // 버튼 컨테이너
     const menuContainer = document.createElement('div')
     menuContainer.classList.add('dialog-menu')
-    // 取消按钮
+    // 취소 버튼
     const cancelBtn = document.createElement('button')
     cancelBtn.classList.add('dialog-menu__cancel')
-    cancelBtn.append(document.createTextNode('取消'))
+    cancelBtn.append(document.createTextNode('취소'))
     cancelBtn.type = 'button'
     cancelBtn.onclick = () => {
       if (onCancel) {
@@ -142,9 +142,9 @@ export class Dialog {
       this._dispose()
     }
     menuContainer.append(cancelBtn)
-    // 确认按钮
+    // 확인 버튼
     const confirmBtn = document.createElement('button')
-    confirmBtn.append(document.createTextNode('确定'))
+    confirmBtn.append(document.createTextNode('확인'))
     confirmBtn.type = 'submit'
     confirmBtn.onclick = () => {
       if (onConfirm) {
@@ -158,7 +158,7 @@ export class Dialog {
     }
     menuContainer.append(confirmBtn)
     dialogContainer.append(menuContainer)
-    // 渲染
+    // 렌더링
     document.body.append(container)
     this.container = container
     this.mask = mask

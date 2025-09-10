@@ -1,7 +1,7 @@
 import { IRowElement } from '../../../interface/Row'
 
 export class SubscriptParticle {
-  // 向下偏移字高的一半
+  // 글자 높이의 절반만큼 아래로 이동
   public getOffsetY(element: IRowElement): number {
     return element.metrics.height / 2
   }

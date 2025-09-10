@@ -43,11 +43,11 @@ export class HyperlinkParticle {
     const height = this.draw.getHeight()
     const pageGap = this.draw.getPageGap()
     const preY = this.draw.getPageNo() * (height + pageGap)
-    // 位置
+    // 위치
     this.hyperlinkPopupContainer.style.display = 'block'
     this.hyperlinkPopupContainer.style.left = `${left}px`
     this.hyperlinkPopupContainer.style.top = `${top + preY + lineHeight}px`
-    // 标签
+    // 태그
     const url = element.url || '#'
     this.hyperlinkDom.href = url
     this.hyperlinkDom.title = url

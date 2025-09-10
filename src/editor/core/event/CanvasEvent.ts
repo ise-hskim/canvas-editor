@@ -120,7 +120,7 @@ export class CanvasEvent {
       })
     })
     this.draw.render({ isSetCursor: false })
-    // 清除格式刷
+    // 서식 브러시 지우기
     const painterOptions = this.draw.getPainterOptions()
     if (!painterOptions || !painterOptions.isDblclick) {
       this.clearPainterStyle()
@@ -146,7 +146,7 @@ export class CanvasEvent {
   }
 
   public click() {
-    // IOS系统限制非用户主动触发事件的键盘弹出
+    // iOS 시스템은 사용자가 직접 트리거하지 않은 이벤트의 키보드 팝업을 제한합니다
     if (isIOS && !this.draw.isReadonly()) {
       this.draw.getCursor().getAgentDom().focus()
     }

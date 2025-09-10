@@ -51,18 +51,18 @@ export function writeClipboardItem(
     // add new range
     const selection = window.getSelection()
     const range = document.createRange()
-    // 增加尾行换行字符避免dom复制缺失
+    // DOM 복사 손실 방지를 위해 끝 줄 개행 문자 추가
     const br = document.createElement('span')
     br.innerText = '\n'
     fakeElement.append(br)
-    // 扩选选区并执行复制
+    // 선택 영역 확장 후 복사 실행
     range.selectNodeContents(fakeElement)
     selection?.removeAllRanges()
     selection?.addRange(range)
     document.execCommand('copy')
     fakeElement.remove()
   }
-  // 编辑器结构化数据
+  // 에디터 구조화 데이터
   setClipboardData({ text, elementList })
 }
 
@@ -71,10 +71,10 @@ export function writeElementList(
   options: DeepRequired<IEditorOption>
 ) {
   const clipboardDom = createDomFromElementList(elementList, options)
-  // 写入剪贴板
+  // 클립보드에 쓰기
   document.body.append(clipboardDom)
   const text = clipboardDom.innerText
-  // 先追加后移除，否则innerText无法解析换行符
+  // 먼저 추가 후 제거, 그렇지 않으면 innerText가 개행 문자를 파싱할 수 없음
   clipboardDom.remove()
   const html = clipboardDom.innerHTML
   if (!text && !html && !elementList.length) return

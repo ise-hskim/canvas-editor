@@ -69,7 +69,7 @@ export class Footer {
     const innerWidth = this.draw.getInnerWidth()
     const margins = this.draw.getMargins()
     const startX = margins[3]
-    // 页面高度 - 页脚顶部距离页面底部高度
+    // 페이지 높이 - 푸터 상단과 페이지 하단 간의 거리
     const pageHeight = this.draw.getHeight()
     const footerHeight = this.getHeight()
     const startY = pageHeight - footerBottom - footerHeight
@@ -114,7 +114,7 @@ export class Footer {
   }
 
   public getExtraHeight(): number {
-    // 页脚下边距 + 实际高 - 页面上边距
+    // 푸터 하단 여백 + 실제 높이 - 페이지 상단 여백
     const margins = this.draw.getMargins()
     const footerHeight = this.getHeight()
     const footerBottom = this.getFooterBottom()
@@ -129,7 +129,7 @@ export class Footer {
       : this.options.footer.inactiveAlpha
     const innerWidth = this.draw.getInnerWidth()
     const maxHeight = this.getMaxHeight()
-    // 超出最大高度不渲染
+    // 최대 높이 초과시 렌더링하지 않음
     const rowList: IRow[] = []
     let curRowHeight = 0
     for (let r = 0; r < this.rowList.length; r++) {

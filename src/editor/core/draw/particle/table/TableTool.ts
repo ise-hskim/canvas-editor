@@ -15,20 +15,20 @@ interface IAnchorMouseDown {
 }
 
 export class TableTool {
-  // 单元格最小宽度
+  // 셀의 최소 너비
   private readonly MIN_TD_WIDTH = 20
-  // 行列工具相对表格偏移值
+  // 행열 도구의 테이블 대비 오프셋 값
   private readonly ROW_COL_OFFSET = 18
-  // 快速添加行列工具宽度
+  // 빠른 행열 추가 도구 너비
   private readonly ROW_COL_QUICK_WIDTH = 16
-  // 快速添加行列工具偏移值
+  // 빠른 행열 추가 도구 오프셋 값
   private readonly ROW_COL_QUICK_OFFSET = 5
-  // 快速添加行列工具相对表格位置
+  // 빠른 행열 추가 도구의 테이블 대비 위치
   private readonly ROW_COL_QUICK_POSITION =
     this.ROW_COL_OFFSET + (this.ROW_COL_OFFSET - this.ROW_COL_QUICK_WIDTH) / 2
-  // 边框工具宽/高度
+  // 테두리 도구 너비/높이
   private readonly BORDER_VALUE = 4
-  // 快速选择工具偏移值
+  // 빠른 선택 도구 오프셋 값
   private readonly TABLE_SELECT_OFFSET = 20
 
   private draw: Draw
@@ -54,7 +54,7 @@ export class TableTool {
     this.position = draw.getPosition()
     this.range = draw.getRange()
     this.container = draw.getContainer()
-    // x、y轴
+    // x, y축
     this.toolRowContainer = null
     this.toolRowAddBtn = null
     this.toolColAddBtn = null
@@ -85,14 +85,14 @@ export class TableTool {
     const { isTable, index, trIndex, tdIndex } =
       this.position.getPositionContext()
     if (!isTable) return
-    // 销毁之前工具
+    // 이전 도구 소거
     this.dispose()
     const elementList = this.draw.getOriginalElementList()
     const positionList = this.position.getOriginalPositionList()
     const element = elementList[index!]
-    // 表格工具配置禁用又非设计模式时不渲染
+    // 테이블 도구 설정이 비활성화되고 디자인 모드가 아닐 때 렌더링 안 함
     if (element.tableToolDisabled && !this.draw.isDesignMode()) return
-    // 渲染所需数据
+    // 렌더링 필요 데이터
     const { scale } = this.options
     const position = positionList[index!]
     const { colgroup, trList } = element
@@ -109,7 +109,7 @@ export class TableTool {
     const colIndex = td.colIndex
     const tableHeight = element.height! * scale
     const tableWidth = element.width! * scale
-    // 表格选择工具
+    // 테이블 선택 도구
     const tableSelectBtn = document.createElement('div')
     tableSelectBtn.classList.add(`${EDITOR_PREFIX}-table-tool__select`)
     tableSelectBtn.style.height = `${tableHeight * scale}`
@@ -118,13 +118,13 @@ export class TableTool {
     tableSelectBtn.style.transform = `translate(-${
       this.TABLE_SELECT_OFFSET * scale
     }px, ${-this.TABLE_SELECT_OFFSET * scale}px)`
-    // 快捷全选
+    // 빠른 전체 선택
     tableSelectBtn.onclick = () => {
       this.draw.getTableOperate().tableSelectAll()
     }
     this.container.append(tableSelectBtn)
     this.toolTableSelectBtn = tableSelectBtn
-    // 渲染行工具
+    // 행 도구 렌더링
     const rowHeightList = trList!.map(tr => tr.height)
     const rowContainer = document.createElement('div')
     rowContainer.classList.add(`${EDITOR_PREFIX}-table-tool__row`)
@@ -138,7 +138,7 @@ export class TableTool {
       if (r === rowIndex) {
         rowItem.classList.add('active')
       }
-      // 快捷行选择
+      // 빠른 행 선택
       rowItem.onclick = () => {
         const tdList = this.draw
           .getTableParticle()
@@ -170,7 +170,7 @@ export class TableTool {
       }
       const rowItemAnchor = document.createElement('div')
       rowItemAnchor.classList.add(`${EDITOR_PREFIX}-table-tool__anchor`)
-      // 行高度拖拽开始
+      // 행 높이 드래그 시작
       rowItemAnchor.onmousedown = evt => {
         this._mousedown({
           evt,
@@ -187,7 +187,7 @@ export class TableTool {
     rowContainer.style.top = `${tableY}px`
     this.container.append(rowContainer)
     this.toolRowContainer = rowContainer
-    // 添加行按钮
+    // 행 추가 버튼
     const rowAddBtn = document.createElement('div')
     rowAddBtn.classList.add(`${EDITOR_PREFIX}-table-tool__quick__add`)
     rowAddBtn.style.height = `${tableHeight * scale}`
@@ -196,7 +196,7 @@ export class TableTool {
     rowAddBtn.style.transform = `translate(-${
       this.ROW_COL_QUICK_POSITION * scale
     }px, ${this.ROW_COL_QUICK_OFFSET * scale}px)`
-    // 快捷添加行
+    // 빠른 행 추가
     rowAddBtn.onclick = () => {
       this.position.setPositionContext({
         index,
@@ -209,7 +209,7 @@ export class TableTool {
     }
     this.container.append(rowAddBtn)
     this.toolRowAddBtn = rowAddBtn
-    // 渲染列工具
+    // 열 도구 렌더링
     const colWidthList = colgroup!.map(col => col.width)
     const colContainer = document.createElement('div')
     colContainer.classList.add(`${EDITOR_PREFIX}-table-tool__col`)
@@ -223,7 +223,7 @@ export class TableTool {
       if (c === colIndex) {
         colItem.classList.add('active')
       }
-      // 快捷列选择
+      // 빠른 열 선택
       colItem.onclick = () => {
         const tdList = this.draw
           .getTableParticle()
@@ -255,7 +255,7 @@ export class TableTool {
       }
       const colItemAnchor = document.createElement('div')
       colItemAnchor.classList.add(`${EDITOR_PREFIX}-table-tool__anchor`)
-      // 列高度拖拽开始
+      // 열 높이 드래그 시작
       colItemAnchor.onmousedown = evt => {
         this._mousedown({
           evt,
@@ -272,7 +272,7 @@ export class TableTool {
     colContainer.style.top = `${tableY}px`
     this.container.append(colContainer)
     this.toolColContainer = colContainer
-    // 添加列按钮
+    // 열 추가 버튼
     const colAddBtn = document.createElement('div')
     colAddBtn.classList.add(`${EDITOR_PREFIX}-table-tool__quick__add`)
     colAddBtn.style.height = `${tableHeight * scale}`
@@ -281,7 +281,7 @@ export class TableTool {
     colAddBtn.style.transform = `translate(${
       this.ROW_COL_QUICK_OFFSET * scale
     }px, -${this.ROW_COL_QUICK_POSITION * scale}px)`
-    // 快捷添加列
+    // 빠른 열 추가
     colAddBtn.onclick = () => {
       this.position.setPositionContext({
         index,
@@ -294,7 +294,7 @@ export class TableTool {
     }
     this.container.append(colAddBtn)
     this.toolColAddBtn = colAddBtn
-    // 渲染单元格边框拖拽工具
+    // 셀 테두리 드래그 도구 렌더링
     const borderContainer = document.createElement('div')
     borderContainer.classList.add(`${EDITOR_PREFIX}-table-tool__border`)
     borderContainer.style.height = `${tableHeight}px`
@@ -313,7 +313,7 @@ export class TableTool {
           (td.y! + td.height!) * scale - this.BORDER_VALUE / 2
         }px`
         rowBorder.style.left = `${td.x! * scale}px`
-        // 行宽度拖拽开始
+        // 행 너비 드래그 시작
         rowBorder.onmousedown = evt => {
           this._mousedown({
             evt,
@@ -331,7 +331,7 @@ export class TableTool {
         colBorder.style.left = `${
           (td.x! + td.width!) * scale - this.BORDER_VALUE / 2
         }px`
-        // 列高度拖拽开始
+        // 열 높이 드래그 시작
         colBorder.onmousedown = evt => {
           this._mousedown({
             evt,
@@ -371,11 +371,11 @@ export class TableTool {
     this.mousedownY = evt.y
     const target = evt.target as HTMLDivElement
     const canvasRect = this.canvas.getBoundingClientRect()
-    // 改变光标
+    // 커서 변경
     const cursor = window.getComputedStyle(target).cursor
     document.body.style.cursor = cursor
     this.canvas.style.cursor = cursor
-    // 拖拽线
+    // 드래그 선
     let startX = 0
     let startY = 0
     const anchorLine = document.createElement('div')
@@ -395,7 +395,7 @@ export class TableTool {
     anchorLine.style.top = `${startY}px`
     this.container.append(anchorLine)
     this.anchorLine = anchorLine
-    // 追加全局事件
+    // 전역 이벤트 추가
     let dx = 0
     let dy = 0
     const mousemoveFn = (evt: MouseEvent) => {
@@ -410,11 +410,11 @@ export class TableTool {
       'mouseup',
       () => {
         let isChangeSize = false
-        // 改变尺寸
+        // 크기 변경
         if (order === TableOrder.ROW) {
           const trList = element.trList!
           const tr = trList[index] || trList[index - 1]
-          // 最大移动高度-向上移动超出最小高度限定，则减少移动量
+          // 최대 이동 높이 - 위로 이동시 최소 높이 제한을 초과하면 이동량 감소
           const { defaultTrMinHeight } = this.options.table
           if (dy < 0 && tr.height + dy < defaultTrMinHeight) {
             dy = defaultTrMinHeight - tr.height
@@ -427,14 +427,14 @@ export class TableTool {
         } else {
           const { colgroup } = element
           if (colgroup && dx) {
-            // 宽度分配
+            // 너비 분배
             const innerWidth = this.draw.getInnerWidth()
             const curColWidth = colgroup[index].width
-            // 最小移动距离计算-如果向左移动：使单元格小于最小宽度，则减少移动量
+            // 최소 이동 거리 계산 - 왼쪽으로 이동시 셀이 최소 너비보다 작아지면 이동량 감소
             if (dx < 0 && curColWidth + dx < this.MIN_TD_WIDTH) {
               dx = this.MIN_TD_WIDTH - curColWidth
             }
-            // 最大移动距离计算-如果向右移动：使后面一个单元格小于最小宽度，则减少移动量
+            // 최대 이동 거리 계산 - 오른쪽으로 이동시 다음 셀이 최소 너비보다 작아지면 이동량 감소
             const nextColWidth = colgroup[index + 1]?.width
             if (
               dx > 0 &&
@@ -444,16 +444,16 @@ export class TableTool {
               dx = nextColWidth - this.MIN_TD_WIDTH
             }
             const moveColWidth = curColWidth + dx
-            // 开始移动，只有表格的最后一列线才会改变表格的宽度，其他场景不用计算表格超出
+            // 이동 시작, 테이블의 마지막 열만 테이블 너비를 변경하고 다른 경우는 테이블 초과 계산 불필요
             if (index === colgroup.length - 1) {
               let moveTableWidth = 0
               for (let c = 0; c < colgroup.length; c++) {
                 const group = colgroup[c]
-                // 下一列减去偏移量
+                // 다음 열에서 오프셋 값 차감
                 if (c === index + 1) {
                   moveTableWidth -= dx
                 }
-                // 当前列加上偏移量
+                // 현재 열에 오프셋 값 추가
                 if (c === index) {
                   moveTableWidth += moveColWidth
                 }
@@ -467,7 +467,7 @@ export class TableTool {
               }
             }
             if (dx) {
-              // 当前列增加，后列减少
+              // 현재 열 증가, 뒤열 감소
               if (colgroup.length - 1 !== index) {
                 colgroup[index + 1].width -= dx / scale
               }
@@ -479,7 +479,7 @@ export class TableTool {
         if (isChangeSize) {
           this.draw.render({ isSetCursor: false })
         }
-        // 还原副作用
+        // 부작용 복원
         anchorLine.remove()
         document.removeEventListener('mousemove', mousemoveFn)
         document.body.style.cursor = ''

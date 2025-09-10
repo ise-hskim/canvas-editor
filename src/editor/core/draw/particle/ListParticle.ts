@@ -16,7 +16,7 @@ export class ListParticle {
   private range: RangeManager
   private options: DeepRequired<IEditorOption>
 
-  // 非递增样式直接返回默认值
+  // 비누적 스타일은 기본값 반환
   private readonly UN_COUNT_STYLE_WIDTH = 20
   private readonly MEASURE_BASE_TEXT = '0'
   private readonly LIST_GAP = 10
@@ -32,10 +32,10 @@ export class ListParticle {
     if (isReadonly) return
     const { startIndex, endIndex } = this.range.getRange()
     if (!~startIndex && !~endIndex) return
-    // 需要改变的元素列表
+    // 변경이 필요한 요소 목록
     const changeElementList = this.range.getRangeParagraphElementList()
     if (!changeElementList || !changeElementList.length) return
-    // 如果包含列表则设置为取消列表
+    // 목록이 포함되어 있으면 목록 취소로 설정
     const isUnsetList = changeElementList.find(
       el => el.listType === listType && el.listStyle === listStyle
     )
@@ -43,14 +43,14 @@ export class ListParticle {
       this.unsetList()
       return
     }
-    // 设置值
+    // 값 설정
     const listId = getUUID()
     changeElementList.forEach(el => {
       el.listId = listId
       el.listType = listType
       el.listStyle = listStyle
     })
-    // 光标定位
+    // 커서 위치 지정
     const isSetCursor = startIndex === endIndex
     const curIndex = isSetCursor ? endIndex : startIndex
     this.draw.render({ curIndex, isSetCursor })
@@ -61,12 +61,12 @@ export class ListParticle {
     if (isReadonly) return
     const { startIndex, endIndex } = this.range.getRange()
     if (!~startIndex && !~endIndex) return
-    // 需要改变的元素列表
+    // 변경이 필요한 요소 목록
     const changeElementList = this.range
       .getRangeParagraphElementList()
       ?.filter(el => el.listId)
     if (!changeElementList || !changeElementList.length) return
-    // 如果列表最后字符不是换行符则需插入换行符
+    // 목록의 마지막 문자가 줄바꿈이 아니면 줄바꿈 삽입 필요
     const elementList = this.draw.getElementList()
     const endElement = elementList[endIndex]
     if (endElement.listId) {
@@ -85,14 +85,14 @@ export class ListParticle {
         start++
       }
     }
-    // 取消设置
+    // 설정 취소
     changeElementList.forEach(el => {
       delete el.listId
       delete el.listType
       delete el.listStyle
       delete el.listWrap
     })
-    // 光标定位
+    // 커서 위치 지정
     const isSetCursor = startIndex === endIndex
     const curIndex = isSetCursor ? endIndex : startIndex
     this.draw.render({ curIndex, isSetCursor })
@@ -113,7 +113,7 @@ export class ListParticle {
         curElementList.push(curElement)
       } else {
         if (curElement.listId && curElement.listId !== curListId) {
-          // 列表结束
+          // 목록 종료
           if (curElementList.length) {
             const width = this.getListStyleWidth(ctx, curElementList)
             listStyleMap.set(curListId!, width)
@@ -137,7 +137,7 @@ export class ListParticle {
   ): number {
     const { scale, checkbox } = this.options
     const startElement = listElementList[0]
-    // 非递增样式返回固定值
+    // 비누적 스타일은 고정값 반환
     if (
       startElement.listStyle &&
       startElement.listStyle !== ListStyle.DECIMAL
@@ -147,7 +147,7 @@ export class ListParticle {
       }
       return this.UN_COUNT_STYLE_WIDTH * scale
     }
-    // 计算列表数量
+    // 목록 개수 계산
     const count = listElementList.reduce((pre, cur) => {
       if (cur.value === ZERO) {
         pre += 1
@@ -155,7 +155,7 @@ export class ListParticle {
       return pre
     }, 0)
     if (!count) return 0
-    // 以递增样式最大宽度为准
+    // 누적 스타일의 최대 너비를 기준으로 설정
     const text = `${this.MEASURE_BASE_TEXT.repeat(String(count).length)}${
       KeyMap.PERIOD
     }`
@@ -171,7 +171,7 @@ export class ListParticle {
     const { elementList, offsetX, listIndex, ascent } = row
     const startElement = elementList[0]
     if (startElement.value !== ZERO || startElement.listWrap) return
-    // tab width
+    // 탭 너비
     let tabWidth = 0
     const { defaultTabWidth, scale, defaultFont, defaultSize } = this.options
     for (let i = 1; i < elementList.length; i++) {
@@ -179,7 +179,7 @@ export class ListParticle {
       if (element?.type !== ElementType.TAB) break
       tabWidth += defaultTabWidth * scale
     }
-    // 列表样式渲染
+    // 목록 스타일 렌더링
     const {
       coordinate: {
         leftTop: [startX, startY]
@@ -187,7 +187,7 @@ export class ListParticle {
     } = position
     const x = startX - offsetX! + tabWidth
     const y = startY + ascent
-    // 复选框样式特殊处理
+    // 체크박스 스타일 특별 처리
     if (startElement.listStyle === ListStyle.CHECKBOX) {
       const { width, height, gap } = this.options.checkbox
       const checkboxRowElement: IRowElement = {

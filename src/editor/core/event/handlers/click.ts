@@ -5,7 +5,7 @@ import { ElementType } from '../../../dataset/enum/Element'
 import { IRange } from '../../../interface/Range'
 import { CanvasEvent } from '../CanvasEvent'
 
-// 通过分词器获取单词所在选区
+// 분절기를 통해 단어가 위치한 선택 영역 얻기
 function getWordRangeBySegmenter(host: CanvasEvent): IRange | null {
   if (!Intl.Segmenter) return null
   const draw = host.getDraw()
@@ -14,7 +14,7 @@ function getWordRangeBySegmenter(host: CanvasEvent): IRange | null {
   const rangeManager = draw.getRange()
   const paragraphInfo = rangeManager.getRangeParagraphInfo()
   if (!paragraphInfo) return null
-  // 组装段落文本
+  // 단락 텍스트 조립
   const paragraphText =
     paragraphInfo?.elementList
       ?.map(e =>
@@ -26,13 +26,13 @@ function getWordRangeBySegmenter(host: CanvasEvent): IRange | null {
       )
       .join('') || ''
   if (!paragraphText) return null
-  // 光标所在位置
+  // 커서 위치
   const cursorStartIndex = cursorPosition.index
-  // 段落首字符相对文档起始位置
+  // 단락 첫 번째 문자의 문서 시작 위치 대비 상대 위치
   const offset = paragraphInfo.startIndex
   const segmenter = new Intl.Segmenter(undefined, { granularity: 'word' })
   const segments = segmenter.segment(paragraphText)
-  // 新的光标位置
+  // 새로운 커서 위치
   let startIndex = -1
   let endIndex = -1
   for (const { segment, index, isWordLike } of segments) {
@@ -50,20 +50,20 @@ function getWordRangeBySegmenter(host: CanvasEvent): IRange | null {
   return ~startIndex && ~endIndex ? { startIndex, endIndex } : null
 }
 
-// 通过光标位置获取单词所在选区
+// 커서 위치를 통해 단어가 위치한 선택 영역 얻기
 function getWordRangeByCursor(host: CanvasEvent): IRange | null {
   const draw = host.getDraw()
   const cursorPosition = draw.getPosition().getCursorPosition()
   if (!cursorPosition) return null
   const { value, index } = cursorPosition
-  // 判断是否是数字或英文
+  // 숫자 또는 영문인지 판단
   const LETTER_REG = draw.getLetterReg()
   let upCount = 0
   let downCount = 0
   const isNumber = NUMBER_LIKE_REG.test(value)
   if (isNumber || LETTER_REG.test(value)) {
     const elementList = draw.getElementList()
-    // 向上查询
+    // 위로 검색
     let upStartIndex = index - 1
     while (upStartIndex > 0) {
       const value = elementList[upStartIndex].value
@@ -77,7 +77,7 @@ function getWordRangeByCursor(host: CanvasEvent): IRange | null {
         break
       }
     }
-    // 向下查询
+    // 아래로 검색
     let downStartIndex = index + 1
     while (downStartIndex < elementList.length) {
       const value = elementList[downStartIndex].value
@@ -92,7 +92,7 @@ function getWordRangeByCursor(host: CanvasEvent): IRange | null {
       }
     }
   }
-  // 新的光标位置
+  // 새로운 커서 위치
   const startIndex = index - upCount - 1
   if (startIndex < 0) return null
   return {
@@ -108,12 +108,12 @@ function dblclick(host: CanvasEvent, evt: MouseEvent) {
     x: evt.offsetX,
     y: evt.offsetY
   })
-  // 图片预览
+  // 이미지 미리보기
   if (positionContext.isImage && positionContext.isDirectHit) {
     draw.getPreviewer().render()
     return
   }
-  // 切换区域
+  // 영역 전환
   if (draw.getIsPagingMode()) {
     if (!~positionContext.index && positionContext.zone) {
       draw.getZone().setZone(positionContext.zone)
@@ -124,26 +124,26 @@ function dblclick(host: CanvasEvent, evt: MouseEvent) {
       return
     }
   }
-  // 复选/单选框双击时是切换选择状态，禁用扩选
+  // 체크박스/라디오 버튼 더블클릭 시 선택 상태 전환, 확장 선택 비활성화
   if (
     (positionContext.isCheckbox || positionContext.isRadio) &&
     positionContext.isDirectHit
   ) {
     return
   }
-  // 自动扩选文字-分词处理，优先使用分词器否则降级使用光标所在位置
+  // 자동 텍스트 확장 선택 - 분절 처리, 분절기를 우선 사용하지 않으면 커서 위치 사용으로 다운그레이드
   const rangeManager = draw.getRange()
   const segmenterRange =
     getWordRangeBySegmenter(host) || getWordRangeByCursor(host)
   if (!segmenterRange) return
   rangeManager.setRange(segmenterRange.startIndex, segmenterRange.endIndex)
-  // 刷新文档
+  // 문서 새로고침
   draw.render({
     isSubmitHistory: false,
     isSetCursor: false,
     isCompute: false
   })
-  // 更新选区
+  // 선택 영역 업데이트
   rangeManager.setRangeStyle()
 }
 
@@ -154,10 +154,10 @@ function threeClick(host: CanvasEvent) {
   if (!cursorPosition) return
   const { index } = cursorPosition
   const elementList = draw.getElementList()
-  // 判断是否是零宽字符
+  // 영너비 문자인지 판단
   let upCount = 0
   let downCount = 0
-  // 向上查询
+  // 위로 검색
   let upStartIndex = index - 1
   while (upStartIndex > 0) {
     const element = elementList[upStartIndex]
@@ -172,7 +172,7 @@ function threeClick(host: CanvasEvent) {
     upCount++
     upStartIndex--
   }
-  // 向下查询
+  // 아래로 검색
   let downStartIndex = index + 1
   while (downStartIndex < elementList.length) {
     const element = elementList[downStartIndex]
@@ -187,7 +187,7 @@ function threeClick(host: CanvasEvent) {
     downCount++
     downStartIndex++
   }
-  // 设置选中区域-不选择段落首尾换行符
+  // 선택 영역 설정 - 단락 시작/끝 개행 문자 선택 안 함
   const rangeManager = draw.getRange()
   let newStartIndex = index - upCount - 1
   if (elementList[newStartIndex]?.value !== ZERO) {
@@ -202,7 +202,7 @@ function threeClick(host: CanvasEvent) {
     newEndIndex -= 1
   }
   rangeManager.setRange(newStartIndex, newEndIndex)
-  // 刷新文档
+  // 문서 새로고침
   draw.render({
     isSubmitHistory: false,
     isSetCursor: false,

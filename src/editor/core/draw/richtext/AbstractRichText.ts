@@ -32,14 +32,14 @@ export abstract class AbstractRichText {
     decorationStyle?: TextDecorationStyle
   ) {
     const isFirstRecord = !this.fillRect.width
-    // 颜色不同时立即绘制
+    // 색상이 다를 때 즉시 그리기
     if (
       !isFirstRecord &&
       (this.fillColor !== color || this.fillDecorationStyle !== decorationStyle)
     ) {
       this.render(ctx)
       this.clearFillInfo()
-      // 重新记录
+      // 다시 기록
       this.recordFillInfo(ctx, x, y, width, height, color, decorationStyle)
       return
     }

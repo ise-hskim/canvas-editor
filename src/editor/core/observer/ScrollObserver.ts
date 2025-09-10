@@ -20,7 +20,7 @@ export class ScrollObserver {
     this.draw = draw
     this.options = draw.getOptions()
     this.scrollContainer = this.getScrollContainer()
-    // 监听滚轮
+    // 스크롤 리스너
     setTimeout(() => {
       if (!window.scrollY) {
         this._observer()
@@ -64,7 +64,7 @@ export class ScrollObserver {
     for (let i = 0; i < pageList.length; i++) {
       const curPage = pageList[i]
       const { intersectionHeight } = this.getElementVisibleInfo(curPage)
-      // 之前页存在交叉 && 当前页不交叉则后续均不交叉，结束循环
+      // 이전 페이지에 교차 존재 && 현재 페이지에 교차 없으면 이후 모두 교차하지 않음, 루프 종료
       if (intersectionMaxHeight && !intersectionHeight) break
       if (intersectionHeight) {
         visiblePageNoList.push(i)

@@ -9,25 +9,25 @@ import { CanvasEvent } from '../CanvasEvent'
 
 export function copy(host: CanvasEvent, options?: ICopyOption) {
   const draw = host.getDraw()
-  // 自定义粘贴事件
+  // 사용자 정의 붙여넣기 이벤트
   const { copy } = draw.getOverride()
   if (copy) {
     const overrideResult = copy()
-    // 默认阻止默认事件
+    // 기본적으로 기본 이벤트 차단
     if ((<IOverrideResult>overrideResult)?.preventDefault !== false) return
   }
   const rangeManager = draw.getRange()
-  // 光标闭合时复制整行
+  // 커서가 닫혔 때 전체 행 복사
   let copyElementList: IElement[] | null = null
   const range = rangeManager.getRange()
   if (range.isCrossRowCol) {
-    // 原始表格信息
+    // 원본 테이블 정보
     const tableElement = rangeManager.getRangeTableElement()
     if (!tableElement) return
-    // 选区行列信息
+    // 선택 영역 행열 정보
     const rowCol = draw.getTableParticle().getRangeRowCol()
     if (!rowCol) return
-    // 构造表格
+    // 테이블 구성
     const copyTableElement: IElement = {
       type: ElementType.TABLE,
       value: '',

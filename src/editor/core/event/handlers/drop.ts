@@ -4,11 +4,11 @@ import { pasteImage } from './paste'
 
 export function drop(evt: DragEvent, host: CanvasEvent) {
   const draw = host.getDraw()
-  // 自定义拖放事件
+  // 사용자 정의 드래그 앤 드롭 이벤트
   const { drop } = draw.getOverride()
   if (drop) {
     const overrideResult = drop(evt)
-    // 默认阻止默认事件
+    // 기본적으로 기본 이벤트 차단
     if ((<IOverrideResult>overrideResult)?.preventDefault !== false) return
   }
   evt.preventDefault()

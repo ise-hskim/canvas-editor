@@ -13,7 +13,7 @@ import { updown } from './updown'
 export function keydown(evt: KeyboardEvent, host: CanvasEvent) {
   if (host.isComposing) return
   const draw = host.getDraw()
-  // 键盘事件逻辑分发
+  // 키보드 이벤트 로직 배다
   if (evt.key === KeyMap.Backspace) {
     backspace(evt, host)
   } else if (evt.key === KeyMap.Delete) {
@@ -55,9 +55,9 @@ export function keydown(evt: KeyboardEvent, host: CanvasEvent) {
     }
     evt.preventDefault()
   } else if (evt.key === KeyMap.ESC) {
-    // 退出格式刷
+    // 서식 브러시 종료
     host.clearPainterStyle()
-    // 退出页眉页脚编辑
+    // 머리글/바닥글 편집 종료
     const zoneManager = draw.getZone()
     if (!zoneManager.isMainActive()) {
       zoneManager.setZone(EditorZone.MAIN)

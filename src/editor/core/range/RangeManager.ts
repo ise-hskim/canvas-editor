@@ -152,7 +152,7 @@ export class RangeManager {
     )
   }
 
-  // 获取光标所选位置行信息
+  // 커서 선택 위치 행 정보 가져오기
   public getRangeRow(): RangeRowMap | null {
     const { startIndex, endIndex } = this.range
     if (!~startIndex && !~endIndex) return null
@@ -172,19 +172,19 @@ export class RangeManager {
     return rangeRow
   }
 
-  // 获取光标所选位置元素列表
+  // 커서 선택 위치 요소 목록 가져오기
   public getRangeRowElementList(): IElement[] | null {
     const { startIndex, endIndex, isCrossRowCol } = this.range
     if (!~startIndex && !~endIndex) return null
     if (isCrossRowCol) {
       return this.getSelectionElementList()
     }
-    // 选区行信息
+    // 선택 영역 행 정보
     const rangeRow = this.getRangeRow()
     if (!rangeRow) return null
     const positionList = this.position.getPositionList()
     const elementList = this.draw.getElementList()
-    // 当前选区所在行
+    // 현재 선택 영역이 있는 행
     const rowElementList: IElement[] = []
     for (let p = 0; p < positionList.length; p++) {
       const position = positionList[p]
@@ -197,14 +197,14 @@ export class RangeManager {
     return rowElementList
   }
 
-  // 获取选取段落信息
+  // 선택된 단락 정보 가져오기
   public getRangeParagraph(): RangeRowArray | null {
     const { startIndex, endIndex } = this.range
     if (!~startIndex && !~endIndex) return null
     const positionList = this.position.getPositionList()
     const elementList = this.draw.getElementList()
     const rangeRow: RangeRowArray = new Map()
-    // 向上查找
+    // 위로 검색
     let start = startIndex
     while (start >= 0) {
       const { pageNo, rowNo } = positionList[start]
@@ -228,7 +228,7 @@ export class RangeManager {
       start--
     }
     const isCollapsed = startIndex === endIndex
-    // 中间选择
+    // 중간 선택
     if (!isCollapsed) {
       let middle = startIndex + 1
       while (middle < endIndex) {
@@ -244,9 +244,9 @@ export class RangeManager {
         middle++
       }
     }
-    // 向下查找
+    // 아래로 검색
     let end = endIndex
-    // 闭合选区&&首字符为换行符时继续向下查找
+    // 선택 영역 닫힘 && 첫 번째 문자가 줄바꿈 문자일 때 계속 아래로 검색
     if (isCollapsed && elementList[startIndex].value === ZERO) {
       end += 1
     }
@@ -274,15 +274,15 @@ export class RangeManager {
     return rangeRow
   }
 
-  // 获取选区段落信息
+  // 선택 영역 단락 정보 가져오기
   public getRangeParagraphInfo(): IRangeParagraphInfo | null {
     const { startIndex, endIndex } = this.range
     if (!~startIndex && !~endIndex) return null
-    /// 起始元素位置
+    /// 시작 요소 위치
     let startPositionIndex = -1
-    // 需要改变的元素列表
+    // 변경할 요소 목록
     const rangeElementList: IElement[] = []
-    // 选区行信息
+    // 선택 영역 행 정보
     const rangeRow = this.getRangeParagraph()
     if (!rangeRow) return null
     const elementList = this.draw.getElementList()
@@ -305,12 +305,12 @@ export class RangeManager {
     }
   }
 
-  // 获取选区段落元素列表
+  // 선택 영역 단락 요소 목록 가져오기
   public getRangeParagraphElementList(): IElement[] | null {
     return this.getRangeParagraphInfo()?.elementList || null
   }
 
-  // 获取选区表格
+  // 선택 영역 테이블 가져오기
   public getRangeTableElement(): IElement | null {
     const positionContext = this.position.getPositionContext()
     if (!positionContext.isTable) return null
@@ -395,7 +395,7 @@ export class RangeManager {
       )
     }
     const endElement = elementList[endIndex]
-    // 选区前后不是控件 || 选区前不是控件或是后缀&&选区后不是控件或是后缀 || 选区在控件内
+    // 선택 영역 앞뒤가 컨트롤이 아니거나 || 선택 영역 앞이 컨트롤이 아니거나 접미사&&선택 영역 뒤가 컨트롤이 아니거나 접미사 || 선택 영역이 컨트롤 내부에 있음
     return (
       (!startElement.controlId && !endElement.controlId) ||
       ((!startElement.controlId ||
@@ -419,7 +419,7 @@ export class RangeManager {
     startTrIndex?: number,
     endTrIndex?: number
   ) {
-    // 判断光标是否改变
+    // 커서 변경 여부 판단
     const isChange = this.getIsRangeChange(
       startIndex,
       endIndex,
@@ -446,7 +446,7 @@ export class RangeManager {
       this.setDefaultStyle(null)
     }
     this.range.zone = this.draw.getZone().getZone()
-    // 激活控件
+    // 컨트롤 활성화
     const control = this.draw.getControl()
     if (~startIndex && ~endIndex) {
       const elementList = this.draw.getElementList()
@@ -485,27 +485,27 @@ export class RangeManager {
     const isSubscribeRangeStyleChange =
       this.eventBus.isSubscribe('rangeStyleChange')
     if (!rangeStyleChangeListener && !isSubscribeRangeStyleChange) return
-    // 结束光标位置
+    // 커서 종료 위치
     const { startIndex, endIndex, isCrossRowCol } = this.range
     if (!~startIndex && !~endIndex) return
     let curElement: IElement | null
     if (isCrossRowCol) {
-      // 单元格选择以当前表格定位
+      // 셀 선택은 현재 테이블로 위치 지정
       const originalElementList = this.draw.getOriginalElementList()
       const positionContext = this.position.getPositionContext()
       curElement = originalElementList[positionContext.index!]
     } else {
       const index = ~endIndex ? endIndex : 0
-      // 行首以第一个非换行符元素定位
+      // 행 시작은 첫 번째 비줄바꿈 문자 요소로 위치 지정
       const elementList = this.draw.getElementList()
       curElement = this.getRangeAnchorStyle(elementList, index)
     }
     if (!curElement) return
-    // 选取元素列表
+    // 선택된 요소 목록
     const curElementList = this.getSelection() || [curElement]
-    // 类型
+    // 유형
     const type = curElement.type || ElementType.TEXT
-    // 富文本
+    // 리치 텍스트
     const font = curElement.font || this.options.defaultFont
     const size = curElement.size || this.options.defaultSize
     const bold = !~curElementList.findIndex(el => !el.bold)
@@ -523,13 +523,13 @@ export class RangeManager {
     const listType = curElement.listType || null
     const listStyle = curElement.listStyle || null
     const textDecoration = underline ? curElement.textDecoration || null : null
-    // 菜单
+    // 메뉴
     const painter = !!this.draw.getPainterStyle()
     const undo = this.historyManager.isCanUndo()
     const redo = this.historyManager.isCanRedo()
-    // 组信息
+    // 그룹 정보
     const groupIds = curElement.groupIds || null
-    // 扩展字段
+    // 확장 필드
     const extension = curElement.extension ?? null
     const rangeStyle: IRangeStyle = {
       type,
@@ -613,7 +613,7 @@ export class RangeManager {
     const endElement = elementList[endIndex]
     if (startIndex === endIndex) {
       if (startElement.controlComponent === ControlComponent.PLACEHOLDER) {
-        // 找到第一个placeholder字符
+        // 첫 번째 placeholder 문자 찾기
         let index = startIndex - 1
         while (index > 0) {
           const preElement = elementList[index]
@@ -630,7 +630,7 @@ export class RangeManager {
         }
       }
     } else {
-      // 首、尾为占位符时，收缩到最后一个前缀字符后
+      // 첫번째, 마지막이 플레이스홀더일 때, 마지막 접두사 문자 뒤로 수축
       if (
         startElement.controlComponent === ControlComponent.PLACEHOLDER ||
         endElement.controlComponent === ControlComponent.PLACEHOLDER
@@ -650,7 +650,7 @@ export class RangeManager {
           index--
         }
       }
-      // 向右查找到第一个Value
+      // 오른쪽으로 검색하여 첫 번째 Value 찾기
       if (startElement.controlComponent === ControlComponent.PREFIX) {
         let index = startIndex + 1
         while (index < elementList.length) {
@@ -671,7 +671,7 @@ export class RangeManager {
           index++
         }
       }
-      // 向左查找到第一个Value
+      // 왼쪽으로 검색하여 첫 번째 Value 찾기
       if (endElement.controlComponent !== ControlComponent.VALUE) {
         let index = startIndex - 1
         while (index > 0) {

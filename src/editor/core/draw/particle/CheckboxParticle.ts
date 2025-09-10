@@ -46,7 +46,7 @@ export class CheckboxParticle {
       scale
     } = this.options
     const { metrics, checkbox } = row.elementList[index]
-    // 垂直布局设置
+    // 수직 레이아웃 설정
     if (
       verticalAlign === VerticalAlign.TOP ||
       verticalAlign === VerticalAlign.MIDDLE
@@ -58,7 +58,7 @@ export class CheckboxParticle {
         if (nextElement.value !== ZERO && nextElement.value !== NBSP) break
         nextIndex++
       }
-      // 以后一个非空格元素为基准
+      // 다음 비공백 요소를 기준으로 설정
       if (nextElement) {
         const {
           metrics: { boundingBoxAscent, boundingBoxDescent }
@@ -73,7 +73,7 @@ export class CheckboxParticle {
         }
       }
     }
-    // left top 四舍五入避免1像素问题
+    // left top 반올림으로 1픽셀 문제 방지
     const left = Math.round(x + gap * scale)
     const top = Math.round(y - metrics.height + lineWidth)
     const width = metrics.width - gap * 2 * scale
@@ -81,18 +81,18 @@ export class CheckboxParticle {
     ctx.save()
     ctx.beginPath()
     ctx.translate(0.5, 0.5)
-    // 绘制勾选状态
+    // 체크 상태 렌더링
     if (checkbox?.value) {
-      // 边框
+      // 테두리
       ctx.lineWidth = lineWidth
       ctx.strokeStyle = fillStyle
       ctx.rect(left, top, width, height)
       ctx.stroke()
-      // 背景色
+      // 배경색
       ctx.beginPath()
       ctx.fillStyle = fillStyle
       ctx.fillRect(left, top, width, height)
-      // 勾选对号
+      // 체크 표시
       ctx.beginPath()
       ctx.strokeStyle = strokeStyle
       ctx.lineWidth = lineWidth * 2 * scale

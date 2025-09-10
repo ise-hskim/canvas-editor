@@ -5,9 +5,9 @@ import { CanvasEvent } from '../CanvasEvent'
 
 export function mousemove(evt: MouseEvent, host: CanvasEvent) {
   const draw = host.getDraw()
-  // 是否是拖拽文字
+  // 텍스트 드래그 여부
   if (host.isAllowDrag) {
-    // 是否允许拖拽到选区
+    // 선택 영역으로 드래그 허용 여부
     const x = evt.offsetX
     const y = evt.offsetY
     const { startIndex, endIndex } = host.cacheRange!
@@ -27,7 +27,7 @@ export function mousemove(evt: MouseEvent, host: CanvasEvent) {
     }
     const cacheStartIndex = host.cacheRange?.startIndex
     if (cacheStartIndex) {
-      // 浮动元素拖拽调整位置
+      // 플로팅 요소 드래그로 위치 조정
       const dragElement = host.cacheElementList![cacheStartIndex]
       if (
         dragElement?.type === ElementType.IMAGE &&
@@ -46,11 +46,11 @@ export function mousemove(evt: MouseEvent, host: CanvasEvent) {
   if (!host.isAllowSelection || !host.mouseDownStartPosition) return
   const target = evt.target as HTMLDivElement
   const pageIndex = target.dataset.index
-  // 设置pageNo
+  // pageNo 설정
   if (pageIndex) {
     draw.setPageNo(Number(pageIndex))
   }
-  // 结束位置
+  // 종료 위치
   const position = draw.getPosition()
   const positionResult = position.getPositionByXY({
     x: evt.offsetX,
@@ -75,7 +75,7 @@ export function mousemove(evt: MouseEvent, host: CanvasEvent) {
     tableId: startTableId
   } = host.mouseDownStartPosition
   const endIndex = isTable ? tdValueIndex! : index
-  // 判断是否是表格跨行/列
+  // 테이블 행/열 넘나들기 여부 판단
   const rangeManager = draw.getRange()
   if (
     isTable &&
@@ -102,16 +102,16 @@ export function mousemove(evt: MouseEvent, host: CanvasEvent) {
     })
   } else {
     let end = ~endIndex ? endIndex : 0
-    // 开始或结束位置存在表格，但是非相同表格则忽略选区设置
+    // 시작 또는 종료 위치에 테이블이 존재하지만 동일하지 않은 테이블이면 선택 영역 설정 무시
     if ((startIsTable || isTable) && startTableId !== tableId) return
-    // 开始位置
+    // 시작 위치
     let start = startIndex
     if (start > end) {
       // prettier-ignore
       [start, end] = [end, start]
     }
     if (start === end) return
-    // 背景文本禁止选区
+    // 배경 텍스트 선택 영역 금지
     const elementList = draw.getElementList()
     const startElement = elementList[start + 1]
     const endElement = elementList[end]
@@ -124,7 +124,7 @@ export function mousemove(evt: MouseEvent, host: CanvasEvent) {
     }
     rangeManager.setRange(start, end)
   }
-  // 绘制
+  // 그리기
   draw.render({
     isSubmitHistory: false,
     isSetCursor: false,

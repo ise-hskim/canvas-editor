@@ -1,4 +1,4 @@
-// 复制内容时带入版权信息，代码仅为参考
+// 복사 시 저작권 정보 포함, 코드는 참고용입니다
 import Editor from '../../editor'
 
 export interface ICopyWithCopyrightOption {

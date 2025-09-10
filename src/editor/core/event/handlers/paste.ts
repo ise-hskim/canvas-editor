@@ -28,9 +28,9 @@ export function pasteElement(host: CanvasEvent, elementList: IElement[]) {
   const rangeManager = draw.getRange()
   const { startIndex } = rangeManager.getRange()
   const originalElementList = draw.getElementList()
-  // 全选粘贴无需格式化上下文
+  // 전체 선택 붙여넣기는 컨텍스트 포맷팅 불필요
   if (~startIndex && !rangeManager.getIsSelectAll()) {
-    // 如果是复制到虚拟元素里，则粘贴列表的虚拟元素需扁平化处理，避免产生新的虚拟元素
+    // 가상 요소로 복사하는 경우, 붙여넣기 목록의 가상 요소는 평면화 처리하여 새로운 가상 요소 생성 방지
     const anchorElement = originalElementList[startIndex]
     if (anchorElement?.titleId || anchorElement?.listId) {
       let start = 0
@@ -79,11 +79,11 @@ export function pasteImage(host: CanvasEvent, file: File | Blob) {
   const rangeManager = draw.getRange()
   const { startIndex } = rangeManager.getRange()
   const elementList = draw.getElementList()
-  // 创建文件读取器
+  // 파일 리더 생성
   const fileReader = new FileReader()
   fileReader.readAsDataURL(file)
   fileReader.onload = () => {
-    // 计算宽高
+    // 너비와 높이 계산
     const image = new Image()
     const value = fileReader.result as string
     image.src = value
@@ -109,18 +109,18 @@ export function pasteByEvent(host: CanvasEvent, evt: ClipboardEvent) {
   if (draw.isReadonly() || draw.isDisabled()) return
   const clipboardData = evt.clipboardData
   if (!clipboardData) return
-  // 自定义粘贴事件
+  // 사용자 정의 붙여넣기 이벤트
   const { paste } = draw.getOverride()
   if (paste) {
     const overrideResult = paste(evt)
-    // 默认阻止默认事件
+    // 기본 이벤트 차단
     if ((<IOverrideResult>overrideResult)?.preventDefault !== false) return
   }
-  // 优先读取编辑器内部粘贴板数据（粘贴板不包含文件时）
+  // 에디터 내부 클립보드 데이터 우선 읽기(클립보드에 파일이 없을 때)
   if (!getIsClipboardContainFile(clipboardData)) {
     const clipboardText = clipboardData.getData('text')
     const editorClipboardData = getClipboardData()
-    // 不同系统间默认换行符不同 windows:\r\n mac:\n
+    // 다른 시스템 간 기본 줄바꿈 문자가 다름 windows:\r\n mac:\n
     if (
       editorClipboardData &&
       normalizeLineBreak(clipboardText) ===
@@ -131,7 +131,7 @@ export function pasteByEvent(host: CanvasEvent, evt: ClipboardEvent) {
     }
   }
   removeClipboardData()
-  // 从粘贴板提取数据
+  // 클립보드에서 데이터 추출
   let isHTML = false
   for (let i = 0; i < clipboardData.items.length; i++) {
     const item = clipboardData.items[i]
@@ -169,14 +169,14 @@ export function pasteByEvent(host: CanvasEvent, evt: ClipboardEvent) {
 export async function pasteByApi(host: CanvasEvent, options?: IPasteOption) {
   const draw = host.getDraw()
   if (draw.isReadonly() || draw.isDisabled()) return
-  // 自定义粘贴事件
+  // 사용자 정의 붙여넣기 이벤트
   const { paste } = draw.getOverride()
   if (paste) {
     const overrideResult = paste()
-    // 默认阻止默认事件
+    // 기본 이벤트 차단
     if ((<IOverrideResult>overrideResult)?.preventDefault !== false) return
   }
-  // 优先读取编辑器内部粘贴板数据
+  // 에디터 내부 클립보드 데이터 우선 읽기
   const clipboardText = await navigator.clipboard.readText()
   const editorClipboardData = getClipboardData()
   if (clipboardText === editorClipboardData?.text) {
@@ -184,7 +184,7 @@ export async function pasteByApi(host: CanvasEvent, options?: IPasteOption) {
     return
   }
   removeClipboardData()
-  // 从内存粘贴板获取数据
+  // 메모리 클립보드에서 데이터 가져오기
   if (options?.isPlainText) {
     if (clipboardText) {
       host.input(clipboardText)

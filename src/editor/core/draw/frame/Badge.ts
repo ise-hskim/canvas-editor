@@ -52,28 +52,28 @@ export class Badge {
   }
 
   public render(ctx: CanvasRenderingContext2D, pageNo: number) {
-    // 文档签章
+    // 문서 도장
     if (pageNo === 0 && this.mainBadge) {
       const { scale, badge } = this.options
       const { left, top, width, height, value } = this.mainBadge
-      // 默认从页眉下开始
+      // 기본적으로 페이지 헤더 아래부터 시작
       const headerTop =
         this.draw.getMargins()[0] + this.draw.getHeader().getExtraHeight()
       const x = (left || badge.left) * scale
       const y = (top || badge.top) * scale + headerTop
       this._drawImage(ctx, x, y, width * scale, height * scale, value)
     }
-    // 区域签章
+    // 영역 도장
     if (this.areaBadgeMap.size) {
       const areaInfo = this.draw.getArea().getAreaInfo()
       if (areaInfo.size) {
         const { scale, badge } = this.options
         for (const areaItem of areaInfo) {
-          // 忽略非本页区域
+          // 비현재 페이지 영역 무시
           const { positionList } = areaItem[1]
           const firstPosition = positionList[0]
           if (firstPosition.pageNo !== pageNo) continue
-          // 忽略未设置签章区域
+          // 도장이 설정되지 않은 영역 무시
           const badgeItem = this.areaBadgeMap.get(areaItem[0])
           if (!badgeItem) continue
           const { left, top, width, height, value } = badgeItem

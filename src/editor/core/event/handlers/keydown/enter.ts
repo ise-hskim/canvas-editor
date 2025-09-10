@@ -20,7 +20,7 @@ export function enter(evt: KeyboardEvent, host: CanvasEvent) {
   const elementList = draw.getElementList()
   const startElement = elementList[startIndex]
   const endElement = elementList[endIndex]
-  // 最后一个列表项行首回车取消列表设置
+  // 마지막 목록 항목 행 시작에서 엔터 시 목록 설정 취소
   if (
     isCollapsed &&
     endElement.listId &&
@@ -30,19 +30,19 @@ export function enter(evt: KeyboardEvent, host: CanvasEvent) {
     draw.getListParticle().unsetList()
     return
   }
-  // 列表块内换行
+  // 목록 블록 내 개행
   let enterText: IElement = {
     value: ZERO
   }
   if (evt.shiftKey && startElement.listId) {
     enterText.listWrap = true
   }
-  // 格式化上下文
+  // 컨텍스트 포맷팅
   formatElementContext(elementList, [enterText], startIndex, {
     isBreakWhenWrap: true,
     editorOptions: draw.getOptions()
   })
-  // shift长按 && 最后位置回车无需复制区域上下文
+  // Shift 길게 누르기 && 마지막 위치에서 엔터 시 영역 컨텍스트 복사 불필요
   if (
     evt.shiftKey &&
     endElement.areaId &&
@@ -50,18 +50,18 @@ export function enter(evt: KeyboardEvent, host: CanvasEvent) {
   ) {
     enterText = omitObject(enterText, AREA_CONTEXT_ATTR)
   }
-  // 标题结尾处回车无需格式化及样式复制
+  // 제목 끝에서 엔터 시 포맷팅 및 스타일 복사 불필요
   if (
     !(
       endElement.titleId &&
       endElement.titleId !== elementList[endIndex + 1]?.titleId
     )
   ) {
-    // 复制样式属性
+    // 스타일 속성 복사
     const copyElement = rangeManager.getRangeAnchorStyle(elementList, endIndex)
     if (copyElement) {
       const copyAttr = [...EDITOR_ROW_ATTR]
-      // 不复制控件后缀样式
+      // 컴트롤 접미사 스타일 복사 안 함
       if (copyElement.controlComponent !== ControlComponent.POSTFIX) {
         copyAttr.push(...EDITOR_ELEMENT_STYLE_ATTR)
       }
@@ -73,7 +73,7 @@ export function enter(evt: KeyboardEvent, host: CanvasEvent) {
       })
     }
   }
-  // 控件或文档插入换行元素
+  // 컴트롤 또는 문서에 개행 요소 삽입
   const control = draw.getControl()
   const activeControl = control.getActiveControl()
   let curIndex: number

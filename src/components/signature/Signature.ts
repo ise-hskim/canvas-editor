@@ -63,25 +63,25 @@ export class Signature {
 
   private _render() {
     const { onClose, onCancel, onConfirm } = this.options
-    // 渲染遮罩层
+    // 마스크 레이어 렌더링
     const mask = document.createElement('div')
     mask.classList.add('signature-mask')
     mask.setAttribute(EDITOR_COMPONENT, EditorComponent.COMPONENT)
     document.body.append(mask)
-    // 渲染容器
+    // 컨테이너 렌더링
     const container = document.createElement('div')
     container.classList.add('signature-container')
     container.setAttribute(EDITOR_COMPONENT, EditorComponent.COMPONENT)
-    // 弹窗
+    // 팝업
     const signatureContainer = document.createElement('div')
     signatureContainer.classList.add('signature')
     container.append(signatureContainer)
-    // 标题容器
+    // 제목 컨테이너
     const titleContainer = document.createElement('div')
     titleContainer.classList.add('signature-title')
-    // 标题&关闭按钮
+    // 제목 & 닫기 버튼
     const titleSpan = document.createElement('span')
-    titleSpan.append(document.createTextNode('插入签名'))
+    titleSpan.append(document.createTextNode('서명 삽입'))
     const titleClose = document.createElement('i')
     titleClose.onclick = () => {
       if (onClose) {
@@ -92,29 +92,29 @@ export class Signature {
     titleContainer.append(titleSpan)
     titleContainer.append(titleClose)
     signatureContainer.append(titleContainer)
-    // 操作区
+    // 조작 영역
     const operationContainer = document.createElement('div')
     operationContainer.classList.add('signature-operation')
-    // 撤销
+    // 실행취소
     const undoContainer = document.createElement('div')
     undoContainer.classList.add('signature-operation__undo')
     const undoIcon = document.createElement('i')
     const undoLabel = document.createElement('span')
-    undoLabel.innerText = '撤销'
+    undoLabel.innerText = '실행취소'
     undoContainer.append(undoIcon)
     undoContainer.append(undoLabel)
     operationContainer.append(undoContainer)
-    // 清空画布
+    // 캔버스 지우기
     const trashContainer = document.createElement('div')
     trashContainer.classList.add('signature-operation__trash')
     const trashIcon = document.createElement('i')
     const trashLabel = document.createElement('span')
-    trashLabel.innerText = '清空'
+    trashLabel.innerText = '지우기'
     trashContainer.append(trashIcon)
     trashContainer.append(trashLabel)
     operationContainer.append(trashContainer)
     signatureContainer.append(operationContainer)
-    // 绘图区
+    // 그림 영역
     const canvasContainer = document.createElement('div')
     canvasContainer.classList.add('signature-canvas')
     const canvas = document.createElement('canvas')
@@ -124,13 +124,13 @@ export class Signature {
     canvas.style.height = `${this.canvasHeight / this.dpr}px`
     canvasContainer.append(canvas)
     signatureContainer.append(canvasContainer)
-    // 按钮容器
+    // 버튼 컨테이너
     const menuContainer = document.createElement('div')
     menuContainer.classList.add('signature-menu')
-    // 取消按钮
+    // 취소 버튼
     const cancelBtn = document.createElement('button')
     cancelBtn.classList.add('signature-menu__cancel')
-    cancelBtn.append(document.createTextNode('取消'))
+    cancelBtn.append(document.createTextNode('취소'))
     cancelBtn.type = 'button'
     cancelBtn.onclick = () => {
       if (onCancel) {
@@ -139,9 +139,9 @@ export class Signature {
       this._dispose()
     }
     menuContainer.append(cancelBtn)
-    // 确认按钮
+    // 확인 버튼
     const confirmBtn = document.createElement('button')
-    confirmBtn.append(document.createTextNode('确定'))
+    confirmBtn.append(document.createTextNode('확인'))
     confirmBtn.type = 'submit'
     confirmBtn.onclick = () => {
       if (onConfirm) {
@@ -151,7 +151,7 @@ export class Signature {
     }
     menuContainer.append(confirmBtn)
     signatureContainer.append(menuContainer)
-    // 渲染
+    // 렌더링
     document.body.append(container)
     this.container = container
     this.mask = mask
@@ -212,18 +212,18 @@ export class Signature {
 
   private _draw(evt: MouseEvent) {
     if (!this.isDrawing) return
-    // 计算鼠标移动速度
+    // 마우스 이동 속도 계산
     const curTimestamp = performance.now()
     const distance = Math.sqrt(evt.movementX ** 2 + evt.movementY ** 2)
     const speed = distance / (curTimestamp - this.preTimeStamp)
-    // 目标线宽：最小速度1，最大速度5，系数3
+    // 목표 선 두께: 최소 속도 1, 최대 속도 5, 계수 3
     const SPEED_FACTOR = 3
     const targetLineWidth = Math.min(5, Math.max(1, 5 - speed * SPEED_FACTOR))
-    // 平滑过渡算法（20%的变化比例）调整线条粗细：系数0.2
+    // 부드러운 전환 알고리즘 (20% 변화 비율)로 선 두께 조정: 계수 0.2
     const SMOOTH_FACTOR = 0.2
     this.ctx.lineWidth =
       this.ctx.lineWidth * (1 - SMOOTH_FACTOR) + targetLineWidth * SMOOTH_FACTOR
-    // 绘制
+    // 그리기
     const { offsetX, offsetY } = evt
     this.ctx.beginPath()
     this.ctx.moveTo(this.x, this.y)
@@ -233,7 +233,7 @@ export class Signature {
     this.y = offsetY
     this.linePoints.push([offsetX, offsetY])
     this.isDrawn = true
-    // 缓存之前时间戳
+    // 이전 타임스탬프 캐시
     this.preTimeStamp = curTimestamp
   }
 
@@ -257,7 +257,7 @@ export class Signature {
 
   private _toData(): ISignatureResult | null {
     if (!this.linePoints.length) return null
-    // 查找矩形四角坐标
+    // 사각형 네 모서리 좌표 찾기
     const startX = this.linePoints[0][0]
     const startY = this.linePoints[0][1]
     let minX = startX
@@ -279,7 +279,7 @@ export class Signature {
         maxY = point[1]
       }
     }
-    // 增加边框宽度
+    // 테두리 너비 증가
     const lineWidth = this.ctx.lineWidth
     minX = minX < lineWidth ? 0 : minX - lineWidth
     minY = minY < lineWidth ? 0 : minY - lineWidth
@@ -287,7 +287,7 @@ export class Signature {
     maxY = maxY + lineWidth
     const sw = maxX - minX
     const sh = maxY - minY
-    // 裁剪图像
+    // 이미지 자르기
     const imageData = this.ctx.getImageData(
       minX * this.dpr,
       minY * this.dpr,

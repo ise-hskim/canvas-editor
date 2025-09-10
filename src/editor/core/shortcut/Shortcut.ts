@@ -15,11 +15,11 @@ export class Shortcut {
     this.command = command
     this.globalShortcutList = []
     this.agentShortcutList = []
-    // 内部快捷键
+    // 내부 단축키
     this._addShortcutList([...richtextKeys, ...titleKeys, ...listKeys])
-    // 全局快捷键
+    // 전역 단축키
     this._addEvent()
-    // 编辑器快捷键
+    // 에디터 단축키
     const agentDom = draw.getCursor().getAgentDom()
     agentDom.addEventListener('keydown', this._agentKeydown.bind(this))
   }

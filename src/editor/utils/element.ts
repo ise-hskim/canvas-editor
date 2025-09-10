@@ -66,8 +66,8 @@ export function unzipElementList(elementList: IElement[]): IElement[] {
 }
 
 interface IFormatElementListOption {
-  isHandleFirstElement?: boolean // 根据上下文确定首字符处理逻辑（处理首字符补偿）
-  isForceCompensation?: boolean // 强制补偿字符
+  isHandleFirstElement?: boolean // 컨텍스트에 따른 첫 문자 처리 로직 결정 (첫 문자 보상 처리)
+  isForceCompensation?: boolean // 강제 문자 보상
   editorOptions: DeepRequired<IEditorOption>
 }
 
@@ -81,7 +81,7 @@ export function formatElementList(
     editorOptions
   } = options
   const startElement = elementList[0]
-  // 非首字符零宽节点文本元素则补偿-列表元素内部会补偿此处忽略
+  // 첫 문자가 아닌 제로 폭 노드 텍스트 요소는 보상 - 목록 요소 내부에서 보상되므로 여기서는 무시
   if (
     isForceCompensation ||
     (isHandleFirstElement &&
@@ -96,18 +96,18 @@ export function formatElementList(
   let i = 0
   while (i < elementList.length) {
     let el = elementList[i]
-    // 优先处理虚拟元素
+    // 가상 요소 우선 처리
     if (el.type === ElementType.TITLE) {
-      // 移除父节点
+      // 부모 노드 제거
       elementList.splice(i, 1)
-      // 格式化元素
+      // 요소 포맷팅
       const valueList = el.valueList || []
       formatElementList(valueList, {
         ...options,
         isHandleFirstElement: false,
         isForceCompensation: false
       })
-      // 追加节点
+      // 노드 추가
       if (valueList.length) {
         const titleId = el.titleId || getUUID()
         const titleOptions = editorOptions.title
@@ -118,7 +118,7 @@ export function formatElementList(
             value.titleId = titleId
             value.level = el.level
           }
-          // 文本型元素设置字体及加粗
+          // 텍스트형 요소 글꼴 및 굵기 설정
           if (isTextLikeElement(value)) {
             if (!value.size) {
               value.size = titleOptions[titleSizeMapping[value.level!]]
@@ -133,16 +133,16 @@ export function formatElementList(
       }
       i--
     } else if (el.type === ElementType.LIST) {
-      // 移除父节点
+      // 부모 노드 제거
       elementList.splice(i, 1)
-      // 格式化元素
+      // 요소 포맷팅
       const valueList = el.valueList || []
       formatElementList(valueList, {
         ...options,
         isHandleFirstElement: true,
         isForceCompensation: false
       })
-      // 追加节点
+      // 노드 추가
       if (valueList.length) {
         const listId = getUUID()
         for (let v = 0; v < valueList.length; v++) {
@@ -156,9 +156,9 @@ export function formatElementList(
       }
       i--
     } else if (el.type === ElementType.AREA) {
-      // 移除父节点
+      // 부모 노드 제거
       elementList.splice(i, 1)
-      // 格式化元素
+      // 요소 포맷팅
       const valueList = el?.valueList || []
       formatElementList(valueList, {
         ...options,
@@ -226,11 +226,11 @@ export function formatElementList(
         }
       }
     } else if (el.type === ElementType.HYPERLINK) {
-      // 移除父节点
+      // 부모 노드 제거
       elementList.splice(i, 1)
-      // 元素展开
+      // 요소 확장
       const valueList = unzipElementList(el.valueList || [])
-      // 追加节点
+      // 노드 추가
       if (valueList.length) {
         const hyperlinkId = getUUID()
         for (let v = 0; v < valueList.length; v++) {
@@ -244,11 +244,11 @@ export function formatElementList(
       }
       i--
     } else if (el.type === ElementType.DATE) {
-      // 移除父节点
+      // 부모 노드 제거
       elementList.splice(i, 1)
-      // 元素展开
+      // 요소 확장
       const valueList = unzipElementList(el.valueList || [])
-      // 追加节点
+      // 노드 추가
       if (valueList.length) {
         const dateId = getUUID()
         for (let v = 0; v < valueList.length; v++) {
@@ -262,7 +262,7 @@ export function formatElementList(
       }
       i--
     } else if (el.type === ElementType.CONTROL) {
-      // 兼容控件内容类型错误
+      // 컨트롤 내용 타입 오류 호환
       if (!el.control) {
         i++
         continue
@@ -286,24 +286,24 @@ export function formatElementList(
         }
       } = options
       const controlId = el.controlId || getUUID()
-      // 移除父节点
+      // 부모 노드 제거
       elementList.splice(i, 1)
-      // 控件上下文提取（压缩后的控件上下文无法提取）
+      // 컨트롤 컨텍스트 추출 (압축된 컨트롤 컨텍스트는 추출 불가)
       const controlContext = pickObject(el, [
         ...EDITOR_ELEMENT_CONTEXT_ATTR,
         ...EDITOR_ROW_ATTR
       ])
-      // 控件设置的默认样式（以前缀为基准）
+      // 컨트롤 설정 기본 스타일 (접두사 기준)
       const controlDefaultStyle = pickObject(
         <IElement>(<unknown>el.control),
         CONTROL_STYLE_ATTR
       )
-      // 前后缀个性化设置
+      // 접두사/접미사 개별 설정
       const thePrePostfixArg: Omit<IElement, 'value'> = {
         ...controlDefaultStyle,
         color: editorOptions.control.bracketColor
       }
-      // 前缀
+      // 접두사
       const prefixStrList = splitText(prefix || controlOption.prefix)
       for (let p = 0; p < prefixStrList.length; p++) {
         const value = prefixStrList[p]
@@ -318,7 +318,7 @@ export function formatElementList(
         })
         i++
       }
-      // 前文本
+      // 앞 텍스트
       if (preText) {
         const preTextStrList = splitText(preText)
         for (let p = 0; p < preTextStrList.length; p++) {
@@ -335,7 +335,7 @@ export function formatElementList(
           i++
         }
       }
-      // 值
+      // 값
       if (
         (value && value.length) ||
         type === ControlType.CHECKBOX ||
@@ -346,7 +346,7 @@ export function formatElementList(
         if (type === ControlType.CHECKBOX) {
           const codeList = code ? code.split(',') : []
           if (Array.isArray(valueSets) && valueSets.length) {
-            // 拆分valueList优先使用其属性
+            // valueList 분할 시 해당 속성 우선 사용
             const valueStyleList = valueList.reduce(
               (pre, cur) =>
                 pre.concat(
@@ -357,7 +357,7 @@ export function formatElementList(
             let valueStyleIndex = 0
             for (let v = 0; v < valueSets.length; v++) {
               const valueSet = valueSets[v]
-              // checkbox组件
+              // 체크박스 컴포넌트
               elementList.splice(i, 0, {
                 ...controlContext,
                 ...controlDefaultStyle,
@@ -372,7 +372,7 @@ export function formatElementList(
                 }
               })
               i++
-              // 文本
+              // 텍스트
               const valueStrList = splitText(valueSet.value)
               for (let e = 0; e < valueStrList.length; e++) {
                 const value = valueStrList[e]
@@ -394,7 +394,7 @@ export function formatElementList(
           }
         } else if (type === ControlType.RADIO) {
           if (Array.isArray(valueSets) && valueSets.length) {
-            // 拆分valueList优先使用其属性
+            // valueList 분할 시 해당 속성 우선 사용
             const valueStyleList = valueList.reduce(
               (pre, cur) =>
                 pre.concat(
@@ -405,7 +405,7 @@ export function formatElementList(
             let valueStyleIndex = 0
             for (let v = 0; v < valueSets.length; v++) {
               const valueSet = valueSets[v]
-              // radio组件
+              // 라디오 컴포넌트
               elementList.splice(i, 0, {
                 ...controlContext,
                 ...controlDefaultStyle,
@@ -420,7 +420,7 @@ export function formatElementList(
                 }
               })
               i++
-              // 文本
+              // 텍스트
               const valueStrList = splitText(valueSet.value)
               for (let e = 0; e < valueStrList.length; e++) {
                 const value = valueStrList[e]
@@ -495,7 +495,7 @@ export function formatElementList(
           i++
         }
       }
-      // 后文本
+      // 뒤 텍스트
       if (postText) {
         const postTextStrList = splitText(postText)
         for (let p = 0; p < postTextStrList.length; p++) {
@@ -512,7 +512,7 @@ export function formatElementList(
           i++
         }
       }
-      // 后缀
+      // 접미사
       const postfixStrList = splitText(postfix || controlOption.postfix)
       for (let p = 0; p < postfixStrList.length; p++) {
         const value = postfixStrList[p]
@@ -565,9 +565,9 @@ export function isSameElementExceptValue(
   if (sourceKeys.length !== targetKeys.length) return false
   for (let s = 0; s < sourceKeys.length; s++) {
     const key = sourceKeys[s] as never
-    // 值不需要校验
+    // 값은 검증 불필요
     if (key === 'value') continue
-    // groupIds数组需特殊校验数组是否相等
+    // groupIds 배열은 배열 동등성 특별 검증 필요
     if (
       key === 'groupIds' &&
       Array.isArray(source[key]) &&
@@ -621,7 +621,7 @@ export function zipElementList(
   let e = 0
   while (e < elementList.length) {
     let element = elementList[e]
-    // 上下文首字符（占位符）-列表首字符要保留避免是复选框
+    // 컨텍스트 첫 번째 문자(자리표시자) - 목록의 첫 번째 문자는 체크박스와 혼동을 피하기 위해 보존
     if (
       e === 0 &&
       element.value === ZERO &&
@@ -631,11 +631,11 @@ export function zipElementList(
       e++
       continue
     }
-    // 优先处理虚拟元素，后表格、超链接、日期、控件特殊处理
+    // 가상 요소 우선 처리, 그 다음 테이블, 하이퍼링크, 날짜, 컨트롤 특수 처리
     if (element.areaId) {
       const areaId = element.areaId
       const area = element.area
-      // 收集并压缩数据
+      // 데이터 수집 및 압축
       const valueList: IElement[] = []
       while (e < elementList.length) {
         const areaE = elementList[e]
@@ -649,7 +649,7 @@ export function zipElementList(
         e++
       }
       const areaElementList = zipElementList(valueList, options)
-      // 不归类区域元素
+      // 영역 요소 분류하지 않음
       if (isClassifyArea) {
         const areaElement: IElement = {
           type: ElementType.AREA,
@@ -664,7 +664,7 @@ export function zipElementList(
         continue
       }
     } else if (element.titleId && element.level) {
-      // 标题处理
+      // 제목 처리
       const titleId = element.titleId
       if (titleId) {
         const level = element.level
@@ -691,7 +691,7 @@ export function zipElementList(
         element = titleElement
       }
     } else if (element.listId && element.listType) {
-      // 列表处理
+      // 목록 처리
       const listId = element.listId
       if (listId) {
         const listType = element.listType
@@ -719,7 +719,7 @@ export function zipElementList(
         element = listElement
       }
     } else if (element.type === ElementType.TABLE) {
-      // 分页表格先进行合并
+      // 페이징 테이블 먼저 병합
       if (element.pagingId) {
         let tableIndex = e + 1
         let combineCount = 0
@@ -750,7 +750,7 @@ export function zipElementList(
                 isClassifyArea: false
               })
             }
-            // 压缩单元格属性
+            // 셀 속성 압축
             TABLE_TD_ZIP_ATTR.forEach(attr => {
               const value = td[attr] as never
               if (value !== undefined) {
@@ -762,7 +762,7 @@ export function zipElementList(
         }
       }
     } else if (element.type === ElementType.HYPERLINK) {
-      // 超链接处理
+      // 하이퍼링크 처리
       const hyperlinkId = element.hyperlinkId
       if (hyperlinkId) {
         const hyperlinkElement: IElement = {
@@ -810,7 +810,7 @@ export function zipElementList(
       }
     } else if (element.controlId) {
       const controlId = element.controlId
-      // 控件包含前后缀则转换为控件
+      // 컨트롤이 접두사/접미사를 포함하면 컨트롤로 변환
       if (element.controlComponent === ControlComponent.PREFIX) {
         const valueList: IElement[] = []
         let isFull = false
@@ -829,7 +829,7 @@ export function zipElementList(
           start++
         }
         if (isFull) {
-          // 以前缀为基准更新控件默认样式
+          // 접두사를 기준으로 컨트롤 기본 스타일 업데이트
           const controlDefaultStyle = <IControlSelect>(
             (<unknown>pickObject(element, CONTROL_STYLE_ATTR))
           )
@@ -846,11 +846,11 @@ export function zipElementList(
           }
           controlElement.control!.value = zipElementList(valueList, options)
           element = pickElementAttr(controlElement, { extraPickAttrs })
-          // 控件元素数量 - 1（当前元素）
+          // 컨트롤 요소 수 - 1(현재 요소)
           e += start - e - 1
         }
       }
-      // 不完整的控件元素不转化为控件，如果不是文本则直接忽略
+      // 불완전한 컨트롤 요소는 컨트롤로 변환하지 않음, 텍스트가 아니면 직접 무시
       if (element.controlComponent) {
         delete element.control
         delete element.controlId
@@ -864,7 +864,7 @@ export function zipElementList(
         }
       }
     }
-    // 组合元素
+    // 조합 요소
     const pickElement = pickElementAttr(element, { extraPickAttrs })
     if (
       !element.type ||
@@ -948,7 +948,7 @@ export function getAnchorElement(
   const anchorElement = elementList[anchorIndex]
   if (!anchorElement) return null
   const anchorNextElement = elementList[anchorIndex + 1]
-  // 非列表元素 && 当前元素是换行符 && 下一个元素不是换行符 && 区域相同 => 则以下一个元素作为参考元素
+  // 비목록 요소 && 현재 요소가 개행 문자 && 다음 요소가 개행 문자가 아님 && 영역이 동일 => 다음 요소를 참조 요소로 사용
   return !anchorElement.listId &&
     anchorElement.value === ZERO &&
     anchorNextElement &&
@@ -973,11 +973,11 @@ export function formatElementContext(
   if (!copyElement) return
   const { isBreakWhenWrap = false, editorOptions } = options || {}
   const { mode } = editorOptions || {}
-  // 非设计模式时：标题元素禁用时不复制标题属性
+  // 비디자인 모드: 제목 요소가 비활성화된 경우 제목 속성을 복사하지 않음
   if (mode !== EditorMode.DESIGN && copyElement.title?.disabled) {
     copyElement = omitObject(copyElement, TITLE_CONTEXT_ATTR)
   }
-  // 是否已经换行
+  // 이미 줄바꿈되었는지 여부
   let isBreakWarped = false
   for (let e = 0; e < formatElementList.length; e++) {
     const targetElement = formatElementList[e]
@@ -988,8 +988,8 @@ export function formatElementContext(
     ) {
       isBreakWarped = true
     }
-    // 1. 即使换行停止也要处理表格上下文信息
-    // 2. 定位元素非列表，无需处理粘贴列表的上下文，仅处理表格及行上下文信息
+    // 1. 줄바꿈이 중단되더라도 테이블 컨텍스트 정보를 처리해야 함
+    // 2. 위치 지정 요소가 목록이 아니면 붙여넣기 목록 컨텍스트를 처리할 필요 없이 테이블과 행 컨텍스트 정보만 처리
     if (
       isBreakWarped ||
       (!copyElement.listId && targetElement.type === ElementType.LIST)
@@ -1013,7 +1013,7 @@ export function formatElementContext(
         options
       )
     }
-    // 非块类元素，需处理行属性
+    // 블록 요소가 아니면 행 속성을 처리해야 함
     const cloneAttr = [...EDITOR_ELEMENT_CONTEXT_ATTR]
     if (!getIsBlockElement(targetElement)) {
       cloneAttr.push(...EDITOR_ROW_ATTR)
@@ -1067,7 +1067,7 @@ export function splitListElement(
   const listElementListMap: Map<number, IElement[]> = new Map()
   for (let e = 0; e < elementList.length; e++) {
     const element = elementList[e]
-    // 移除列表首行换行字符-如果是复选框直接忽略
+    // 목록 첫 행 줄바꿈 문자 제거 - 체크박스인 경우 직접 무시
     if (e === 0) {
       if (element.checkbox) continue
       element.value = element.value.replace(START_LINE_BREAK_REG, '')
@@ -1113,7 +1113,7 @@ export function groupElementListByRowFlex(
   for (let e = 1; e < elementList.length; e++) {
     const element = elementList[e]
     const rowFlex = element.rowFlex || null
-    // 行布局相同&非块元素时追加数据，否则新增分组
+    // 행 레이아웃이 동일하고 블록 요소가 아니면 데이터 추가, 그렇지 않으면 새 그룹 생성
     if (
       currentRowFlex === rowFlex &&
       !getIsBlockElement(element) &&
@@ -1130,7 +1130,7 @@ export function groupElementListByRowFlex(
       currentRowFlex = rowFlex
     }
   }
-  // 压缩数据
+  // 데이터 압축
   for (let g = 0; g < elementListGroupList.length; g++) {
     const elementListGroup = elementListGroupList[g]
     elementListGroup.data = zipElementList(elementListGroup.data)
@@ -1147,14 +1147,14 @@ export function createDomFromElementList(
     const clipboardDom = document.createElement('div')
     for (let e = 0; e < payload.length; e++) {
       const element = payload[e]
-      // 构造表格
+      // 테이블 구축
       if (element.type === ElementType.TABLE) {
         const tableDom: HTMLTableElement = document.createElement('table')
         tableDom.setAttribute('cellSpacing', '0')
         tableDom.setAttribute('cellpadding', '0')
         tableDom.setAttribute('border', '0')
         const borderStyle = '1px solid #000000'
-        // 表格边框
+        // 테이블 테두리
         if (!element.borderType || element.borderType === TableBorder.ALL) {
           tableDom.style.borderTop = borderStyle
           tableDom.style.borderLeft = borderStyle
@@ -1186,7 +1186,7 @@ export function createDomFromElementList(
             tdDom.colSpan = td.colspan
             tdDom.rowSpan = td.rowspan
             tdDom.style.verticalAlign = td.verticalAlign || 'top'
-            // 单元格边框
+            // 셀 테두리
             if (td.borderTypes?.includes(TdBorder.TOP)) {
               tdDom.style.borderTop = borderStyle
             }
@@ -1230,7 +1230,7 @@ export function createDomFromElementList(
         if (element.listStyle) {
           list.style.listStyleType = listStyleCSSMapping[element.listStyle]
         }
-        // 按照换行符拆分
+        // 줄바꿈 문자에 따라 분할
         const zipList = zipElementList(element.valueList!)
         const listElementListMap = splitListElement(zipList)
         listElementListMap.forEach(listElementList => {
@@ -1318,7 +1318,7 @@ export function createDomFromElementList(
         }
         if (!text) continue
         const dom = convertElementToDom(element, editorOptions)
-        // 前一个元素是标题，移除首行换行符
+        // 이전 요소가 제목이면 첫 행 줄바꿈 문자 제거
         if (payload[e - 1]?.type === ElementType.TITLE) {
           text = text.replace(/^\n/, '')
         }
@@ -1328,16 +1328,16 @@ export function createDomFromElementList(
     }
     return clipboardDom
   }
-  // 按行布局分类创建dom
+  // 행 레이아웃별로 분류하여 DOM 생성
   const clipboardDom = document.createElement('div')
   const groupElementList = groupElementListByRowFlex(elementList)
   for (let g = 0; g < groupElementList.length; g++) {
     const elementGroupRowFlex = groupElementList[g]
-    // 行布局样式设置
+    // 행 레이아웃 스타일 설정
     const isDefaultRowFlex =
       !elementGroupRowFlex.rowFlex ||
       elementGroupRowFlex.rowFlex === RowFlex.LEFT
-    // 块元素使用flex否则使用text-align
+    // 블록 요소는 flex 사용, 그렇지 않으면 text-align 사용
     const rowFlexDom = document.createElement('div')
     if (!isDefaultRowFlex) {
       const firstElement = elementGroupRowFlex.data[0]
@@ -1352,9 +1352,9 @@ export function createDomFromElementList(
         )
       }
     }
-    // 布局内容
+    // 레이아웃 내용
     rowFlexDom.innerHTML = buildDom(elementGroupRowFlex.data).innerHTML
-    // 未设置行布局时无需行布局容器
+    // 행 레이아웃이 설정되지 않았을 때 행 레이아웃 컨테이너 불필요
     if (!isDefaultRowFlex) {
       clipboardDom.append(rowFlexDom)
     } else {
@@ -1386,25 +1386,25 @@ export function convertTextNodeToElement(
     italic: style.fontStyle.includes('italic'),
     size: Math.floor(parseFloat(style.fontSize))
   }
-  // 元素类型-默认文本
+  // 요소 타입 - 기본적으로 텍스트
   if (anchorNode.nodeName === 'SUB' || style.verticalAlign === 'sub') {
     element.type = ElementType.SUBSCRIPT
   } else if (anchorNode.nodeName === 'SUP' || style.verticalAlign === 'super') {
     element.type = ElementType.SUPERSCRIPT
   }
-  // 行对齐
+  // 행 정렬
   if (rowFlex !== RowFlex.LEFT) {
     element.rowFlex = rowFlex
   }
-  // 高亮色
+  // 하이라이트 색
   if (style.backgroundColor !== 'rgba(0, 0, 0, 0)') {
     element.highlight = style.backgroundColor
   }
-  // 下划线
+  // 밑줄
   if (style.textDecorationLine.includes('underline')) {
     element.underline = true
   }
-  // 删除线
+  // 취소선
   if (style.textDecorationLine.includes('line-through')) {
     element.strikeout = true
   }
@@ -1430,7 +1430,7 @@ export function getElementListByHTML(
       const childNodes = dom.childNodes
       for (let n = 0; n < childNodes.length; n++) {
         const node = childNodes[n]
-        // br元素与display:block元素需换行
+        // br 요소와 display:block 요소는 줄바꿈 필요
         if (node.nodeName === 'BR') {
           elementList.push({
             value: '\n'
@@ -1556,7 +1556,7 @@ export function getElementListByHTML(
           }
           // colgroup
           const colElements = tableElement.querySelectorAll('colgroup col')
-          // 基础数据
+          // 기본 데이터
           tableElement.querySelectorAll('tr').forEach(trElement => {
             const trHeightStr = window
               .getComputedStyle(trElement)
@@ -1587,7 +1587,7 @@ export function getElementListByHTML(
             element.trList!.push(tr)
           })
           if (element.trList!.length) {
-            // 列选项数据
+            // 열 옵션 데이터
             const tdCount = element.trList![0].tdList.reduce(
               (pre, cur) => pre + cur.colspan,
               0
@@ -1637,7 +1637,7 @@ export function getElementListByHTML(
       }
     }
   }
-  // 追加dom
+  // DOM 추가
   const clipboardDom = document.createElement('div')
   clipboardDom.innerHTML = htmlText
   document.body.appendChild(clipboardDom)
@@ -1648,9 +1648,9 @@ export function getElementListByHTML(
     }
   })
   deleteNodes.forEach(node => node.remove())
-  // 搜索文本节点
+  // 텍스트 노드 검색
   findTextNode(clipboardDom)
-  // 移除dom
+  // DOM 제거
   clipboardDom.remove()
   return elementList
 }
@@ -1660,7 +1660,7 @@ export function getTextFromElementList(elementList: IElement[]) {
     let text = ''
     for (let e = 0; e < payload.length; e++) {
       const element = payload[e]
-      // 构造表格
+      // 테이블 구축
       if (element.type === ElementType.TABLE) {
         text += `\n`
         const trList = element.trList!
@@ -1681,10 +1681,10 @@ export function getTextFromElementList(elementList: IElement[]) {
       } else if (element.type === ElementType.TITLE) {
         text += `${buildText(zipElementList(element.valueList!))}`
       } else if (element.type === ElementType.LIST) {
-        // 按照换行符拆分
+        // 줄바꿈 문자에 따라 분할
         const zipList = zipElementList(element.valueList!)
         const listElementListMap = splitListElement(zipList)
-        // 无序列表前缀
+        // 비순서 목록 접두사
         let ulListStyleText = ''
         if (element.listType === ListType.UL) {
           ulListStyleText =

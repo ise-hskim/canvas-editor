@@ -1,5 +1,5 @@
 export enum AreaMode {
-  EDIT = 'edit', // 编辑模式（文档可编辑、辅助元素均存在）
-  READONLY = 'readonly', // 只读模式（文档不可编辑）
-  FORM = 'form' // 表单模式（仅控件内可编辑）
+  EDIT = 'edit', // 편집 모드 (문서 편집 가능, 보조 요소 모두 존재)
+  READONLY = 'readonly', // 읽기 전용 모드 (문서 편집 불가)
+  FORM = 'form' // 폼 모드 (컨트롤 내부만 편집 가능)
 }

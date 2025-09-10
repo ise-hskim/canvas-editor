@@ -213,52 +213,52 @@ export function nextTick(fn: Function) {
   }, 0)
 }
 
-export function convertNumberToChinese(num: number) {
-  const chineseNum = [
-    '零',
-    '一',
-    '二',
-    '三',
-    '四',
-    '五',
-    '六',
-    '七',
-    '八',
-    '九'
+export function convertNumberToKorean(num: number) {
+  const koreanNum = [
+    '영',
+    '일',
+    '이',
+    '삼',
+    '사',
+    '오',
+    '육',
+    '칠',
+    '팔',
+    '구'
   ]
-  const chineseUnit = [
+  const koreanUnit = [
     '',
-    '十',
-    '百',
-    '千',
-    '万',
-    '十',
-    '百',
-    '千',
-    '亿',
-    '十',
-    '百',
-    '千',
-    '万',
-    '十',
-    '百',
-    '千',
-    '亿'
+    '십',
+    '백',
+    '천',
+    '만',
+    '십',
+    '백',
+    '천',
+    '억',
+    '십',
+    '백',
+    '천',
+    '만',
+    '십',
+    '백',
+    '천',
+    '억'
   ]
-  if (!num || isNaN(num)) return '零'
+  if (!num || isNaN(num)) return '영'
   const numStr = num.toString().split('')
   let result = ''
   for (let i = 0; i < numStr.length; i++) {
     const desIndex = numStr.length - 1 - i
-    result = `${chineseUnit[i]}${result}`
-    result = `${chineseNum[Number(numStr[desIndex])]}${result}`
+    result = `${koreanUnit[i]}${result}`
+    result = `${koreanNum[Number(numStr[desIndex])]}${result}`
   }
-  result = result.replace(/零(千|百|十)/g, '零').replace(/十零/g, '十')
-  result = result.replace(/零+/g, '零')
-  result = result.replace(/零亿/g, '亿').replace(/零万/g, '万')
-  result = result.replace(/亿万/g, '亿')
-  result = result.replace(/零+$/, '')
-  result = result.replace(/^一十/g, '十')
+  result = result.replace(/영(천|백|십)/g, '영').replace(/십영/g, '십')
+  result = result.replace(/영+/g, '영')
+  result = result.replace(/영억/g, '억').replace(/영만/g, '만')
+  result = result.replace(/억만/g, '억')
+  result = result.replace(/영+$/, '')
+  result = result.replace(/^일십/g, '십')
   return result
 }
 

@@ -117,7 +117,7 @@ export class Header {
   }
 
   public getExtraHeight(): number {
-    // 页眉上边距 + 实际高 - 页面上边距
+    // 헤더 상단 여백 + 실제 높이 - 페이지 상단 여백
     const margins = this.draw.getMargins()
     const headerHeight = this.getHeight()
     const headerTop = this.getHeaderTop()
@@ -132,7 +132,7 @@ export class Header {
       : this.options.header.inactiveAlpha
     const innerWidth = this.draw.getInnerWidth()
     const maxHeight = this.getMaxHeight()
-    // 超出最大高度不渲染
+    // 최대 높이 초과시 렌더링하지 않음
     const rowList: IRow[] = []
     let curRowHeight = 0
     for (let r = 0; r < this.rowList.length; r++) {

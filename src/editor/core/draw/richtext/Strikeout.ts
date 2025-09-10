@@ -17,7 +17,7 @@ export class Strikeout extends AbstractRichText {
     ctx.save()
     ctx.lineWidth = scale
     ctx.strokeStyle = strikeoutColor
-    const adjustY = y + 0.5 // 从1处渲染，避免线宽度等于3
+    const adjustY = y + 0.5 // 1에서 렌더링하여 선 너비가 3이 되는 것을 방지
     ctx.beginPath()
     ctx.moveTo(x, adjustY)
     ctx.lineTo(x + width, adjustY)

@@ -87,9 +87,9 @@ export default class Editor {
     data: IEditorData | IElement[],
     options: IEditorOption = {}
   ) {
-    // 合并配置
+    // 구성 병합
     const editorOptions = mergeOption(options)
-    // 数据处理
+    // 데이터 처리
     data = deepClone(data)
     let headerElementList: IElement[] = []
     let mainElementList: IElement[] = []
@@ -112,13 +112,13 @@ export default class Editor {
         isForceCompensation: true
       })
     })
-    // 监听
+    // 리스너
     this.listener = new Listener()
-    // 事件
+    // 이벤트
     this.eventBus = new EventBus<EventBusMap>()
-    // 重写
+    // 오버라이드
     this.override = new Override()
-    // 启动
+    // 시작
     const draw = new Draw(
       container,
       editorOptions,
@@ -131,31 +131,31 @@ export default class Editor {
       this.eventBus,
       this.override
     )
-    // 命令
+    // 명령어
     this.command = new Command(new CommandAdapt(draw))
-    // 菜单
+    // 메뉴
     const contextMenu = new ContextMenu(draw, this.command)
-    // 快捷键
+    // 단축키
     const shortcut = new Shortcut(draw, this.command)
-    // 注册
+    // 등록
     this.register = new Register({
       contextMenu,
       shortcut,
       i18n: draw.getI18n()
     })
-    // 注册销毁方法
+    // 파괴 메서드 등록
     this.destroy = () => {
       draw.destroy()
       shortcut.removeEvent()
       contextMenu.removeEvent()
     }
-    // 插件
+    // 플러그인
     const plugin = new Plugin(this)
     this.use = plugin.use.bind(plugin)
   }
 }
 
-// 对外方法
+// 외부 메서드
 export {
   splitText,
   createDomFromElementList,
@@ -163,7 +163,7 @@ export {
   getTextFromElementList
 }
 
-// 对外常量
+// 외부 상수
 export {
   EDITOR_COMPONENT,
   LETTER_CLASS,
@@ -172,7 +172,7 @@ export {
   EDITOR_CLIPBOARD
 }
 
-// 对外枚举
+// 외부 열거형
 export {
   Editor,
   RowFlex,
@@ -211,7 +211,7 @@ export {
   WatermarkType
 }
 
-// 对外类型
+// 외부 타입
 export type {
   IElement,
   IEditorData,

@@ -187,7 +187,7 @@ export class CommandAdapt {
     const elementList = this.draw.getElementList()
     const { startIndex, endIndex } = this.range.getRange()
     const isCollapsed = startIndex === endIndex
-    // 首字符禁止删除
+    // 첫번째 문자 삭제 금지
     if (
       isCollapsed &&
       elementList[startIndex].value === ZERO &&
@@ -301,7 +301,7 @@ export class CommandAdapt {
   }
 
   public painter(options: IPainterOption) {
-    // 如果单击且已经有样式设置则取消设置
+    // 단일 클릭이고 이미 스타일이 설정되어 있으면 설정 취소
     if (!options.isDblclick && this.draw.getPainterStyle()) {
       this.canvasEvent.clearPainterStyle()
       return
@@ -334,7 +334,7 @@ export class CommandAdapt {
       (this.draw.isReadonly() || this.draw.isDisabled())
     if (isDisabled) return
     const selection = this.range.getSelectionElementList()
-    // 选区设置或设置换行处样式
+    // 선택 영역 설정 또는 줄바꿈 위치 스타일 설정
     let renderOption: IDrawOption = {}
     let changeElementList: IElement[] = []
     if (selection?.length) {
@@ -399,7 +399,7 @@ export class CommandAdapt {
     if (isDisabled) return
     const { minSize, maxSize, defaultSize } = this.options
     if (payload < minSize || payload > maxSize) return
-    // 选区设置或设置换行处样式
+    // 선택 영역 설정 또는 줄바꿈 위치 스타일 설정
     let renderOption: IDrawOption = {}
     let changeElementList: IElement[] = []
     const selection = this.range.getTextLikeSelectionElementList()
@@ -449,7 +449,7 @@ export class CommandAdapt {
     if (isDisabled) return
     const { defaultSize, maxSize } = this.options
     const selection = this.range.getTextLikeSelectionElementList()
-    // 选区设置或设置换行处样式
+    // 선택 영역 설정 또는 줄바꿈 위치 스타일 설정
     let renderOption: IDrawOption = {}
     let changeElementList: IElement[] = []
     if (selection?.length) {
@@ -502,7 +502,7 @@ export class CommandAdapt {
     if (isDisabled) return
     const { defaultSize, minSize } = this.options
     const selection = this.range.getTextLikeSelectionElementList()
-    // 选区设置或设置换行处样式
+    // 선택 영역 설정 또는 줄바꿈 위치 스타일 설정
     let renderOption: IDrawOption = {}
     let changeElementList: IElement[] = []
     if (selection?.length) {
@@ -628,7 +628,7 @@ export class CommandAdapt {
     if (isDisabled) return
     const selection = this.range.getSelectionElementList()
     if (selection?.length) {
-      // 没有设置下划线、当前与之前有一个设置不存在、文本装饰不一致时重设下划线
+      // 밑줄이 설정되어 있지 않거나, 현재와 이전 설정 중 하나가 존재하지 않거나, 텍스트 장식이 일치하지 않을 때 밑줄 다시 설정
       const isSetUnderline = selection.some(
         s =>
           !s.underline ||
@@ -724,14 +724,14 @@ export class CommandAdapt {
       s => s.type === ElementType.SUPERSCRIPT
     )
     selection.forEach(el => {
-      // 取消上标
+      // 상시 취소
       if (~superscriptIndex) {
         if (el.type === ElementType.SUPERSCRIPT) {
           el.type = ElementType.TEXT
           delete el.actualSize
         }
       } else {
-        // 设置上标
+        // 상시 설정
         if (
           !el.type ||
           el.type === ElementType.TEXT ||
@@ -756,14 +756,14 @@ export class CommandAdapt {
       s => s.type === ElementType.SUBSCRIPT
     )
     selection.forEach(el => {
-      // 取消下标
+      // 하시 취소
       if (~subscriptIndex) {
         if (el.type === ElementType.SUBSCRIPT) {
           el.type = ElementType.TEXT
           delete el.actualSize
         }
       } else {
-        // 设置下标
+        // 하시 설정
         if (
           !el.type ||
           el.type === ElementType.TEXT ||
@@ -870,13 +870,13 @@ export class CommandAdapt {
     const { startIndex, endIndex } = this.range.getRange()
     if (!~startIndex && !~endIndex) return
     const elementList = this.draw.getElementList()
-    // 需要改变的元素列表
+    // 변경해야 할 요소 목록
     const changeElementList =
       startIndex === endIndex
         ? this.range.getRangeParagraphElementList()
         : elementList.slice(startIndex + 1, endIndex + 1)
     if (!changeElementList || !changeElementList.length) return
-    // 设置值
+    // 값 설정
     const titleId = getUUID()
     const titleOptions = this.draw.getOptions().title
     changeElementList.forEach(el => {
@@ -898,7 +898,7 @@ export class CommandAdapt {
         }
       }
     })
-    // 光标定位
+    // 커서 위치 지정
     const isSetCursor = startIndex === endIndex
     const curIndex = isSetCursor ? endIndex : startIndex
     this.draw.render({ curIndex, isSetCursor })
@@ -920,7 +920,7 @@ export class CommandAdapt {
     rowElementList.forEach(element => {
       element.rowFlex = payload
     })
-    // 光标定位
+    // 커서 위치 지정
     const isSetCursor = startIndex === endIndex
     const curIndex = isSetCursor ? endIndex : startIndex
     this.draw.render({ curIndex, isSetCursor })
@@ -936,7 +936,7 @@ export class CommandAdapt {
     rowElementList.forEach(element => {
       element.rowMargin = payload
     })
-    // 光标定位
+    // 커서 위치 지정
     const isSetCursor = startIndex === endIndex
     const curIndex = isSetCursor ? endIndex : startIndex
     this.draw.render({ curIndex, isSetCursor })
@@ -1096,7 +1096,7 @@ export class CommandAdapt {
     const elementList = this.draw.getElementList()
     const startElement = elementList[startIndex]
     if (startElement.type !== ElementType.HYPERLINK) return null
-    // 向左查找
+    // 왼쪽으로 찾기
     let preIndex = startIndex
     while (preIndex > 0) {
       const preElement = elementList[preIndex]
@@ -1106,7 +1106,7 @@ export class CommandAdapt {
       }
       preIndex--
     }
-    // 向右查找
+    // 오른쪽으로 검색
     let nextIndex = startIndex + 1
     while (nextIndex < elementList.length) {
       const nextElement = elementList[nextIndex]
@@ -1116,7 +1116,7 @@ export class CommandAdapt {
       }
       nextIndex++
     }
-    // 控件在最后
+    // 컨트롤이 마지막에 위치
     if (nextIndex === elementList.length) {
       rightIndex = nextIndex - 1
     }
@@ -1127,19 +1127,19 @@ export class CommandAdapt {
   public deleteHyperlink() {
     const isDisabled = this.draw.isReadonly() || this.draw.isDisabled()
     if (isDisabled) return
-    // 获取超链接索引
+    // 하이퍼링크 인덱스 가져오기
     const hyperRange = this.getHyperlinkRange()
     if (!hyperRange) return
     const elementList = this.draw.getElementList()
     const [leftIndex, rightIndex] = hyperRange
-    // 删除元素
+    // 요소 삭제
     this.draw.spliceElementList(
       elementList,
       leftIndex,
       rightIndex - leftIndex + 1
     )
     this.draw.getHyperlinkParticle().clearHyperlinkPopup()
-    // 重置画布
+    // 캔버스 재설정
     const newIndex = leftIndex - 1
     this.range.setRange(newIndex, newIndex)
     this.draw.render({
@@ -1150,12 +1150,12 @@ export class CommandAdapt {
   public cancelHyperlink() {
     const isDisabled = this.draw.isReadonly() || this.draw.isDisabled()
     if (isDisabled) return
-    // 获取超链接索引
+    // 하이퍼링크 인덱스 가져오기
     const hyperRange = this.getHyperlinkRange()
     if (!hyperRange) return
     const elementList = this.draw.getElementList()
     const [leftIndex, rightIndex] = hyperRange
-    // 删除属性
+    // 속성 삭제
     for (let i = leftIndex; i <= rightIndex; i++) {
       const element = elementList[i]
       delete element.type
@@ -1164,7 +1164,7 @@ export class CommandAdapt {
       delete element.underline
     }
     this.draw.getHyperlinkParticle().clearHyperlinkPopup()
-    // 重置画布
+    // 캔버스 재설정
     const { endIndex } = this.range.getRange()
     this.draw.render({
       curIndex: endIndex,
@@ -1175,18 +1175,18 @@ export class CommandAdapt {
   public editHyperlink(payload: string) {
     const isDisabled = this.draw.isReadonly() || this.draw.isDisabled()
     if (isDisabled) return
-    // 获取超链接索引
+    // 하이퍼링크 인덱스 가져오기
     const hyperRange = this.getHyperlinkRange()
     if (!hyperRange) return
     const elementList = this.draw.getElementList()
     const [leftIndex, rightIndex] = hyperRange
-    // 替换url
+    // URL 교체
     for (let i = leftIndex; i <= rightIndex; i++) {
       const element = elementList[i]
       element.url = payload
     }
     this.draw.getHyperlinkParticle().clearHyperlinkPopup()
-    // 重置画布
+    // 캔버스 재설정
     const { endIndex } = this.range.getRange()
     this.draw.render({
       curIndex: endIndex,
@@ -1203,7 +1203,7 @@ export class CommandAdapt {
     if (!~startIndex && !~endIndex) return
     const elementList = this.draw.getElementList()
     let curIndex = -1
-    // 光标存在分割线，则判断为修改线段逻辑
+    // 커서에 분할선이 있으면 선분 수정 로직으로 판단
     const endElement = elementList[endIndex + 1]
     if (endElement && endElement.type === ElementType.SEPARATOR) {
       if (
@@ -1220,7 +1220,7 @@ export class CommandAdapt {
         type: ElementType.SEPARATOR,
         dashArray: payload
       }
-      // 从行头增加分割线
+      // 행 시작부부터 분할선 추가
       formatElementContext(elementList, [newElement], startIndex, {
         editorOptions: this.options
       })
@@ -1471,13 +1471,13 @@ export class CommandAdapt {
     const range = this.range.getRange()
     const { startIndex, endIndex } = range
     if (!~startIndex && !~endIndex) return null
-    // 选区信息
+    // 선택 영역 정보
     const isCollapsed = startIndex === endIndex
     const selectionText = this.range.toString()
     const selectionElementList = zipElementList(
       this.range.getSelectionElementList() || []
     )
-    // 元素信息
+    // 요소 정보
     const elementList = this.draw.getElementList()
     const startElement = pickElementAttr(
       elementList[isCollapsed ? startIndex : startIndex + 1],
@@ -1488,7 +1488,7 @@ export class CommandAdapt {
     const endElement = pickElementAttr(elementList[endIndex], {
       extraPickAttrs: ['id', 'controlComponent']
     })
-    // 页码信息、行信息
+    // 페이지 번호 정보, 행 정보
     const rowList = this.draw.getRowList()
     const positionList = this.position.getPositionList()
     const startPosition = positionList[startIndex]
@@ -1497,20 +1497,20 @@ export class CommandAdapt {
     const endPageNo = endPosition.pageNo
     const startRowNo = startPosition.rowIndex
     const endRowNo = endPosition.rowIndex
-    // 列信息
+    // 열 정보
     const startRow = rowList[startRowNo]
     const endRow = rowList[endRowNo]
     let startColNo = 0
     let endColNo = 0
-    // 以光标显示位置为准
+    // 커서 표시 위치를 기준으로
     if (!this.draw.getCursor().getHitLineStartIndex()) {
-      // 换行符不计算列数量
+      // 줄바꿈 문자는 열 수 계산에 포함하지 않음
       startColNo =
         startRow.elementList[0]?.value === ZERO
           ? startPosition.index! - startRow.startIndex
           : startPosition.index! - startRow.startIndex + 1
     }
-    // 光标闭合时列位置相同
+    // 커서가 닫혀있을 때 열 위치는 동일
     if (startPosition === endPosition) {
       endColNo = startColNo
     } else {
@@ -1520,13 +1520,13 @@ export class CommandAdapt {
           : endPosition.index! - endRow.startIndex + 1
     }
 
-    // 坐标信息（相对编辑器书写区）
+    // 좌표 정보 (에디터 글쓰기 영역 기준)
     const rangeRects: RangeRect[] = []
     const height = this.draw.getOriginalHeight()
     const pageGap = this.draw.getOriginalPageGap()
     const selectionPositionList = this.position.getSelectionPositionList()
     if (selectionPositionList) {
-      // 起始信息及x坐标
+      // 시작 정보 및 x좌표
       let currentRowNo: number | null = null
       let currentX = 0
       let rangeRect: RangeRect | null = null
@@ -1537,7 +1537,7 @@ export class CommandAdapt {
           coordinate: { leftTop, rightTop },
           lineHeight
         } = selectionPositionList[p]
-        // 起始行变化追加选区信息
+        // 시작 행 변경 시 선택 영역 정보 추가
         if (currentRowNo === null || currentRowNo !== rowNo) {
           if (rangeRect) {
             rangeRects.push(rangeRect)
@@ -1553,7 +1553,7 @@ export class CommandAdapt {
         } else {
           rangeRect!.width = rightTop[0] - currentX
         }
-        // 最后一个元素结束追加选区信息
+        // 마지막 요소 종료 시 선택 영역 정보 추가
         if (p === selectionPositionList.length - 1 && rangeRect) {
           rangeRects.push(rangeRect)
         }
@@ -1573,9 +1573,9 @@ export class CommandAdapt {
         height: lineHeight
       })
     }
-    // 区域信息
+    // 영역 정보
     const zone = this.draw.getZone().getZone()
-    // 表格信息
+    // 테이블 정보
     const { isTable, trIndex, tdIndex, index } =
       this.position.getPositionContext()
     let tableElement: IElement | null = null
@@ -1586,7 +1586,7 @@ export class CommandAdapt {
         tableElement = zipElementList([originTableElement])[0]
       }
     }
-    // 标题信息
+    // 제목 정보
     let titleId: string | null = null
     let titleStartPageNo: number | null = null
     let start = startIndex - 1
@@ -1656,7 +1656,7 @@ export class CommandAdapt {
               ?.positionList || []
         }
       }
-      // 获取关键词始末位置
+      // 키워드 시작 및 종료 위치 가져오기
       const startPosition = deepClone(keywordPositionList[startIndex])
       const endPosition = deepClone(keywordPositionList[endIndex])
       searchResultContextList.push({
@@ -1740,12 +1740,12 @@ export class CommandAdapt {
     const isDisabled = this.draw.isReadonly() || this.draw.isDisabled()
     if (isDisabled) return
     const { isReplace = true } = options
-    // 如果配置不替换时，需收缩选区至末尾
+    // 설정이 바꾸지 않도록 되어 있을 때, 선택 영역을 끝까지 축소해야 함
     if (!isReplace) {
       this.range.shrinkRange()
     }
     const cloneElementList = deepClone(payload)
-    // 格式化上下文信息
+    // 컨텍스트 정보 포맷
     const { startIndex } = this.range.getRange()
     const elementList = this.draw.getElementList()
     formatElementContext(elementList, cloneElementList, startIndex, {
@@ -1798,7 +1798,7 @@ export class CommandAdapt {
         }
       }
     }
-    // 优先正文再页眉页脚
+    // 본문 우선, 그 다음 머리글/바닥글
     const data = [
       this.draw.getOriginalMainElementList(),
       this.draw.getHeaderElementList(),
@@ -1807,11 +1807,11 @@ export class CommandAdapt {
     for (const elementList of data) {
       getElementInfoById(elementList)
     }
-    // 更新内容
+    // 콘텐츠 업데이트
     if (!updateElementInfoList.length) return
     for (let i = 0; i < updateElementInfoList.length; i++) {
       const { elementList, index } = updateElementInfoList[i]
-      // 重新格式化元素
+      // 요소 다시 포맷
       const oldElement = elementList[index]
       const newElement = zipElementList(
         [
@@ -1824,7 +1824,7 @@ export class CommandAdapt {
           extraPickAttrs: ['id']
         }
       )
-      // 区域上下文提取
+      // 영역 컨텍스트 추출
       cloneProperty<IElement>(AREA_CONTEXT_ATTR, oldElement, newElement[0])
       formatElementList(newElement, {
         isHandleFirstElement: false,
@@ -1866,7 +1866,7 @@ export class CommandAdapt {
         i++
       }
     }
-    // 优先正文再页眉页脚
+    // 본문 우선, 그 다음 머리글/바닥글
     const data = [
       this.draw.getOriginalMainElementList(),
       this.draw.getHeaderElementList(),
@@ -1975,11 +1975,11 @@ export class CommandAdapt {
       const elementList = this.draw.getElementList()
       const element = elementList[startIndex]
       if (!element.controlId) return
-      // 删除控件
+      // 컨트롤 삭제
       const control = this.draw.getControl()
       const newIndex = control.removeControl(startIndex)
       if (newIndex === null) return
-      // 重新渲染
+      // 다시 렌더링
       this.range.setRange(newIndex, newIndex)
       this.draw.render({
         curIndex: newIndex
@@ -2034,7 +2034,7 @@ export class CommandAdapt {
             }
           }
         }
-        // 找到标题末尾
+        // 제목 끝부분 찾기
         if (element.titleId === titleId) {
           let newIndex = e
           while (newIndex < elementList.length) {
@@ -2098,7 +2098,7 @@ export class CommandAdapt {
     let isApply = false
     for (let i = 0; i < elementList.length; i++) {
       const element = elementList[i]
-      // 删除空行、行首空格
+      // 빈 줄 삭제, 행 첫부분 공백 삭제
       if (element.value === ZERO) {
         while (i + 1 < elementList.length) {
           const nextElement = elementList[i + 1]
@@ -2109,7 +2109,7 @@ export class CommandAdapt {
       }
     }
     if (!isApply) {
-      // 避免输入框光标丢失
+      // 입력창 커서 손실 방지
       const isCollapsed = this.range.getIsCollapsed()
       this.draw.getCursor().drawCursor({
         isShow: isCollapsed
@@ -2124,7 +2124,7 @@ export class CommandAdapt {
   public setHTML(payload: Partial<IEditorHTML>) {
     const { header, main, footer } = payload
     const innerWidth = this.draw.getOriginalInnerWidth()
-    // 不设置值时数据为undefined，避免覆盖当前数据
+    // 값을 설정하지 않을 때 데이터는 undefined로 하여 현재 데이터 덮어쓰기 방지
     const getElementList = (htmlText?: string) =>
       htmlText !== undefined
         ? getElementListByHTML(htmlText, {
@@ -2268,7 +2268,7 @@ export class CommandAdapt {
         if (element?.controlId !== controlId) continue
         let curIndex = i - 1
         if (options?.position === LocationPosition.OUTER_AFTER) {
-          // 控件外面最后
+          // 컨트롤 외부 마지막
           if (
             !(
               element.controlComponent === ControlComponent.POSTFIX &&
@@ -2279,10 +2279,10 @@ export class CommandAdapt {
             continue
           }
         } else if (options?.position === LocationPosition.OUTER_BEFORE) {
-          // 控件外面最前
+          // 컨트롤 외부 맨 앞
           curIndex -= 1
         } else if (options?.position === LocationPosition.AFTER) {
-          // 控件内部最后
+          // 컨트롤 내부 마지막
           curIndex -= 1
           if (
             element.controlComponent !== ControlComponent.PLACEHOLDER &&
@@ -2292,7 +2292,7 @@ export class CommandAdapt {
             continue
           }
         } else {
-          // 控件内部最前（默认）
+          // 컨트롤 내부 맨 앞 (기본값)
           if (
             (element.controlComponent !== ControlComponent.PREFIX &&
               element.controlComponent !== ControlComponent.PRE_TEXT) ||
@@ -2332,7 +2332,7 @@ export class CommandAdapt {
     for (const context of data) {
       const locationContext = location(context.elementList, context.zone)
       if (locationContext) {
-        // 设置区域、上下文、光标信息
+        // 영역, 컨텍스트, 커서 정보 설정
         this.setZone(locationContext.zone)
         this.position.setPositionContext(locationContext.positionContext)
         this.range.replaceRange(locationContext.range)
@@ -2350,7 +2350,7 @@ export class CommandAdapt {
     const isDisabled = this.draw.isReadonly() || this.draw.isDisabled()
     if (isDisabled) return
     const cloneElement = deepClone(payload)
-    // 格式化上下文信息
+    // 컨텍스트 정보 포맷
     const { startIndex } = this.range.getRange()
     const elementList = this.draw.getElementList()
     const copyElement = getAnchorElement(elementList, startIndex)
@@ -2362,7 +2362,7 @@ export class CommandAdapt {
       ...AREA_CONTEXT_ATTR
     ]
     cloneProperty<IElement>(cloneAttr, copyElement, cloneElement)
-    // 插入控件
+    // 컨트롤 삽입
     this.draw.insertElementList([cloneElement])
   }
 
@@ -2391,7 +2391,7 @@ export class CommandAdapt {
           }
         }
         if (element?.title?.conceptId !== conceptId) continue
-        // 先查找到标题，后循环至同级或上级标题处停止
+        // 먼저 제목을 찾은 후, 동일한 레벨 또는 상위 레벨 제목에서 중단
         const valueList: IElement[] = []
         let j = i
         while (j < elementList.length) {
@@ -2458,14 +2458,14 @@ export class CommandAdapt {
       tdValueIndex,
       zone
     } = positionContext
-    // 非直接命中或选区不一致时返回空值
+    // 비 직접 명중 또는 선택 영역 불일치 시 null 반환
     if (
       (isMustDirectHit && !isDirectHit) ||
       (zone && zone !== this.zone.getZone())
     ) {
       return null
     }
-    // 命中元素信息
+    // 명중한 요소 정보
     let tableInfo: ITableInfoByEvent | null = null
     let element: IElement | null = null
     const elementList = this.draw.getOriginalElementList()
@@ -2484,7 +2484,7 @@ export class CommandAdapt {
       element = elementList[index] || null
       position = positionList[index] || null
     }
-    // 元素包围信息
+    // 요소 바운딩 박스 정보
     let rangeRect: RangeRect | null = null
     if (position) {
       const {
@@ -2513,7 +2513,7 @@ export class CommandAdapt {
     const isDisabled = this.draw.isReadonly() || this.draw.isDisabled()
     if (isDisabled) return
     const cloneElement = deepClone(payload)
-    // 格式化上下文信息
+    // 컨텍스트 정보 포맷
     const { startIndex } = this.range.getRange()
     const elementList = this.draw.getElementList()
     const copyElement = getAnchorElement(elementList, startIndex)
@@ -2527,7 +2527,7 @@ export class CommandAdapt {
     cloneElement.valueList?.forEach(valueItem => {
       cloneProperty<IElement>(cloneAttr, copyElement, valueItem)
     })
-    // 插入标题
+    // 제목 삽입
     this.draw.insertElementList([cloneElement])
   }
 
@@ -2540,12 +2540,12 @@ export class CommandAdapt {
     } = payload || {}
     let curIndex = -1
     if (range) {
-      // 根据选区定位
+      // 선택 영역에 따라 위치 지정
       this.range.replaceRange(range)
       curIndex =
         position === LocationPosition.BEFORE ? range.startIndex : range.endIndex
     } else if (isNumber(rowNo)) {
-      // 根据行号定位
+      // 행 번호에 따라 위치 지정
       const rowList = this.draw.getOriginalRowList()
       curIndex =
         position === LocationPosition.BEFORE
@@ -2554,14 +2554,14 @@ export class CommandAdapt {
       if (!isNumber(curIndex)) return
       this.range.setRange(curIndex, curIndex)
     } else {
-      // 默认文档首尾
+      // 기본 문서 처음/끝
       curIndex =
         position === LocationPosition.BEFORE
           ? 0
           : this.draw.getOriginalMainElementList().length - 1
       this.range.setRange(curIndex, curIndex)
     }
-    // 光标存在且闭合时定位
+    // 커서가 존재하고 닫혀있을 때 위치 지정
     const renderParams: IDrawOption = {
       isCompute: false,
       isSetCursor: false,
@@ -2572,7 +2572,7 @@ export class CommandAdapt {
       renderParams.isSetCursor = true
     }
     this.draw.render(renderParams)
-    // 移动滚动条到可见区域
+    // 스크롤바를 보이는 영역으로 이동
     if (isMoveCursorToVisible) {
       const positionList = this.draw.getPosition().getPositionList()
       this.draw.getCursor().moveCursorToVisible({
@@ -2595,7 +2595,7 @@ export class CommandAdapt {
   }
 
   public locationArea(areaId: string, options?: ILocationAreaOption) {
-    // 区域在最后时，如果后面没有元素是否追加换行符
+    // 영역이 마지막에 있을 때, 뒤에 요소가 없으면 개행 문자 추가 여부
     if (
       options?.isAppendLastLineBreak &&
       options?.position === LocationPosition.OUTER_AFTER
@@ -2614,7 +2614,7 @@ export class CommandAdapt {
         )
       }
     }
-    // 获取区域位置
+    // 영역 위치 가져오기
     const context = this.draw.getArea().getContextByAreaId(areaId, options)
     if (!context) return
     const {
@@ -2631,7 +2631,7 @@ export class CommandAdapt {
       isCompute: false,
       isSubmitHistory: false
     })
-    // 移动到可见区域
+    // 보이는 영역으로 이동
     const cursor = this.draw.getCursor()
     this.position.setCursorPosition(elementPosition)
     cursor.moveCursorToVisible({

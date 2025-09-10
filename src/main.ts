@@ -31,19 +31,19 @@ window.onload = function () {
   const isApple =
     typeof navigator !== 'undefined' && /Mac OS X/.test(navigator.userAgent)
 
-  // 1. 初始化编辑器
+  // 1. 에디터 초기화
   const container = document.querySelector<HTMLDivElement>('.editor')!
   const instance = new Editor(
     container,
     {
       header: [
         {
-          value: '第一人民医院',
+          value: '제1인민병원',
           size: 32,
           rowFlex: RowFlex.CENTER
         },
         {
-          value: '\n门诊病历',
+          value: '\n외래 병력',
           size: 18,
           rowFlex: RowFlex.CENTER
         },
@@ -62,11 +62,11 @@ window.onload = function () {
     },
     options
   )
-  console.log('实例: ', instance)
-  // cypress使用
+  console.log('인스턴스: ', instance)
+  // cypress 사용
   Reflect.set(window, 'editor', instance)
 
-  // 菜单弹窗销毁
+  // 메뉴 팝업 파괴
   window.addEventListener(
     'click',
     evt => {
@@ -79,18 +79,18 @@ window.onload = function () {
     }
   )
 
-  // 2. | 撤销 | 重做 | 格式刷 | 清除格式 |
+  // 2. | 실행 취소 | 다시 실행 | 서식 복사 | 서식 지우기 |
   const undoDom = document.querySelector<HTMLDivElement>('.menu-item__undo')!
-  undoDom.title = `撤销(${isApple ? '⌘' : 'Ctrl'}+Z)`
+  undoDom.title = `실행 취소(${isApple ? '⌘' : 'Ctrl'}+Z)`
   undoDom.onclick = function () {
-    console.log('undo')
+    console.log('실행 취소')
     instance.command.executeUndo()
   }
 
   const redoDom = document.querySelector<HTMLDivElement>('.menu-item__redo')!
-  redoDom.title = `重做(${isApple ? '⌘' : 'Ctrl'}+Y)`
+  redoDom.title = `다시 실행(${isApple ? '⌘' : 'Ctrl'}+Y)`
   redoDom.onclick = function () {
-    console.log('redo')
+    console.log('다시 실행')
     instance.command.executeRedo()
   }
 
@@ -104,7 +104,7 @@ window.onload = function () {
     if (isFirstClick) {
       isFirstClick = false
       painterTimeout = window.setTimeout(() => {
-        console.log('painter-click')
+        console.log('서식 복사-클릭')
         isFirstClick = true
         instance.command.executePainter({
           isDblclick: false
@@ -116,7 +116,7 @@ window.onload = function () {
   }
 
   painterDom.ondblclick = function () {
-    console.log('painter-dblclick')
+    console.log('서식 복사-더블클릭')
     isFirstClick = true
     window.clearTimeout(painterTimeout)
     instance.command.executePainter({
@@ -126,16 +126,16 @@ window.onload = function () {
 
   document.querySelector<HTMLDivElement>('.menu-item__format')!.onclick =
     function () {
-      console.log('format')
+      console.log('서식')
       instance.command.executeFormat()
     }
 
-  // 3. | 字体 | 字体变大 | 字体变小 | 加粗 | 斜体 | 下划线 | 删除线 | 上标 | 下标 | 字体颜色 | 背景色 |
+  // 3. | 글꼴 | 글꼴 크게 | 글꼴 작게 | 굵게 | 기울임꼴 | 밑줄 | 취소선 | 위 첨자 | 아래 첨자 | 글꼴 색상 | 배경색 |
   const fontDom = document.querySelector<HTMLDivElement>('.menu-item__font')!
   const fontSelectDom = fontDom.querySelector<HTMLDivElement>('.select')!
   const fontOptionDom = fontDom.querySelector<HTMLDivElement>('.options')!
   fontDom.onclick = function () {
-    console.log('font')
+    console.log('글꼴')
     fontOptionDom.classList.toggle('visible')
   }
   fontOptionDom.onclick = function (evt) {
@@ -146,9 +146,9 @@ window.onload = function () {
   const sizeSetDom = document.querySelector<HTMLDivElement>('.menu-item__size')!
   const sizeSelectDom = sizeSetDom.querySelector<HTMLDivElement>('.select')!
   const sizeOptionDom = sizeSetDom.querySelector<HTMLDivElement>('.options')!
-  sizeSetDom.title = `设置字号`
+  sizeSetDom.title = `글꼴 크기 설정`
   sizeSetDom.onclick = function () {
-    console.log('size')
+    console.log('크기')
     sizeOptionDom.classList.toggle('visible')
   }
   sizeOptionDom.onclick = function (evt) {
@@ -159,40 +159,40 @@ window.onload = function () {
   const sizeAddDom = document.querySelector<HTMLDivElement>(
     '.menu-item__size-add'
   )!
-  sizeAddDom.title = `增大字号(${isApple ? '⌘' : 'Ctrl'}+[)`
+  sizeAddDom.title = `글꼴 크기 증가(${isApple ? '⌘' : 'Ctrl'}+[)`
   sizeAddDom.onclick = function () {
-    console.log('size-add')
+    console.log('크기 증가')
     instance.command.executeSizeAdd()
   }
 
   const sizeMinusDom = document.querySelector<HTMLDivElement>(
     '.menu-item__size-minus'
   )!
-  sizeMinusDom.title = `减小字号(${isApple ? '⌘' : 'Ctrl'}+])`
+  sizeMinusDom.title = `글꼴 크기 감소(${isApple ? '⌘' : 'Ctrl'}+])`
   sizeMinusDom.onclick = function () {
-    console.log('size-minus')
+    console.log('크기 감소')
     instance.command.executeSizeMinus()
   }
 
   const boldDom = document.querySelector<HTMLDivElement>('.menu-item__bold')!
-  boldDom.title = `加粗(${isApple ? '⌘' : 'Ctrl'}+B)`
+  boldDom.title = `굵게(${isApple ? '⌘' : 'Ctrl'}+B)`
   boldDom.onclick = function () {
-    console.log('bold')
+    console.log('굵게')
     instance.command.executeBold()
   }
 
   const italicDom =
     document.querySelector<HTMLDivElement>('.menu-item__italic')!
-  italicDom.title = `斜体(${isApple ? '⌘' : 'Ctrl'}+I)`
+  italicDom.title = `기울임꼴(${isApple ? '⌘' : 'Ctrl'}+I)`
   italicDom.onclick = function () {
-    console.log('italic')
+    console.log('기울임꼴')
     instance.command.executeItalic()
   }
 
   const underlineDom = document.querySelector<HTMLDivElement>(
     '.menu-item__underline'
   )!
-  underlineDom.title = `下划线(${isApple ? '⌘' : 'Ctrl'}+U)`
+  underlineDom.title = `밑줄(${isApple ? '⌘' : 'Ctrl'}+U)`
   const underlineOptionDom =
     underlineDom.querySelector<HTMLDivElement>('.options')!
   underlineDom.querySelector<HTMLSpanElement>('.select')!.onclick =
@@ -200,7 +200,7 @@ window.onload = function () {
       underlineOptionDom.classList.toggle('visible')
     }
   underlineDom.querySelector<HTMLElement>('i')!.onclick = function () {
-    console.log('underline')
+    console.log('밑줄')
     instance.command.executeUnderline()
     underlineOptionDom.classList.remove('visible')
   }
@@ -219,25 +219,25 @@ window.onload = function () {
     '.menu-item__strikeout'
   )!
   strikeoutDom.onclick = function () {
-    console.log('strikeout')
+    console.log('취소선')
     instance.command.executeStrikeout()
   }
 
   const superscriptDom = document.querySelector<HTMLDivElement>(
     '.menu-item__superscript'
   )!
-  superscriptDom.title = `上标(${isApple ? '⌘' : 'Ctrl'}+Shift+,)`
+  superscriptDom.title = `위 첨자(${isApple ? '⌘' : 'Ctrl'}+Shift+,)`
   superscriptDom.onclick = function () {
-    console.log('superscript')
+    console.log('위 첨자')
     instance.command.executeSuperscript()
   }
 
   const subscriptDom = document.querySelector<HTMLDivElement>(
     '.menu-item__subscript'
   )!
-  subscriptDom.title = `下标(${isApple ? '⌘' : 'Ctrl'}+Shift+.)`
+  subscriptDom.title = `아래 첨자(${isApple ? '⌘' : 'Ctrl'}+Shift+.)`
   subscriptDom.onclick = function () {
-    console.log('subscript')
+    console.log('아래 첨자')
     instance.command.executeSubscript()
   }
 
@@ -248,7 +248,7 @@ window.onload = function () {
   const colorDom = document.querySelector<HTMLDivElement>('.menu-item__color')!
   const colorSpanDom = colorDom.querySelector('span')!
   colorDom.onclick = function () {
-    console.log('color')
+    console.log('색상')
     colorControlDom.click()
   }
 
@@ -262,7 +262,7 @@ window.onload = function () {
   )!
   const highlightSpanDom = highlightDom.querySelector('span')!
   highlightDom.onclick = function () {
-    console.log('highlight')
+    console.log('강조표시')
     highlightControlDom?.click()
   }
 
@@ -274,7 +274,7 @@ window.onload = function () {
   })
 
   titleDom.onclick = function () {
-    console.log('title')
+    console.log('제목')
     titleOptionDom.classList.toggle('visible')
   }
   titleOptionDom.onclick = function (evt) {
@@ -284,42 +284,42 @@ window.onload = function () {
   }
 
   const leftDom = document.querySelector<HTMLDivElement>('.menu-item__left')!
-  leftDom.title = `左对齐(${isApple ? '⌘' : 'Ctrl'}+L)`
+  leftDom.title = `왼쪽 정렬(${isApple ? '⌘' : 'Ctrl'}+L)`
   leftDom.onclick = function () {
-    console.log('left')
+    console.log('왼쪽')
     instance.command.executeRowFlex(RowFlex.LEFT)
   }
 
   const centerDom =
     document.querySelector<HTMLDivElement>('.menu-item__center')!
-  centerDom.title = `居中对齐(${isApple ? '⌘' : 'Ctrl'}+E)`
+  centerDom.title = `가운데 정렬(${isApple ? '⌘' : 'Ctrl'}+E)`
   centerDom.onclick = function () {
-    console.log('center')
+    console.log('가운데')
     instance.command.executeRowFlex(RowFlex.CENTER)
   }
 
   const rightDom = document.querySelector<HTMLDivElement>('.menu-item__right')!
-  rightDom.title = `右对齐(${isApple ? '⌘' : 'Ctrl'}+R)`
+  rightDom.title = `오른쪽 정렬(${isApple ? '⌘' : 'Ctrl'}+R)`
   rightDom.onclick = function () {
-    console.log('right')
+    console.log('오른쪽')
     instance.command.executeRowFlex(RowFlex.RIGHT)
   }
 
   const alignmentDom = document.querySelector<HTMLDivElement>(
     '.menu-item__alignment'
   )!
-  alignmentDom.title = `两端对齐(${isApple ? '⌘' : 'Ctrl'}+J)`
+  alignmentDom.title = `양쪽 정렬(${isApple ? '⌘' : 'Ctrl'}+J)`
   alignmentDom.onclick = function () {
-    console.log('alignment')
+    console.log('양쪽 정렬')
     instance.command.executeRowFlex(RowFlex.ALIGNMENT)
   }
 
   const justifyDom = document.querySelector<HTMLDivElement>(
     '.menu-item__justify'
   )!
-  justifyDom.title = `分散对齐(${isApple ? '⌘' : 'Ctrl'}+Shift+J)`
+  justifyDom.title = `분산 정렬(${isApple ? '⌘' : 'Ctrl'}+Shift+J)`
   justifyDom.onclick = function () {
-    console.log('justify')
+    console.log('분산 정렬')
     instance.command.executeRowFlex(RowFlex.JUSTIFY)
   }
 
@@ -328,7 +328,7 @@ window.onload = function () {
   )!
   const rowOptionDom = rowMarginDom.querySelector<HTMLDivElement>('.options')!
   rowMarginDom.onclick = function () {
-    console.log('row-margin')
+    console.log('행 여백')
     rowOptionDom.classList.toggle('visible')
   }
   rowOptionDom.onclick = function (evt) {
@@ -337,10 +337,10 @@ window.onload = function () {
   }
 
   const listDom = document.querySelector<HTMLDivElement>('.menu-item__list')!
-  listDom.title = `列表(${isApple ? '⌘' : 'Ctrl'}+Shift+U)`
+  listDom.title = `목록(${isApple ? '⌘' : 'Ctrl'}+Shift+U)`
   const listOptionDom = listDom.querySelector<HTMLDivElement>('.options')!
   listDom.onclick = function () {
-    console.log('list')
+    console.log('목록')
     listOptionDom.classList.toggle('visible')
   }
   listOptionDom.onclick = function (evt) {
@@ -350,7 +350,7 @@ window.onload = function () {
     instance.command.executeList(listType, listStyle)
   }
 
-  // 4. | 表格 | 图片 | 超链接 | 分割线 | 水印 | 代码块 | 分隔符 | 控件 | 复选框 | LaTeX | 日期选择器
+  // 4. | 표 | 이미지 | 하이퍼링크 | 구분선 | 워터마크 | 코드 블록 | 구분자 | 컨트롤 | 체크박스 | LaTeX | 날짜 선택기
   const tableDom = document.querySelector<HTMLDivElement>('.menu-item__table')!
   const tablePanelContainer = document.querySelector<HTMLDivElement>(
     '.menu-item__table__collapse'
@@ -358,7 +358,7 @@ window.onload = function () {
   const tableClose = document.querySelector<HTMLDivElement>('.table-close')!
   const tableTitle = document.querySelector<HTMLDivElement>('.table-select')!
   const tablePanel = document.querySelector<HTMLDivElement>('.table-panel')!
-  // 绘制行列
+  // 행과 열 그리기
   const tableCellList: HTMLDivElement[][] = []
   for (let i = 0; i < 10; i++) {
     const tr = document.createElement('tr')
@@ -375,28 +375,28 @@ window.onload = function () {
   }
   let colIndex = 0
   let rowIndex = 0
-  // 移除所有格选择
+  // 모든 셀 선택 제거
   function removeAllTableCellSelect() {
     tableCellList.forEach(tr => {
       tr.forEach(td => td.classList.remove('active'))
     })
   }
-  // 设置标题内容
+  // 제목 내용 설정
   function setTableTitle(payload: string) {
     tableTitle.innerText = payload
   }
-  // 恢复初始状态
+  // 초기 상태 복원
   function recoveryTable() {
-    // 还原选择样式、标题、选择行列
+    // 선택 스타일, 제목, 선택된 행과 열 복원
     removeAllTableCellSelect()
-    setTableTitle('插入')
+    setTableTitle('삽입')
     colIndex = 0
     rowIndex = 0
-    // 隐藏panel
+    // 패널 숨기기
     tablePanelContainer.style.display = 'none'
   }
   tableDom.onclick = function () {
-    console.log('table')
+    console.log('표')
     tablePanelContainer!.style.display = 'block'
   }
   tablePanel.onmousemove = function (evt) {
@@ -404,11 +404,11 @@ window.onload = function () {
     const rowMarginTop = 10
     const celMarginRight = 6
     const { offsetX, offsetY } = evt
-    // 移除所有选择
+    // 모든 선택 제거
     removeAllTableCellSelect()
     colIndex = Math.ceil(offsetX / (celSize + celMarginRight)) || 1
     rowIndex = Math.ceil(offsetY / (celSize + rowMarginTop)) || 1
-    // 改变选择样式
+    // 선택 스타일 변경
     tableCellList.forEach((tr, trIndex) => {
       tr.forEach((td, tdIndex) => {
         if (tdIndex < colIndex && trIndex < rowIndex) {
@@ -416,14 +416,14 @@ window.onload = function () {
         }
       })
     })
-    // 改变表格标题
+    // 표 제목 변경
     setTableTitle(`${rowIndex}×${colIndex}`)
   }
   tableClose.onclick = function () {
     recoveryTable()
   }
   tablePanel.onclick = function () {
-    // 应用选择
+    // 선택 적용
     instance.command.executeInsertTable(rowIndex, colIndex)
     recoveryTable()
   }
@@ -438,7 +438,7 @@ window.onload = function () {
     const fileReader = new FileReader()
     fileReader.readAsDataURL(file)
     fileReader.onload = function () {
-      // 计算宽高
+      // 너비와 높이 계산
       const image = new Image()
       const value = fileReader.result as string
       image.src = value
@@ -457,24 +457,24 @@ window.onload = function () {
     '.menu-item__hyperlink'
   )!
   hyperlinkDom.onclick = function () {
-    console.log('hyperlink')
+    console.log('하이퍼링크')
     new Dialog({
-      title: '超链接',
+      title: '하이퍼링크',
       data: [
         {
           type: 'text',
-          label: '文本',
+          label: '텍스트',
           name: 'name',
           required: true,
-          placeholder: '请输入文本',
+          placeholder: '텍스트를 입력하세요',
           value: instance.command.getRangeText()
         },
         {
           type: 'text',
-          label: '链接',
+          label: '링크',
           name: 'url',
           required: true,
-          placeholder: '请输入链接'
+          placeholder: '링크를 입력하세요'
         }
       ],
       onConfirm: payload => {
@@ -501,7 +501,7 @@ window.onload = function () {
   const separatorOptionDom =
     separatorDom.querySelector<HTMLDivElement>('.options')!
   separatorDom.onclick = function () {
-    console.log('separator')
+    console.log('구분선')
     separatorOptionDom.classList.toggle('visible')
   }
   separatorOptionDom.onmousedown = function (evt) {
@@ -521,7 +521,7 @@ window.onload = function () {
     '.menu-item__page-break'
   )!
   pageBreakDom.onclick = function () {
-    console.log('pageBreak')
+    console.log('페이지 구분')
     instance.command.executePageBreak()
   }
 
@@ -531,7 +531,7 @@ window.onload = function () {
   const watermarkOptionDom =
     watermarkDom.querySelector<HTMLDivElement>('.options')!
   watermarkDom.onclick = function () {
-    console.log('watermark')
+    console.log('워터마크')
     watermarkOptionDom.classList.toggle('visible')
   }
   watermarkOptionDom.onmousedown = function (evt) {
@@ -540,63 +540,63 @@ window.onload = function () {
     watermarkOptionDom.classList.toggle('visible')
     if (menu === 'add') {
       new Dialog({
-        title: '水印',
+        title: '워터마크',
         data: [
           {
             type: 'text',
-            label: '内容',
+            label: '내용',
             name: 'data',
             required: true,
-            placeholder: '请输入内容'
+            placeholder: '내용을 입력하세요'
           },
           {
             type: 'color',
-            label: '颜色',
+            label: '색상',
             name: 'color',
             required: true,
             value: '#AEB5C0'
           },
           {
             type: 'number',
-            label: '字体大小',
+            label: '글꼴 크기',
             name: 'size',
             required: true,
             value: '120'
           },
           {
             type: 'number',
-            label: '透明度',
+            label: '투명도',
             name: 'opacity',
             required: true,
             value: '0.3'
           },
           {
             type: 'select',
-            label: '重复',
+            label: '반복',
             name: 'repeat',
             value: '0',
             required: false,
             options: [
               {
-                label: '不重复',
+                label: '반복 안함',
                 value: '0'
               },
               {
-                label: '重复',
+                label: '반복',
                 value: '1'
               }
             ]
           },
           {
             type: 'number',
-            label: '水平间隔',
+            label: '수평 간격',
             name: 'horizontalGap',
             required: false,
             value: '10'
           },
           {
             type: 'number',
-            label: '垂直间隔',
+            label: '수직 간격',
             name: 'verticalGap',
             required: false,
             value: '10'
@@ -635,14 +635,14 @@ window.onload = function () {
     '.menu-item__codeblock'
   )!
   codeblockDom.onclick = function () {
-    console.log('codeblock')
+    console.log('코드 블록')
     new Dialog({
-      title: '代码块',
+      title: '코드 블록',
       data: [
         {
           type: 'textarea',
           name: 'codeblock',
-          placeholder: '请输入代码',
+          placeholder: '코드를 입력하세요',
           width: 500,
           height: 300
         }
@@ -686,7 +686,7 @@ window.onload = function () {
   )!
   const controlOptionDom = controlDom.querySelector<HTMLDivElement>('.options')!
   controlDom.onclick = function () {
-    console.log('control')
+    console.log('컨트롤')
     controlOptionDom.classList.toggle('visible')
   }
   controlOptionDom.onmousedown = function (evt) {
@@ -696,20 +696,20 @@ window.onload = function () {
     switch (type) {
       case ControlType.TEXT:
         new Dialog({
-          title: '文本控件',
+          title: '텍스트 컨트롤',
           data: [
             {
               type: 'text',
-              label: '占位符',
+              label: '자리 표시자',
               name: 'placeholder',
               required: true,
-              placeholder: '请输入占位符'
+              placeholder: '자리 표시자를 입력하세요'
             },
             {
               type: 'text',
-              label: '默认值',
+              label: '기본값',
               name: 'value',
-              placeholder: '请输入默认值'
+              placeholder: '기본값을 입력하세요'
             }
           ],
           onConfirm: payload => {
@@ -738,28 +738,28 @@ window.onload = function () {
         break
       case ControlType.SELECT:
         new Dialog({
-          title: '列举控件',
+          title: '선택 컨트롤',
           data: [
             {
               type: 'text',
-              label: '占位符',
+              label: '자리 표시자',
               name: 'placeholder',
               required: true,
-              placeholder: '请输入占位符'
+              placeholder: '자리 표시자를 입력하세요'
             },
             {
               type: 'text',
-              label: '默认值',
+              label: '기본값',
               name: 'code',
-              placeholder: '请输入默认值'
+              placeholder: '기본값을 입력하세요'
             },
             {
               type: 'textarea',
-              label: '值集',
+              label: '값 집합',
               name: 'valueSets',
               required: true,
               height: 100,
-              placeholder: `请输入值集JSON，例：\n[{\n"value":"有",\n"code":"98175"\n}]`
+              placeholder: `값 집합 JSON을 입력하세요. 예:\n[{\n"value":"있음",\n"code":"98175"\n}]`
             }
           ],
           onConfirm: payload => {
@@ -786,21 +786,21 @@ window.onload = function () {
         break
       case ControlType.CHECKBOX:
         new Dialog({
-          title: '复选框控件',
+          title: '체크박스 컨트롤',
           data: [
             {
               type: 'text',
-              label: '默认值',
+              label: '기본값',
               name: 'code',
-              placeholder: '请输入默认值，多个值以英文逗号分割'
+              placeholder: '기본값을 입력하세요. 여러 값은 영문 콤마로 구분'
             },
             {
               type: 'textarea',
-              label: '值集',
+              label: '값 집합',
               name: 'valueSets',
               required: true,
               height: 100,
-              placeholder: `请输入值集JSON，例：\n[{\n"value":"有",\n"code":"98175"\n}]`
+              placeholder: `값 집합 JSON을 입력하세요. 예:\n[{\n"value":"있음",\n"code":"98175"\n}]`
             }
           ],
           onConfirm: payload => {
@@ -822,21 +822,21 @@ window.onload = function () {
         break
       case ControlType.RADIO:
         new Dialog({
-          title: '单选框控件',
+          title: '라디오 버튼 컨트롤',
           data: [
             {
               type: 'text',
-              label: '默认值',
+              label: '기본값',
               name: 'code',
-              placeholder: '请输入默认值'
+              placeholder: '기본값을 입력하세요'
             },
             {
               type: 'textarea',
-              label: '值集',
+              label: '값 집합',
               name: 'valueSets',
               required: true,
               height: 100,
-              placeholder: `请输入值集JSON，例：\n[{\n"value":"有",\n"code":"98175"\n}]`
+              placeholder: `값 집합 JSON을 입력하세요. 예:\n[{\n"value":"있음",\n"code":"98175"\n}]`
             }
           ],
           onConfirm: payload => {
@@ -858,24 +858,24 @@ window.onload = function () {
         break
       case ControlType.DATE:
         new Dialog({
-          title: '日期控件',
+          title: '날짜 컨트롤',
           data: [
             {
               type: 'text',
-              label: '占位符',
+              label: '자리 표시자',
               name: 'placeholder',
               required: true,
-              placeholder: '请输入占位符'
+              placeholder: '자리 표시자를 입력하세요'
             },
             {
               type: 'text',
-              label: '默认值',
+              label: '기본값',
               name: 'value',
-              placeholder: '请输入默认值'
+              placeholder: '기본값을 입력하세요'
             },
             {
               type: 'select',
-              label: '日期格式',
+              label: '날짜 형식',
               name: 'dateFormat',
               value: 'yyyy-MM-dd hh:mm:ss',
               required: true,
@@ -920,20 +920,20 @@ window.onload = function () {
         break
       case ControlType.NUMBER:
         new Dialog({
-          title: '数值控件',
+          title: '숫자 컨트롤',
           data: [
             {
               type: 'text',
-              label: '占位符',
+              label: '자리 표시자',
               name: 'placeholder',
               required: true,
-              placeholder: '请输入占位符'
+              placeholder: '자리 표시자를 입력하세요'
             },
             {
               type: 'text',
-              label: '默认值',
+              label: '기본값',
               name: 'value',
-              placeholder: '请输入默认值'
+              placeholder: '기본값을 입력하세요'
             }
           ],
           onConfirm: payload => {
@@ -969,7 +969,7 @@ window.onload = function () {
     '.menu-item__checkbox'
   )!
   checkboxDom.onclick = function () {
-    console.log('checkbox')
+    console.log('체크박스')
     instance.command.executeInsertElementList([
       {
         type: ElementType.CHECKBOX,
@@ -983,7 +983,7 @@ window.onload = function () {
 
   const radioDom = document.querySelector<HTMLDivElement>('.menu-item__radio')!
   radioDom.onclick = function () {
-    console.log('radio')
+    console.log('라디오 버튼')
     instance.command.executeInsertElementList([
       {
         type: ElementType.RADIO,
@@ -1005,7 +1005,7 @@ window.onload = function () {
           type: 'textarea',
           height: 100,
           name: 'value',
-          placeholder: '请输入LaTeX文本'
+          placeholder: 'LaTeX 텍스트를 입력하세요'
         }
       ],
       onConfirm: payload => {
@@ -1024,9 +1024,9 @@ window.onload = function () {
   const dateDom = document.querySelector<HTMLDivElement>('.menu-item__date')!
   const dateDomOptionDom = dateDom.querySelector<HTMLDivElement>('.options')!
   dateDom.onclick = function () {
-    console.log('date')
+    console.log('날짜')
     dateDomOptionDom.classList.toggle('visible')
-    // 定位调整
+    // 위치 조정
     const bodyRect = document.body.getBoundingClientRect()
     const dateDomOptionRect = dateDomOptionDom.getBoundingClientRect()
     if (dateDomOptionRect.left + dateDomOptionRect.width > bodyRect.width) {
@@ -1036,7 +1036,7 @@ window.onload = function () {
       dateDomOptionDom.style.right = 'unset'
       dateDomOptionDom.style.left = '0px'
     }
-    // 当前日期
+    // 현재 날짜'
     const date = new Date()
     const year = date.getFullYear().toString()
     const month = (date.getMonth() + 1).toString().padStart(2, '0')
@@ -1071,46 +1071,46 @@ window.onload = function () {
 
   const blockDom = document.querySelector<HTMLDivElement>('.menu-item__block')!
   blockDom.onclick = function () {
-    console.log('block')
+    console.log('블록')
     new Dialog({
-      title: '内容块',
+      title: '컨텐츠 블록',
       data: [
         {
           type: 'select',
-          label: '类型',
+          label: '유형',
           name: 'type',
           value: 'iframe',
           required: true,
           options: [
             {
-              label: '网址',
+              label: '웹 주소',
               value: 'iframe'
             },
             {
-              label: '视频',
+              label: '비디오',
               value: 'video'
             }
           ]
         },
         {
           type: 'number',
-          label: '宽度',
+          label: '너비',
           name: 'width',
-          placeholder: '请输入宽度（默认页面内宽度）'
+          placeholder: '너비를 입력하세요(기본값: 페이지 내 너비)'
         },
         {
           type: 'number',
-          label: '高度',
+          label: '높이',
           name: 'height',
           required: true,
-          placeholder: '请输入高度'
+          placeholder: '높이를 입력하세요'
         },
         {
           type: 'input',
-          label: '地址',
+          label: '주소',
           name: 'src',
           required: false,
-          placeholder: '请输入地址'
+          placeholder: '주소를 입력하세요'
         },
         {
           type: 'textarea',
@@ -1118,7 +1118,7 @@ window.onload = function () {
           height: 100,
           name: 'srcdoc',
           required: false,
-          placeholder: '请输入HTML代码（仅网址类型有效）'
+          placeholder: 'HTML 코드를 입력하세요(웹 주소 타입만 유효)'
         }
       ],
       onConfirm: payload => {
@@ -1127,7 +1127,7 @@ window.onload = function () {
         const width = payload.find(p => p.name === 'width')?.value
         const height = payload.find(p => p.name === 'height')?.value
         if (!height) return
-        // 地址或HTML代码至少存在一项
+        // 주소 또는 HTML 코드 중 최소 하나는 존재해야 함
         const src = payload.find(p => p.name === 'src')?.value
         const srcdoc = payload.find(p => p.name === 'srcdoc')?.value
         const block: IBlock = {
@@ -1159,7 +1159,7 @@ window.onload = function () {
     })
   }
 
-  // 5. | 搜索&替换 | 打印 |
+  // 5. | 검색 & 바꾸기 | 인쇄 |
   const searchCollapseDom = document.querySelector<HTMLDivElement>(
     '.menu-item__search__collapse'
   )!
@@ -1171,7 +1171,7 @@ window.onload = function () {
   )!
   const searchDom =
     document.querySelector<HTMLDivElement>('.menu-item__search')!
-  searchDom.title = `搜索与替换(${isApple ? '⌘' : 'Ctrl'}+F)`
+  searchDom.title = `검색 및 바꾸기(${isApple ? '⌘' : 'Ctrl'}+F)`
   const searchResultDom =
     searchCollapseDom.querySelector<HTMLLabelElement>('.search-result')!
   function setSearchResult() {
@@ -1235,19 +1235,19 @@ window.onload = function () {
     }
 
   const printDom = document.querySelector<HTMLDivElement>('.menu-item__print')!
-  printDom.title = `打印(${isApple ? '⌘' : 'Ctrl'}+P)`
+  printDom.title = `인쇄(${isApple ? '⌘' : 'Ctrl'}+P)`
   printDom.onclick = function () {
     console.log('print')
     instance.command.executePrint()
   }
 
-  // 6. 目录显隐 | 页面模式 | 纸张缩放 | 纸张大小 | 纸张方向 | 页边距 | 全屏 | 设置
+  // 6. 목차 표시/숨김 | 페이지 모드 | 용지 크기 조정 | 용지 크기 | 용지 방향 | 페이지 여백 | 전체 화면 | 설정
   const editorOptionDom =
     document.querySelector<HTMLDivElement>('.editor-option')!
   editorOptionDom.onclick = function () {
     const options = instance.command.getOptions()
     new Dialog({
-      title: '编辑器配置',
+      title: '에디터 설정',
       data: [
         {
           type: 'textarea',
@@ -1256,7 +1256,7 @@ window.onload = function () {
           height: 300,
           required: true,
           value: JSON.stringify(options, null, 2),
-          placeholder: '请输入编辑器配置'
+          placeholder: '에디터 설정을 입력하세요'
         }
       ],
       onConfirm: payload => {
@@ -1282,13 +1282,13 @@ window.onload = function () {
           const catalogItem = catalogItems[c]
           const catalogItemDom = document.createElement('div')
           catalogItemDom.classList.add('catalog-item')
-          // 渲染
+          // 렌더링
           const catalogItemContentDom = document.createElement('div')
           catalogItemContentDom.classList.add('catalog-item__content')
           const catalogItemContentSpanDom = document.createElement('span')
           catalogItemContentSpanDom.innerText = catalogItem.name
           catalogItemContentDom.append(catalogItemContentSpanDom)
-          // 定位
+          // 위치 지정
           catalogItemContentDom.onclick = () => {
             instance.command.executeLocationCatalog(catalogItem.id)
           }
@@ -1296,7 +1296,7 @@ window.onload = function () {
           if (catalogItem.subCatalog && catalogItem.subCatalog.length) {
             appendCatalog(catalogItemDom, catalogItem.subCatalog)
           }
-          // 追加
+          // 추가
           parent.append(catalogItemDom)
         }
       }
@@ -1351,7 +1351,7 @@ window.onload = function () {
       instance.command.executePageScaleAdd()
     }
 
-  // 纸张大小
+  // 용지 크기
   const paperSizeDom = document.querySelector<HTMLDivElement>('.paper-size')!
   const paperSizeDomOptionsDom =
     paperSizeDom.querySelector<HTMLDivElement>('.options')!
@@ -1363,14 +1363,14 @@ window.onload = function () {
     const paperType = li.dataset.paperSize!
     const [width, height] = paperType.split('*').map(Number)
     instance.command.executePaperSize(width, height)
-    // 纸张状态回显
+    // 용지 상태 피드백
     paperSizeDomOptionsDom
       .querySelectorAll('li')
       .forEach(child => child.classList.remove('active'))
     li.classList.add('active')
   }
 
-  // 纸张方向
+  // 용지 방향
   const paperDirectionDom =
     document.querySelector<HTMLDivElement>('.paper-direction')!
   const paperDirectionDomOptionsDom =
@@ -1382,53 +1382,53 @@ window.onload = function () {
     const li = evt.target as HTMLLIElement
     const paperDirection = li.dataset.paperDirection!
     instance.command.executePaperDirection(<PaperDirection>paperDirection)
-    // 纸张方向状态回显
+    // 용지 방향 상태 피드백
     paperDirectionDomOptionsDom
       .querySelectorAll('li')
       .forEach(child => child.classList.remove('active'))
     li.classList.add('active')
   }
 
-  // 页面边距
+  // 페이지 여백
   const paperMarginDom =
     document.querySelector<HTMLDivElement>('.paper-margin')!
   paperMarginDom.onclick = function () {
     const [topMargin, rightMargin, bottomMargin, leftMargin] =
       instance.command.getPaperMargin()
     new Dialog({
-      title: '页边距',
+      title: '페이지 여백',
       data: [
         {
           type: 'text',
-          label: '上边距',
+          label: '위쪽 여백',
           name: 'top',
           required: true,
           value: `${topMargin}`,
-          placeholder: '请输入上边距'
+          placeholder: '위쪽 여백을 입력하세요'
         },
         {
           type: 'text',
-          label: '下边距',
+          label: '아래쪽 여백',
           name: 'bottom',
           required: true,
           value: `${bottomMargin}`,
-          placeholder: '请输入下边距'
+          placeholder: '아래쪽 여백을 입력하세요'
         },
         {
           type: 'text',
-          label: '左边距',
+          label: '왼쪽 여백',
           name: 'left',
           required: true,
           value: `${leftMargin}`,
-          placeholder: '请输入左边距'
+          placeholder: '왼쪽 여백을 입력하세요'
         },
         {
           type: 'text',
-          label: '右边距',
+          label: '오른쪽 여백',
           name: 'right',
           required: true,
           value: `${rightMargin}`,
-          placeholder: '请输入右边距'
+          placeholder: '오른쪽 여백을 입력하세요'
         }
       ],
       onConfirm: payload => {
@@ -1450,7 +1450,7 @@ window.onload = function () {
     })
   }
 
-  // 全屏
+  // 전체 화면
   const fullscreenDom = document.querySelector<HTMLDivElement>('.fullscreen')!
   fullscreenDom.onclick = toggleFullscreen
   window.addEventListener('keydown', evt => {
@@ -1471,43 +1471,43 @@ window.onload = function () {
     }
   }
 
-  // 7. 编辑器使用模式
+  // 7. 에디터 사용 모드
   let modeIndex = 0
   const modeList = [
     {
       mode: EditorMode.EDIT,
-      name: '编辑模式'
+      name: '편집 모드'
     },
     {
       mode: EditorMode.CLEAN,
-      name: '清洁模式'
+      name: '클린 모드'
     },
     {
       mode: EditorMode.READONLY,
-      name: '只读模式'
+      name: '읽기 전용 모드'
     },
     {
       mode: EditorMode.FORM,
-      name: '表单模式'
+      name: '폼 모드'
     },
     {
       mode: EditorMode.PRINT,
-      name: '打印模式'
+      name: '인쇄 모드'
     },
     {
       mode: EditorMode.DESIGN,
-      name: '设计模式'
+      name: '디자인 모드'
     }
   ]
   const modeElement = document.querySelector<HTMLDivElement>('.editor-mode')!
   modeElement.onclick = function () {
-    // 模式选择循环
+    // 모드 선택 순환
     modeIndex === modeList.length - 1 ? (modeIndex = 0) : modeIndex++
-    // 设置模式
+    // 모드 설정
     const { name, mode } = modeList[modeIndex]
     modeElement.innerText = name
     instance.command.executeMode(mode)
-    // 设置菜单栏权限视觉反馈
+    // 메뉴 바 권한 시각적 피드백 설정
     const isReadonly = mode === EditorMode.READONLY
     const enableMenuList = ['search', 'print']
     document.querySelectorAll<HTMLDivElement>('.menu-item>div').forEach(dom => {
@@ -1518,7 +1518,7 @@ window.onload = function () {
     })
   }
 
-  // 模拟批注
+  // 주석 시뮬레이션
   const commentDom = document.querySelector<HTMLDivElement>('.comment')!
   async function updateComment() {
     const groupIds = await instance.command.getGroupIds()
@@ -1526,9 +1526,9 @@ window.onload = function () {
       const activeCommentDom = commentDom.querySelector<HTMLDivElement>(
         `.comment-item[data-id='${comment.id}']`
       )
-      // 编辑器是否存在对应成组id
+      // 에디터에 해당 그룹 ID가 존재하는지 여부
       if (groupIds.includes(comment.id)) {
-        // 当前dom是否存在-不存在则追加
+        // 현재 DOM이 있는지 확인 - 없으면 추가
         if (!activeCommentDom) {
           const commentItem = document.createElement('div')
           commentItem.classList.add('comment-item')
@@ -1537,7 +1537,7 @@ window.onload = function () {
             instance.command.executeLocationGroup(comment.id)
           }
           commentDom.append(commentItem)
-          // 选区信息
+          // 선택 영역 정보
           const commentItemTitle = document.createElement('div')
           commentItemTitle.classList.add('comment-item__title')
           commentItemTitle.append(document.createElement('span'))
@@ -1550,7 +1550,7 @@ window.onload = function () {
           }
           commentItemTitle.append(closeDom)
           commentItem.append(commentItemTitle)
-          // 基础信息
+          // 기본 정보
           const commentItemInfo = document.createElement('div')
           commentItemInfo.classList.add('comment-item__info')
           const commentItemInfoName = document.createElement('span')
@@ -1560,7 +1560,7 @@ window.onload = function () {
           commentItemInfo.append(commentItemInfoName)
           commentItemInfo.append(commentItemInfoDate)
           commentItem.append(commentItemInfo)
-          // 详细评论
+          // 상세 주석
           const commentItemContent = document.createElement('div')
           commentItemContent.classList.add('comment-item__content')
           commentItemContent.innerText = comment.content
@@ -1568,14 +1568,14 @@ window.onload = function () {
           commentDom.append(commentItem)
         }
       } else {
-        // 编辑器内不存在对应成组id则dom则移除
+        // 에디터 내에 해당 그룹 ID가 존재하지 않으면 DOM 제거
         activeCommentDom?.remove()
       }
     }
   }
-  // 8. 内部事件监听
+  // 8. 내부 이벤트 리스닝
   instance.listener.rangeStyleChange = function (payload) {
-    // 控件类型
+    // 컨트롤 타입
     payload.type === ElementType.SUBSCRIPT
       ? subscriptDom.classList.add('active')
       : subscriptDom.classList.remove('active')
@@ -1598,7 +1598,7 @@ window.onload = function () {
       }
     }
 
-    // 富文本
+    // 리치텍스트
     fontOptionDom
       .querySelectorAll<HTMLLIElement>('li')
       .forEach(li => li.classList.remove('active'))
@@ -1653,7 +1653,7 @@ window.onload = function () {
       highlightSpanDom.style.backgroundColor = '#ffff00'
     }
 
-    // 行布局
+    // 행 레이아웃
     leftDom.classList.remove('active')
     centerDom.classList.remove('active')
     rightDom.classList.remove('active')
@@ -1671,7 +1671,7 @@ window.onload = function () {
       leftDom.classList.add('active')
     }
 
-    // 行间距
+    // 행 간격
     rowOptionDom
       .querySelectorAll<HTMLLIElement>('li')
       .forEach(li => li.classList.remove('active'))
@@ -1680,7 +1680,7 @@ window.onload = function () {
     )!
     curRowMarginDom.classList.add('active')
 
-    // 功能
+    // 기능
     payload.undo
       ? undoDom.classList.remove('no-allow')
       : undoDom.classList.add('no-allow')
@@ -1691,7 +1691,7 @@ window.onload = function () {
       ? painterDom.classList.add('active')
       : painterDom.classList.remove('active')
 
-    // 标题
+    // 제목
     titleOptionDom
       .querySelectorAll<HTMLLIElement>('li')
       .forEach(li => li.classList.remove('active'))
@@ -1702,11 +1702,11 @@ window.onload = function () {
       titleSelectDom.innerText = curTitleDom.innerText
       curTitleDom.classList.add('active')
     } else {
-      titleSelectDom.innerText = '正文'
+      titleSelectDom.innerText = '본문'
       titleOptionDom.querySelector('li:first-child')!.classList.add('active')
     }
 
-    // 列表
+    // 목록
     listOptionDom
       .querySelectorAll<HTMLLIElement>('li')
       .forEach(li => li.classList.remove('active'))
@@ -1725,7 +1725,7 @@ window.onload = function () {
       listDom.classList.remove('active')
     }
 
-    // 批注
+    // 주석
     commentDom
       .querySelectorAll<HTMLDivElement>('.comment-item')
       .forEach(commentItemDom => {
@@ -1742,7 +1742,7 @@ window.onload = function () {
       }
     }
 
-    // 行列信息
+    // 행열 정보
     const rangeContext = instance.command.getRangeContext()
     if (rangeContext) {
       document.querySelector<HTMLSpanElement>('.row-no')!.innerText = `${
@@ -1785,7 +1785,7 @@ window.onload = function () {
       'page-break',
       'control'
     ]
-    // 菜单操作权限
+    // 메뉴 조작 권한
     disableMenusInControlContext.forEach(menu => {
       const menuDom = document.querySelector<HTMLDivElement>(
         `.menu-item__${menu}`
@@ -1807,18 +1807,18 @@ window.onload = function () {
   }
 
   const handleContentChange = async function () {
-    // 字数
+    // 글자 수
     const wordCount = await instance.command.getWordCount()
     document.querySelector<HTMLSpanElement>('.word-count')!.innerText = `${
       wordCount || 0
     }`
-    // 目录
+    // 목차
     if (isCatalogShow) {
       nextTick(() => {
         updateCatalog()
       })
     }
-    // 批注
+    // 주석
     nextTick(() => {
       updateComment()
     })
@@ -1830,10 +1830,10 @@ window.onload = function () {
     console.log('elementList: ', payload)
   }
 
-  // 9. 右键菜单注册
+  // 9. 오른쪽 클릭 메뉴 등록
   instance.register.contextMenuList([
     {
-      name: '批注',
+      name: '주석',
       when: payload => {
         return (
           !payload.isReadonly &&
@@ -1843,15 +1843,15 @@ window.onload = function () {
       },
       callback: (command: Command) => {
         new Dialog({
-          title: '批注',
+          title: '주석',
           data: [
             {
               type: 'textarea',
-              label: '批注',
+              label: '주석',
               height: 100,
               name: 'value',
               required: true,
-              placeholder: '请输入批注'
+              placeholder: '주석을 입력하세요'
             }
           ],
           onConfirm: payload => {
@@ -1871,7 +1871,7 @@ window.onload = function () {
       }
     },
     {
-      name: '签名',
+      name: '서명',
       icon: 'signature',
       when: payload => {
         return !payload.isReadonly && payload.editorTextFocus
@@ -1895,7 +1895,7 @@ window.onload = function () {
       }
     },
     {
-      name: '格式整理',
+      name: '서식 정리',
       icon: 'word-tool',
       when: payload => {
         return !payload.isReadonly
@@ -1906,7 +1906,7 @@ window.onload = function () {
     }
   ])
 
-  // 10. 快捷键注册
+  // 10. 단축키 등록
   instance.register.shortcutList([
     {
       key: KeyMap.P,

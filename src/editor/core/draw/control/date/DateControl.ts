@@ -54,7 +54,7 @@ export class DateControl implements IControlInstance {
     const elementList = context.elementList || this.control.getElementList()
     const { startIndex } = context.range || this.control.getRange()
     const startElement = elementList[startIndex]
-    // 向左查找
+    // 왼쪽으로 찾기
     let preIndex = startIndex
     while (preIndex > 0) {
       const preElement = elementList[preIndex]
@@ -67,7 +67,7 @@ export class DateControl implements IControlInstance {
       }
       preIndex--
     }
-    // 向右查找
+    // 오른쪽으로 찾기
     let nextIndex = startIndex + 1
     while (nextIndex < elementList.length) {
       const nextElement = elementList[nextIndex]
@@ -104,7 +104,7 @@ export class DateControl implements IControlInstance {
     context: IControlContext = {},
     options: IControlRuleOption = {}
   ): number {
-    // 校验是否可以设置
+    // 설정 가능 여부 검증
     if (
       !options.isIgnoreDisabledRule &&
       this.control.getIsDisabledControl(context)
@@ -113,18 +113,18 @@ export class DateControl implements IControlInstance {
     }
     const elementList = context.elementList || this.control.getElementList()
     const range = context.range || this.control.getRange()
-    // 收缩边界到Value内
+    // 범위를 Value 내부로 축소
     this.control.shrinkBoundary(context)
     const { startIndex, endIndex } = range
     const draw = this.control.getDraw()
-    // 移除选区元素
+    // 선택된 요소 제거
     if (startIndex !== endIndex) {
       draw.spliceElementList(elementList, startIndex + 1, endIndex - startIndex)
     } else {
-      // 移除空白占位符
+      // 빈 플레이스홀더 제거
       this.control.removePlaceholder(startIndex, context)
     }
-    // 非文本类元素或前缀过渡掉样式属性
+    // 비텍스트 유형 요소 또는 접두사는 스타일 속성 전환
     const startElement = elementList[startIndex]
     const anchorElement =
       (startElement.type &&
@@ -137,7 +137,7 @@ export class DateControl implements IControlInstance {
             ...CONTROL_STYLE_ATTR
           ])
         : omitObject(startElement, ['type'])
-    // 插入起始位置
+    // 삽입 시작 위치
     const start = range.startIndex + 1
     for (let i = 0; i < data.length; i++) {
       const newElement: IElement = {
@@ -158,7 +158,7 @@ export class DateControl implements IControlInstance {
     options: IControlRuleOption = {}
   ): number {
     const { isIgnoreDisabledRule = false, isAddPlaceholder = true } = options
-    // 校验是否可以设置
+    // 설정 가능 여부 검증
     if (!isIgnoreDisabledRule && this.control.getIsDisabledControl(context)) {
       return -1
     }
@@ -167,7 +167,7 @@ export class DateControl implements IControlInstance {
     const [leftIndex, rightIndex] = range
     if (!~leftIndex || !~rightIndex) return -1
     const elementList = context.elementList || this.control.getElementList()
-    // 删除元素
+    // 요소 삭제
     const draw = this.control.getDraw()
     draw.spliceElementList(
       elementList,
@@ -178,7 +178,7 @@ export class DateControl implements IControlInstance {
         isIgnoreDeletedRule: options.isIgnoreDeletedRule
       }
     )
-    // 增加占位符
+    // 플레이스홀더 추가
     if (isAddPlaceholder) {
       this.control.addPlaceholder(leftIndex, context)
     }
@@ -190,7 +190,7 @@ export class DateControl implements IControlInstance {
     context: IControlContext = {},
     options: IControlRuleOption = {}
   ) {
-    // 校验是否可以设置
+    // 설정 가능 여부 검증
     if (
       !options.isIgnoreDisabledRule &&
       this.control.getIsDisabledControl(context)
@@ -199,18 +199,18 @@ export class DateControl implements IControlInstance {
     }
     const elementList = context.elementList || this.control.getElementList()
     const range = context.range || this.control.getRange()
-    // 样式赋值元素-默认值的第一个字符样式，否则取默认样式
+    // 스타일 할당 요소 - 기본값의 첫 번째 문자 스타일, 그렇지 않으면 기본 스타일 사용
     const valueElement = this.getValue(context)[0]
     const styleElement = valueElement
       ? pickObject(valueElement, EDITOR_ELEMENT_STYLE_ATTR)
       : pickObject(elementList[range.startIndex], CONTROL_STYLE_ATTR)
-    // 清空选项
+    // 옵션 지우기
     const prefixIndex = this.clearSelect(context, {
       isAddPlaceholder: false,
       isIgnoreDeletedRule: options.isIgnoreDeletedRule
     })
     if (!~prefixIndex) return
-    // 属性赋值元素-默认为前缀属性
+    // 속성 할당 요소 - 기본적으로 접두사 속성
     const propertyElement = omitObject(
       elementList[prefixIndex],
       EDITOR_ELEMENT_STYLE_ATTR
@@ -230,7 +230,7 @@ export class DateControl implements IControlInstance {
       })
       draw.spliceElementList(elementList, start + i, 0, [newElement])
     }
-    // 重新渲染控件
+    // 컨트롤 다시 렌더링
     if (!context.range) {
       const newIndex = start + date.length - 1
       this.control.repaintControl({
@@ -249,7 +249,7 @@ export class DateControl implements IControlInstance {
     }
     const elementList = this.control.getElementList()
     const range = this.control.getRange()
-    // 收缩边界到Value内
+    // 범위를 Value 내부로 축소
     this.control.shrinkBoundary()
     const { startIndex, endIndex } = range
     const startElement = elementList[startIndex]
@@ -257,7 +257,7 @@ export class DateControl implements IControlInstance {
     const draw = this.control.getDraw()
     // backspace
     if (evt.key === KeyMap.Backspace) {
-      // 移除选区元素
+      // 선택된 요소 제거
       if (startIndex !== endIndex) {
         draw.spliceElementList(
           elementList,
@@ -277,10 +277,10 @@ export class DateControl implements IControlInstance {
           endElement.controlComponent === ControlComponent.POST_TEXT ||
           startElement.controlComponent === ControlComponent.PLACEHOLDER
         ) {
-          // 前缀、后缀、占位符
+          // 접두사, 접미사, 플레이스홀더
           return this.control.removeControl(startIndex)
         } else {
-          // 文本
+          // 텍스트
           draw.spliceElementList(elementList, startIndex, 1)
           const value = this.getValue()
           if (!value.length) {
@@ -290,7 +290,7 @@ export class DateControl implements IControlInstance {
         }
       }
     } else if (evt.key === KeyMap.Delete) {
-      // 移除选区元素
+      // 선택된 요소 제거
       if (startIndex !== endIndex) {
         draw.spliceElementList(
           elementList,
@@ -312,10 +312,10 @@ export class DateControl implements IControlInstance {
           endNextElement.controlComponent === ControlComponent.POST_TEXT ||
           startElement.controlComponent === ControlComponent.PLACEHOLDER
         ) {
-          // 前缀、后缀、占位符
+          // 접두사, 접미사, 플레이스홀더
           return this.control.removeControl(startIndex)
         } else {
-          // 文本
+          // 텍스트
           draw.spliceElementList(elementList, startIndex + 1, 1)
           const value = this.getValue()
           if (!value.length) {
@@ -362,7 +362,7 @@ export class DateControl implements IControlInstance {
     if (elementList[startIndex + 1]?.controlId !== this.element.controlId) {
       return
     }
-    // 渲染日期控件
+    // 날짜 컨트롤 렌더링
     this.datePicker = new DatePicker(this.draw, {
       onSubmit: this._setDate.bind(this)
     })
@@ -376,7 +376,7 @@ export class DateControl implements IControlInstance {
       position,
       dateFormat
     })
-    // 弹窗状态
+    // 팝업 상태
     this.isPopup = true
   }
 

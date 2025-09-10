@@ -87,7 +87,7 @@ export class SelectControl implements IControlInstance {
     const { startIndex } = context.range || this.control.getRange()
     const startElement = elementList[startIndex]
     const data: IElement[] = []
-    // 向左查找
+    // 왼쪽으로 찾기
     let preIndex = startIndex
     while (preIndex > 0) {
       const preElement = elementList[preIndex]
@@ -103,7 +103,7 @@ export class SelectControl implements IControlInstance {
       }
       preIndex--
     }
-    // 向右查找
+    // 오른쪽으로 찾기
     let nextIndex = startIndex + 1
     while (nextIndex < elementList.length) {
       const nextElement = elementList[nextIndex]
@@ -127,7 +127,7 @@ export class SelectControl implements IControlInstance {
     context: IControlContext = {},
     options: IControlRuleOption = {}
   ): number {
-    // 校验是否可以设置
+    // 설정 가능 여부 검증
     if (
       !this.element.control?.selectExclusiveOptions?.inputAble ||
       (!options.isIgnoreDisabledRule &&
@@ -137,18 +137,18 @@ export class SelectControl implements IControlInstance {
     }
     const elementList = context.elementList || this.control.getElementList()
     const range = context.range || this.control.getRange()
-    // 收缩边界到Value内
+    // 범위를 Value 내로 축소
     this.control.shrinkBoundary(context)
     const { startIndex, endIndex } = range
     const draw = this.control.getDraw()
-    // 移除选区元素
+    // 선택 영역 요소 제거
     if (startIndex !== endIndex) {
       draw.spliceElementList(elementList, startIndex + 1, endIndex - startIndex)
     } else {
-      // 移除空白占位符
+      // 빈 자리표시자 제거
       this.control.removePlaceholder(startIndex, context)
     }
-    // 非文本类元素或前缀过渡掉样式属性
+    // 비텍스트 요소 또는 접두사 스타일 속성 전환
     const startElement = elementList[startIndex]
     const anchorElement =
       (startElement.type &&
@@ -161,7 +161,7 @@ export class SelectControl implements IControlInstance {
             ...CONTROL_STYLE_ATTR
           ])
         : omitObject(startElement, ['type'])
-    // 插入起始位置
+    // 삽입 시작 위치
     const start = range.startIndex + 1
     for (let i = 0; i < data.length; i++) {
       const newElement: IElement = {
@@ -183,14 +183,14 @@ export class SelectControl implements IControlInstance {
     }
     const elementList = this.control.getElementList()
     const range = this.control.getRange()
-    // 收缩边界到Value内
+    // 범위를 Value 내로 축소
     this.control.shrinkBoundary()
     const { startIndex, endIndex } = range
     const startElement = elementList[startIndex]
     const endElement = elementList[endIndex]
     // backspace
     if (evt.key === KeyMap.Backspace) {
-      // 清空选项
+      // 옵션 지우기
       if (startIndex !== endIndex) {
         return this.clearSelect()
       } else {
@@ -201,17 +201,17 @@ export class SelectControl implements IControlInstance {
           endElement.controlComponent === ControlComponent.POST_TEXT ||
           startElement.controlComponent === ControlComponent.PLACEHOLDER
         ) {
-          // 前缀、后缀、占位符
+          // 접두사, 접미사, 자리표시자
           return this.control.removeControl(startIndex)
         } else {
-          // 清空选项
+          // 옵션 지우기
           return this.clearSelect()
         }
       }
     } else if (evt.key === KeyMap.Delete) {
-      // 移除选区元素
+      // 선택 영역 요소 제거
       if (startIndex !== endIndex) {
-        // 清空选项
+        // 옵션 지우기
         return this.clearSelect()
       } else {
         const endNextElement = elementList[endIndex + 1]
@@ -223,10 +223,10 @@ export class SelectControl implements IControlInstance {
           endNextElement.controlComponent === ControlComponent.POST_TEXT ||
           startElement.controlComponent === ControlComponent.PLACEHOLDER
         ) {
-          // 前缀、后缀、占位符
+          // 접두사, 접미사, 자리표시자
           return this.control.removeControl(startIndex)
         } else {
-          // 清空选项
+          // 옵션 지우기
           return this.clearSelect()
         }
       }
@@ -243,7 +243,7 @@ export class SelectControl implements IControlInstance {
     if (startIndex === endIndex) {
       return startIndex
     }
-    // 清空选项
+    // 옵션 지우기
     return this.clearSelect()
   }
 
@@ -252,7 +252,7 @@ export class SelectControl implements IControlInstance {
     options: IControlRuleOption = {}
   ): number {
     const { isIgnoreDisabledRule = false, isAddPlaceholder = true } = options
-    // 校验是否可以设置
+    // 설정 가능 여부 검증
     if (!isIgnoreDisabledRule && this.control.getIsDisabledControl(context)) {
       return -1
     }
@@ -261,7 +261,7 @@ export class SelectControl implements IControlInstance {
     const startElement = elementList[startIndex]
     let leftIndex = -1
     let rightIndex = -1
-    // 向左查找
+    // 왼쪽으로 찾기
     let preIndex = startIndex
     while (preIndex > 0) {
       const preElement = elementList[preIndex]
@@ -275,7 +275,7 @@ export class SelectControl implements IControlInstance {
       }
       preIndex--
     }
-    // 向右查找
+    // 오른쪽으로 찾기
     let nextIndex = startIndex + 1
     while (nextIndex < elementList.length) {
       const nextElement = elementList[nextIndex]
@@ -290,7 +290,7 @@ export class SelectControl implements IControlInstance {
       nextIndex++
     }
     if (!~leftIndex || !~rightIndex) return -1
-    // 删除元素
+    // 요소 삭제
     const draw = this.control.getDraw()
     draw.spliceElementList(
       elementList,
@@ -301,7 +301,7 @@ export class SelectControl implements IControlInstance {
         isIgnoreDeletedRule: options.isIgnoreDeletedRule
       }
     )
-    // 增加占位符
+    // 자리표시자 추가
     if (isAddPlaceholder) {
       this.control.addPlaceholder(preIndex, context)
     }
@@ -322,7 +322,7 @@ export class SelectControl implements IControlInstance {
     context: IControlContext = {},
     options: IControlRuleOption = {}
   ) {
-    // 校验是否可以设置
+    // 설정 가능 여부 검증
     if (
       !options.isIgnoreDisabledRule &&
       this.control.getIsDisabledControl(context)
@@ -333,10 +333,10 @@ export class SelectControl implements IControlInstance {
     const range = context.range || this.control.getRange()
     const control = this.element.control!
     const newCodes = code?.split(this.VALUE_DELIMITER) || []
-    // 缓存旧值
+    // 이전 값 캐시
     const oldCode = control.code
     const oldCodes = control.code?.split(this.VALUE_DELIMITER) || []
-    // 选项相同时无需重复渲染
+    // 옵션이 동일할 때 중복 렌더링 불필요
     const isMultiSelect = control.isMultiSelect
     if (
       (!isMultiSelect && code === oldCode) ||
@@ -352,10 +352,10 @@ export class SelectControl implements IControlInstance {
     }
     const valueSets = control.valueSets
     if (!Array.isArray(valueSets) || !valueSets.length) return
-    // 转换文本
+    // 텍스트 변환
     const text = this.getText(newCodes)
     if (!text) {
-      // 之前存在内容时清空文本
+      // 이전에 내용이 있을 때 텍스트 지우기
       if (oldCode) {
         const prefixIndex = this.clearSelect(context, {
           isIgnoreDeletedRule: options.isIgnoreDeletedRule
@@ -371,22 +371,22 @@ export class SelectControl implements IControlInstance {
       }
       return
     }
-    // 样式赋值元素-默认值的第一个字符样式，否则取默认样式
+    // 스타일 할당 요소 - 기본값의 첫 번째 문자 스타일, 그렇지 않으면 기본 스타일
     const valueElement = this.getValue(context)[0]
     const styleElement = valueElement
       ? pickObject(valueElement, EDITOR_ELEMENT_STYLE_ATTR)
       : pickObject(elementList[range.startIndex], CONTROL_STYLE_ATTR)
-    // 清空选项
+    // 옵션 지우기
     const prefixIndex = this.clearSelect(context, {
       isAddPlaceholder: false,
       isIgnoreDeletedRule: options.isIgnoreDeletedRule
     })
     if (!~prefixIndex) return
-    // 当前无值时清空占位符
+    // 현재 값이 없을 때 자리표시자 지우기
     if (!oldCode) {
       this.control.removePlaceholder(prefixIndex, context)
     }
-    // 属性赋值元素-默认为前缀属性
+    // 속성 할당 요소 - 기본적으로 접두사 속성
     const propertyElement = omitObject(
       elementList[prefixIndex],
       EDITOR_ELEMENT_STYLE_ATTR
@@ -407,7 +407,7 @@ export class SelectControl implements IControlInstance {
       })
       draw.spliceElementList(elementList, start + i, 0, [newElement])
     }
-    // 设置状态
+    // 상태 설정
     this.control.setControlProperties(
       {
         code
@@ -417,7 +417,7 @@ export class SelectControl implements IControlInstance {
         range: { startIndex: prefixIndex, endIndex: prefixIndex }
       }
     )
-    // 重新渲染控件
+    // 컨트롯 다시 렌더링
     if (!context.range) {
       const newIndex = start + data.length - 1
       this.control.repaintControl({
@@ -438,7 +438,7 @@ export class SelectControl implements IControlInstance {
     if (!Array.isArray(valueSets) || !valueSets.length) return
     const position = this.control.getPosition()
     if (!position) return
-    // dom树：<div><ul><li>item</li></ul></div>
+    // DOM 트리: <div><ul><li>item</li></ul></div>
     const selectPopupContainer = document.createElement('div')
     selectPopupContainer.classList.add(`${EDITOR_PREFIX}-select-control-popup`)
     selectPopupContainer.setAttribute(EDITOR_COMPONENT, EditorComponent.POPUP)
@@ -471,7 +471,7 @@ export class SelectControl implements IControlInstance {
       ul.append(li)
     }
     selectPopupContainer.append(ul)
-    // 定位
+    // 위치 지정
     const {
       coordinate: {
         leftTop: [left, top]
@@ -481,7 +481,7 @@ export class SelectControl implements IControlInstance {
     const preY = this.control.getPreY()
     selectPopupContainer.style.left = `${left}px`
     selectPopupContainer.style.top = `${top + preY + lineHeight}px`
-    // 追加至container
+    // 컨테이너에 추가
     const container = this.control.getContainer()
     container.append(selectPopupContainer)
     this.selectDom = selectPopupContainer

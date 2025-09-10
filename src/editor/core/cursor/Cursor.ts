@@ -97,10 +97,10 @@ export class Cursor {
   }
 
   public focus() {
-    // 移动端只读模式禁用聚焦避免唤起输入法，web端允许聚焦避免事件无法捕获
+    // 모바일 읽기 전용 모드에서는 입력기 호출을 방지하기 위해 포커스 비활성화, 웹에서는 이벤트 캡처를 위해 포커스 허용
     if (isMobile && this.draw.isReadonly()) return
     const agentCursorDom = this.cursorAgent.getAgentCursorDom()
-    // 光标不聚焦时重新定位
+    // 커서가 포커스되지 않을 때 재배치
     if (document.activeElement !== agentCursorDom) {
       agentCursorDom.focus()
       agentCursorDom.setSelectionRange(0, 0)
@@ -119,10 +119,10 @@ export class Cursor {
       isFocus = true,
       hitLineStartIndex
     } = { ...cursor, ...payload }
-    // 设置光标代理
+    // 커서 에이전트 설정
     const height = this.draw.getHeight()
     const pageGap = this.draw.getPageGap()
-    // 光标位置
+    // 커서 위치
     this.hitLineStartIndex = hitLineStartIndex
     if (hitLineStartIndex) {
       const positionList = this.position.getPositionList()
@@ -139,9 +139,9 @@ export class Cursor {
       ? pageNo
       : this.draw.getPageNo()
     const preY = curPageNo * (height + pageGap)
-    // 默认偏移高度
+    // 기본 오프셋 높이
     const defaultOffsetHeight = CURSOR_AGENT_OFFSET_HEIGHT * scale
-    // 增加1/4字体大小（最小为defaultOffsetHeight即默认偏移高度）
+    // 글꼴 크기의 1/4 증가 (최솟값은 defaultOffsetHeight 즉 기본 오프셋 높이)
     const increaseHeight = Math.min(metrics.height / 4, defaultOffsetHeight)
     const cursorHeight = metrics.height + increaseHeight * 2
     const agentCursorDom = this.cursorAgent.getAgentCursorDom()
@@ -150,7 +150,7 @@ export class Cursor {
         this.focus()
       })
     }
-    // fillText位置 + 文字基线到底部距离 - 模拟光标偏移量
+    // fillText 위치 + 텍스트 베이스라인에서 하단까지의 거리 - 시뮬레이션 커서 오프셋
     const descent =
       metrics.boundingBoxDescent < 0 ? 0 : metrics.boundingBoxDescent
     const cursorTop =
@@ -160,7 +160,7 @@ export class Cursor {
     agentCursorDom.style.top = `${
       cursorTop + cursorHeight - defaultOffsetHeight
     }px`
-    // 模拟光标显示
+    // 시뮬레이션 커서 표시
     if (!isShow) {
       this.recoveryCursor()
       return
@@ -191,15 +191,15 @@ export class Cursor {
       pageNo,
       coordinate: { leftTop, leftBottom }
     } = cursorPosition
-    // 当前页面距离滚动容器顶部距离
+    // 현재 페이지에서 스크롤 컨테이너 상단까지의 거리
     const prePageY =
       pageNo * (this.draw.getHeight() + this.draw.getPageGap()) +
       this.container.getBoundingClientRect().top
-    // 向上移动时：以顶部距离为准，向下移动时：以底部位置为准
+    // 위로 이동할 때: 상단 거리 기준, 아래로 이동할 때: 하단 위치 기준
     const isUp = direction === MoveDirection.UP
     const x = leftBottom[0]
     const y = isUp ? leftTop[1] + prePageY : leftBottom[1] + prePageY
-    // 查找滚动容器，如果是滚动容器是document，则限制范围为当前窗口
+    // 스크롤 컨테이너 찾기, 스크롤 컨테이너가 document인 경우 현재 창으로 범위 제한
     const scrollContainer = findScrollContainer(this.container)
     const rect = {
       left: 0,
@@ -218,11 +218,11 @@ export class Cursor {
       rect.top = top
       rect.bottom = bottom
     }
-    // 可视范围根据参数调整
+    // 매개변수에 따라 가시 범위 조정
     const { maskMargin } = this.options
     rect.top += maskMargin[0]
     rect.bottom -= maskMargin[2]
-    // 不在可视范围时，移动滚动条到合适位置
+    // 가시 범위에 없을 때 스크롤바를 적절한 위치로 이동
     if (
       !(x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom)
     ) {

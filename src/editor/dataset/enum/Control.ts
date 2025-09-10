@@ -18,13 +18,13 @@ export enum ControlComponent {
   RADIO = 'radio'
 }
 
-// 控件内容缩进方式
+// 컨트롤 콘텐츠 들여쓰기 방식
 export enum ControlIndentation {
-  ROW_START = 'rowStart', // 从行起始位置缩进
-  VALUE_START = 'valueStart' // 从值起始位置缩进
+  ROW_START = 'rowStart', // 행 시작 위치에서 들여쓰기
+  VALUE_START = 'valueStart' // 값 시작 위치에서 들여쓰기
 }
 
-// 控件状态
+// 컨트롤 상태
 export enum ControlState {
   ACTIVE = 'active',
   INACTIVE = 'inactive'

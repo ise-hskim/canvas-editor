@@ -11,7 +11,7 @@ export function cut(host: CanvasEvent) {
   const elementList = draw.getElementList()
   let start = startIndex
   let end = endIndex
-  // 无选区则剪切一行
+  // 선택 영역이 없으면 한 행을 잘라내기
   if (startIndex === endIndex) {
     const position = draw.getPosition()
     const positionList = position.getPositionList()
@@ -31,7 +31,7 @@ export function cut(host: CanvasEvent) {
     end = cutElementIndexList[cutElementIndexList.length - 1]
   }
   const options = draw.getOptions()
-  // 写入粘贴板
+  // 클립보드에 쓰기
   writeElementList(elementList.slice(start + 1, end + 1), options)
   const control = draw.getControl()
   let curIndex: number

@@ -7,9 +7,9 @@ function compositionstart(host: CanvasEvent) {
 
 function compositionend(host: CanvasEvent, evt: CompositionEvent) {
   host.isComposing = false
-  // 处理输入框关闭
+  // 입력창 닫기 처리
   const draw = host.getDraw()
-  // 不存在值：删除合成输入
+  // 값이 존재하지 않음: 합성 입력 삭제
   if (!evt.data) {
     removeComposingInput(host)
     const rangeManager = draw.getRange()
@@ -19,12 +19,12 @@ function compositionend(host: CanvasEvent, evt: CompositionEvent) {
       isSubmitHistory: false
     })
   } else {
-    // 存在值：无法触发input事件需手动检测并触发渲染
+    // 값이 존재함: input 이벤트를 트리거할 수 없어 수동 감지 및 렌더링 트리거 필요
     if (host.compositionInfo) {
       input(evt.data, host)
     }
   }
-  // 移除代理输入框数据
+  // 프록시 입력창 데이터 제거
   const cursor = draw.getCursor()
   cursor.clearAgentDomValue()
 }

@@ -88,10 +88,10 @@ export class TextParticle {
     ctx: CanvasRenderingContext2D,
     element: IElement
   ): ITextMetrics {
-    // 优先使用自定义字宽设置
+    // 사용자 정의 글자 너비 설정 우선 사용
     if (element.width) {
       const textMetrics = ctx.measureText(element.value)
-      // TextMetrics是类无法解构
+      // TextMetrics는 클래스라 구조분해 불가
       return {
         width: element.width,
         actualBoundingBoxAscent: textMetrics.actualBoundingBoxAscent,
@@ -124,7 +124,7 @@ export class TextParticle {
     y: number
   ) {
     this.ctx = ctx
-    // 兼容模式立即绘制
+    // 호환 모드에서 즉시 그리기
     if (this.options.renderMode === RenderMode.COMPATIBILITY) {
       this._setCurXY(x, y)
       this.text = element.value
@@ -133,11 +133,11 @@ export class TextParticle {
       this.complete()
       return
     }
-    // 主动完成的重设起始点
+    // 능동적으로 완료된 시작점 다시 설정
     if (!this.text) {
       this._setCurXY(x, y)
     }
-    // 样式发生改变
+    // 스타일 변경 발생
     if (
       (this.curStyle && element.style !== this.curStyle) ||
       element.color !== this.curColor

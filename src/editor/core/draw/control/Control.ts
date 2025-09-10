@@ -103,7 +103,7 @@ export class Control {
     this.preElement = null
   }
 
-  // 搜索高亮匹配
+  // 검색 하이라이트 매칭
   public setHighlightList(payload: IControlHighlight[]) {
     this.controlSearch.setHighlightList(payload)
   }
@@ -126,7 +126,7 @@ export class Control {
     return this.draw
   }
 
-  // 过滤控件辅助元素（前后缀、背景提示）
+  // 컨트롤 보조 요소 필터링 (접두사/접미사, 배경 히트)
   public filterAssistElement(elementList: IElement[]): IElement[] {
     return elementList.filter((element, index) => {
       if (element.type === ElementType.TABLE) {
@@ -149,7 +149,7 @@ export class Control {
           return true
         }
       } else {
-        // 控件存在值时无需过滤前后文本
+        // 컨트롤에 값이 있을 때는 전후 텍스트를 필터링할 필요 없음
         if (
           element.control?.preText &&
           element.controlComponent === ControlComponent.PRE_TEXT
@@ -193,21 +193,21 @@ export class Control {
     })
   }
 
-  // 是否属于控件可以捕获事件的选区
+  // 컨트롤이 이벤트를 캐치할 수 있는 선택 영역인지 여부
   public getIsRangeCanCaptureEvent(): boolean {
     if (!this.activeControl) return false
     const { startIndex, endIndex } = this.getRange()
     if (!~startIndex && !~endIndex) return false
     const elementList = this.getElementList()
     const startElement = elementList[startIndex]
-    // 闭合光标在后缀处
+    // 닫힌 커서가 접미사 위치에 있음
     if (
       startIndex === endIndex &&
       startElement.controlComponent === ControlComponent.POSTFIX
     ) {
       return true
     }
-    // 在控件内
+    // 컨트롤 내부에 있음
     const endElement = elementList[endIndex]
     if (
       startElement.controlId &&
@@ -219,7 +219,7 @@ export class Control {
     return false
   }
 
-  // 判断选区是否在后缀处
+  // 선택 영역이 접미사 위지에 있는지 판단
   public getIsRangeInPostfix(): boolean {
     if (!this.activeControl) return false
     const { startIndex, endIndex } = this.getRange()
@@ -229,7 +229,7 @@ export class Control {
     return element.controlComponent === ControlComponent.POSTFIX
   }
 
-  // 判断选区是否在控件内
+  // 선택 영역이 컨트롤 내부에 있는지 판단
   public getIsRangeWithinControl(): boolean {
     const { startIndex, endIndex } = this.getRange()
     if (!~startIndex && !~endIndex) return false
@@ -246,7 +246,7 @@ export class Control {
     return false
   }
 
-  // 是否元素包含完整控件元素
+  // 요소가 완전한 컨트롤 요소를 포함하는지 여부
   public getIsElementListContainFullControl(elementList: IElement[]): boolean {
     if (!elementList.some(element => element.controlId)) return false
     let prefixCount = 0
@@ -289,29 +289,29 @@ export class Control {
     return !!this.activeControl.getElement()?.control?.pasteDisabled
   }
 
-  // 通过索引找到控件并判断控件是否存在值
+  // 인덱스를 통해 컨트롤을 찾고 컨트롤에 값이 있는지 판단
   public getIsExistValueByElementListIndex(
     elementList: IElement[],
     index: number
   ): boolean {
     const element = elementList[index]
-    // 是否是控件
+    // 컨트롤인지 여부
     if (!element.controlId) return false
-    // 单选框、复选框仅需验证控件值
+    // 라디오버튼, 체크박스는 컨트롤 값만 검증하면 됨
     if (
       element.control?.type === ControlType.CHECKBOX ||
       element.control?.type === ControlType.RADIO
     ) {
       return !!element.control?.code
     }
-    // 其他控件需校验文本
+    // 다른 컨트롤은 텍스트 검증 필요
     if (element.controlComponent === ControlComponent.VALUE) {
       return true
     }
     if (element.controlComponent === ControlComponent.PLACEHOLDER) {
       return false
     }
-    // 向后查找值元素
+    // 뒤로 가면서 값 요소 찾기
     if (
       element.controlComponent === ControlComponent.PREFIX ||
       element.controlComponent === ControlComponent.PRE_TEXT
@@ -331,7 +331,7 @@ export class Control {
         i++
       }
     }
-    // 向前查找值元素
+    // 앞으로 가면서 값 요소 찾기
     if (
       element.controlComponent === ControlComponent.POSTFIX ||
       element.controlComponent === ControlComponent.POST_TEXT
@@ -397,7 +397,7 @@ export class Control {
     const startElement = elementList[startIndex]
     if (!startElement?.controlId) return []
     const data: IElement[] = []
-    // 向左查找
+    // 왼쪽으로 찾기
     let preIndex = startIndex
     while (preIndex > 0) {
       const preElement = elementList[preIndex]
@@ -405,7 +405,7 @@ export class Control {
       data.unshift(preElement)
       preIndex--
     }
-    // 向右查找
+    // 오른쪽으로 찾기
     let nextIndex = startIndex + 1
     while (nextIndex < elementList.length) {
       const nextElement = elementList[nextIndex]
@@ -450,9 +450,9 @@ export class Control {
     const elementList = this.getElementList()
     const range = this.getRange()
     const element = elementList[range.startIndex]
-    // 判断控件是否已经激活
+    // 컨트롤이 이미 활성화되어 있는지 판단
     if (this.activeControl) {
-      // 弹窗类控件唤醒弹窗，后缀处移除弹窗
+      // 팝업 유형 컨트롤에서 팝업 깨우기, 접미사 위치에서 팝업 제거
       if (
         this.activeControl instanceof SelectControl ||
         this.activeControl instanceof DateControl
@@ -463,19 +463,19 @@ export class Control {
           this.activeControl.awake()
         }
       }
-      // 相同控件元素
+      // 동일한 컨트롤 요소
       if (this.preElement?.controlId === element.controlId) {
-        // 当前元素在尾部：控件失活事件
+        // 현재 요소가 끝부에 있음: 컨트롤 비활성화 이벤트
         if (element.controlComponent === ControlComponent.POSTFIX) {
           this.emitControlChange(ControlState.INACTIVE)
         } else if (
-          // 之前元素在尾部 && 当前不在尾部：控件激活事件
+          // 이전 요소가 끝부에 있었고 && 현재는 끝부에 없음: 컨트롤 활성화 이벤트
           this.preElement?.controlComponent === ControlComponent.POSTFIX
         ) {
           this.emitControlChange(ControlState.ACTIVE)
         }
       }
-      // 更新缓存控件数据
+      // 캐시된 컨트롤 데이터 업데이트
       const controlElement = this.activeControl.getElement()
       if (element.controlId === controlElement.controlId) {
         this.updateActiveControlValue()
@@ -483,9 +483,9 @@ export class Control {
         return
       }
     }
-    // 销毁旧激活控件
+    // 이전 활성 컨트롤 파괴
     this.destroyControl()
-    // 激活控件
+    // 컨트롤 활성화
     const isReadonly = this.draw.isReadonly()
     if (isReadonly) return
     const control = element.control!
@@ -506,10 +506,10 @@ export class Control {
     } else if (control.type === ControlType.NUMBER) {
       this.activeControl = new NumberControl(element, this)
     }
-    // 缓存控件数据
+    // 컨트롤 데이터 캐시
     this.updateActiveControlValue()
     this.preElement = element
-    // 激活控件回调
+    // 컨트롤 활성화 콜백
     if (element.controlComponent !== ControlComponent.POSTFIX) {
       this.emitControlChange(ControlState.ACTIVE)
     }
@@ -524,14 +524,14 @@ export class Control {
     ) {
       this.activeControl.destroy()
     }
-    // 销毁控件回调
+    // 컨트롤 파괴 콜백
     if (
       isEmitEvent &&
       this.preElement?.controlComponent !== ControlComponent.POSTFIX
     ) {
       this.emitControlChange(ControlState.INACTIVE)
     }
-    // 清空变量
+    // 변수 초기화
     this.preElement = null
     this.activeControl = null
     this.activeControlValue = []
@@ -544,7 +544,7 @@ export class Control {
       isSubmitHistory = true,
       isSetCursor = true
     } = options
-    // 重新渲染
+    // 다시 렌더링
     if (curIndex === undefined) {
       this.range.clearRange()
       this.draw.render({
@@ -576,11 +576,11 @@ export class Control {
     const controlElement =
       options?.controlElement || this.activeControl?.getElement()
     if (!controlElement) return
-    // 控件被删除不触发事件
+    // 컨트롤이 삭제되면 이벤트 발생하지 않음
     const elementList = options?.context?.elementList || this.getElementList()
     const { startIndex } = options?.context?.range || this.getRange()
     if (!elementList[startIndex]?.controlId) return
-    // 格式化回调数据
+    // 콜백 데이터 포매팅
     const controlValue =
       options?.controlValue || this.getControlElementList(options?.context)
     let control: IControl
@@ -628,7 +628,7 @@ export class Control {
     } else {
       element = elementList[index]
     }
-    // 隐藏元素移动光标
+    // 숨겨진 요소 커서 이동
     if (element.hide || element.control?.hide || element.area?.hide) {
       const nonHideIndex = getNonHideElementIndex(elementList, newIndex)
       return {
@@ -636,15 +636,15 @@ export class Control {
         newElement: elementList[nonHideIndex]
       }
     }
-    // 控件内移动光标
+    // 컨트롤 내 커서 이동
     if (element.controlComponent === ControlComponent.VALUE) {
-      // VALUE-无需移动
+      // VALUE-이동 불필요
       return {
         newIndex,
         newElement: element
       }
     } else if (element.controlComponent === ControlComponent.POSTFIX) {
-      // POSTFIX-移动到最后一个后缀字符后
+      // POSTFIX-마지막 접미사 문자 뒤로 이동
       let startIndex = newIndex + 1
       while (startIndex < elementList.length) {
         const nextElement = elementList[startIndex]
@@ -660,7 +660,7 @@ export class Control {
       element.controlComponent === ControlComponent.PREFIX ||
       element.controlComponent === ControlComponent.PRE_TEXT
     ) {
-      // PREFIX或前文本-移动到最后一个前缀字符后
+      // PREFIX또는 이전 텍스트-마지막 접두사 문자 뒤로 이동
       let startIndex = newIndex + 1
       while (startIndex < elementList.length) {
         const nextElement = elementList[startIndex]
@@ -680,7 +680,7 @@ export class Control {
       element.controlComponent === ControlComponent.PLACEHOLDER ||
       element.controlComponent === ControlComponent.POST_TEXT
     ) {
-      // PLACEHOLDER或后文本-移动到第一个前缀或内容后
+      // PLACEHOLDER 또는 후위 텍스트-첫 번째 접두사 또는 내용 뒤로 이동
       let startIndex = newIndex - 1
       while (startIndex > 0) {
         const preElement = elementList[startIndex]
@@ -710,7 +710,7 @@ export class Control {
   ): number | null {
     const elementList = context.elementList || this.getElementList()
     const startElement = elementList[startIndex]
-    // 设计模式 || 元素隐藏 => 不验证删除权限
+    // 디자인 모드 || 요소 숨김 => 삭제 권한 검증 안 함
     if (
       !this.draw.isDesignMode() &&
       !startElement?.hide &&
@@ -719,7 +719,7 @@ export class Control {
     ) {
       const { deletable = true } = startElement.control!
       if (!deletable) return null
-      // 表单模式控件删除权限验证
+      // 폼 모드 컨트롤 삭제 권한 검증
       const mode = this.draw.getMode()
       if (
         mode === EditorMode.FORM &&
@@ -730,7 +730,7 @@ export class Control {
     }
     let leftIndex = -1
     let rightIndex = -1
-    // 向左查找
+    // 왼쪽으로 찾기
     let preIndex = startIndex
     while (preIndex > 0) {
       const preElement = elementList[preIndex]
@@ -740,7 +740,7 @@ export class Control {
       }
       preIndex--
     }
-    // 向右查找
+    // 오른쪽으로 찾기
     let nextIndex = startIndex + 1
     while (nextIndex < elementList.length) {
       const nextElement = elementList[nextIndex]
@@ -750,13 +750,13 @@ export class Control {
       }
       nextIndex++
     }
-    // 控件在最后
+    // 컨트롤이 마지막에 있음
     if (nextIndex === elementList.length) {
       rightIndex = nextIndex - 1
     }
     if (!~leftIndex && !~rightIndex) return startIndex
     leftIndex = ~leftIndex ? leftIndex : 0
-    // 删除元素
+    // 요소 삭제
     this.draw.spliceElementList(
       elementList,
       leftIndex + 1,
@@ -779,7 +779,7 @@ export class Control {
         const curElement = elementList[index]
         if (curElement.controlId !== startElement.controlId) break
         if (curElement.controlComponent === ControlComponent.PLACEHOLDER) {
-          // 删除占位符时替换前一个历史记录
+          // 자리 표시자 삭제 시 이전 기록 대체
           if (!isHasSubmitHistory) {
             isHasSubmitHistory = true
             this.draw.getHistoryManager().popUndo()
@@ -799,7 +799,7 @@ export class Control {
     const control = startElement.control!
     if (!control.placeholder) return
     const placeholderStrList = splitText(control.placeholder)
-    // 优先使用默认控件样式
+    // 기본 컨트롤 스타일 우선 사용
     const anchorElementStyleAttr = pickObject(startElement, CONTROL_STYLE_ATTR)
     for (let p = 0; p < placeholderStrList.length; p++) {
       const value = placeholderStrList[p]
@@ -835,7 +835,7 @@ export class Control {
     const elementList = context.elementList || this.getElementList()
     const { startIndex } = context.range || this.getRange()
     const startElement = elementList[startIndex]
-    // 向左查找
+    // 왼쪽으로 찾기
     let preIndex = startIndex
     while (preIndex > 0) {
       const preElement = elementList[preIndex]
@@ -846,7 +846,7 @@ export class Control {
       }
       preIndex--
     }
-    // 向右查找
+    // 오른쪽으로 찾기
     let nextIndex = startIndex + 1
     while (nextIndex < elementList.length) {
       const nextElement = elementList[nextIndex]
@@ -882,7 +882,7 @@ export class Control {
       while (i < elementList.length) {
         const element = elementList[i]
         i++
-        // 表格下钻处理
+        // 테이블 드릴다운 처리
         if (element.type === ElementType.TABLE) {
           const trList = element.trList!
           for (let r = 0; r < trList.length; r++) {
@@ -980,13 +980,13 @@ export class Control {
     if (!payload.length) return
     let isExistSet = false
     let isExistSubmitHistory = false
-    // 设置值
+    // 값 설정
     const setValue = (elementList: IElement[]) => {
       let i = 0
       while (i < elementList.length) {
         const element = elementList[i]
         i++
-        // 表格下钻处理
+        // 테이블 드릴다운 처리
         if (element.type === ElementType.TABLE) {
           const trList = element.trList!
           for (let r = 0; r < trList.length; r++) {
@@ -998,7 +998,7 @@ export class Control {
           }
         }
         if (!element.control) continue
-        // 获取设置值优先id、conceptId、areaId
+        // 설정값 우선순위 id, conceptId, areaId 획득
         const payloadItem = payload.find(
           p =>
             (p.id && element.controlId === p.id) ||
@@ -1007,20 +1007,20 @@ export class Control {
         )
         if (!payloadItem) continue
         const { value, isSubmitHistory = true } = payloadItem
-        // 只要存在一次保存历史均记录
+        // 한 번이라도 저장 기록이 있으면 모두 기록
         isExistSet = true
         if (isSubmitHistory) {
           isExistSubmitHistory = true
         }
         const { type } = element.control!
-        // 当前控件结束索引
+        // 현재 컨트롤 종료 인덱스
         let currentEndIndex = i
         while (currentEndIndex < elementList.length) {
           const nextElement = elementList[currentEndIndex]
           if (nextElement.controlId !== element.controlId) break
           currentEndIndex++
         }
-        // 模拟光标选区上下文
+        // 커서 선택 영역 컨텍스트 시뮬레이션
         const fakeRange = {
           startIndex: i - 1,
           endIndex: currentEndIndex - 2
@@ -1109,13 +1109,13 @@ export class Control {
             text.clearValue(controlContext, controlRule)
           }
         }
-        // 控件值变更事件
+        // 컨트롤 값 변경 이벤트
         this.emitControlContentChange({
           context: controlContext
         })
-        // 模拟控件激活后销毁
+        // 컨트롤 활성화 후 제거 시뮬레이션
         this.activeControl = null
-        // 修改后控件结束索引
+        // 수정 후 컨트롤 종료 인덱스
         let newEndIndex = i
         while (newEndIndex < elementList.length) {
           const nextElement = elementList[newEndIndex]
@@ -1125,11 +1125,11 @@ export class Control {
         i = newEndIndex
       }
     }
-    // 销毁旧控件
+    // 기존 컨트롤 제거
     this.destroyControl({
       isEmitEvent: false
     })
-    // 页眉、内容区、页脚同时处理
+    // 페이지 헤더, 콘텐츠 영역, 페이지 푸터 동시 처리
     const data = [
       this.draw.getHeaderElementList(),
       this.draw.getOriginalMainElementList(),
@@ -1139,7 +1139,7 @@ export class Control {
       setValue(elementList)
     }
     if (isExistSet) {
-      // 不保存历史时需清空之前记录，避免还原
+      // 기록을 저장하지 않을 때 이전 기록을 지워야 함, 복원 방지
       if (!isExistSubmitHistory) {
         this.draw.getHistoryManager().recovery()
       }
@@ -1157,7 +1157,7 @@ export class Control {
       while (i < elementList.length) {
         const element = elementList[i]
         i++
-        // 表格下钻处理
+        // 테이블 드릴다운 처리
         if (element.type === ElementType.TABLE) {
           const trList = element.trList!
           for (let r = 0; r < trList.length; r++) {
@@ -1169,7 +1169,7 @@ export class Control {
           }
         }
         if (!element.control) continue
-        // 获取设置值优先id、conceptId、areaId
+        // 설정값 우선순위 id, conceptId, areaId 획득
         const payloadItem = payload.find(
           p =>
             (p.id && element.controlId === p.id) ||
@@ -1178,7 +1178,7 @@ export class Control {
         )
         if (!payloadItem) continue
         const { extension } = payloadItem
-        // 设置值
+        // 값 설정
         this.setControlProperties(
           {
             extension
@@ -1188,7 +1188,7 @@ export class Control {
             range: { startIndex: i, endIndex: i }
           }
         )
-        // 修改后控件结束索引
+        // 수정 후 컨트롤 종료 인덱스
         let newEndIndex = i
         while (newEndIndex < elementList.length) {
           const nextElement = elementList[newEndIndex]
@@ -1228,7 +1228,7 @@ export class Control {
           }
         }
         if (!element.control) continue
-        // 获取设置值优先id、conceptId、areaId
+        // 설정값 우선순위 id, conceptId, areaId 획득
         const payloadItem = payload.find(
           p =>
             (p.id && element.controlId === p.id) ||
@@ -1241,7 +1241,7 @@ export class Control {
         if (isSubmitHistory) {
           isExistSubmitHistory = true
         }
-        // 设置属性
+        // 속성 설정
         this.setControlProperties(
           {
             ...element.control,
@@ -1253,14 +1253,14 @@ export class Control {
             range: { startIndex: i, endIndex: i }
           }
         )
-        // 控件默认样式
+        // 컨트롤 기본 스타일
         CONTROL_STYLE_ATTR.forEach(key => {
           const controlStyleProperty = properties[key]
           if (controlStyleProperty) {
             Reflect.set(element, key, controlStyleProperty)
           }
         })
-        // 修改后控件结束索引
+        // 수정 후 컨트롤 종료 인덱스
         let newEndIndex = i
         while (newEndIndex < elementList.length) {
           const nextElement = elementList[newEndIndex]
@@ -1270,7 +1270,7 @@ export class Control {
         i = newEndIndex
       }
     }
-    // 页眉页脚正文启动搜索
+    // 페이지 헤더, 푸터, 본문 검색 시작
     const pageComponentData: IEditorData = {
       header: this.draw.getHeaderElementList(),
       main: this.draw.getOriginalMainElementList(),
@@ -1281,7 +1281,7 @@ export class Control {
       setProperties(elementList)
     }
     if (!isExistUpdate) return
-    // 强制更新
+    // 강제 업데이트
     for (const key in pageComponentData) {
       const pageComponentKey = <keyof IEditorData>key
       const elementList = zipElementList(pageComponentData[pageComponentKey]!, {
@@ -1295,7 +1295,7 @@ export class Control {
       })
     }
     this.draw.setEditorData(pageComponentData)
-    // 不保存历史时需清空之前记录，避免还原
+    // 기록을 저장하지 않을 때 이전 기록을 지워야 함, 복원 방지
     if (!isExistSubmitHistory) {
       this.draw.getHistoryManager().recovery()
     }
@@ -1322,7 +1322,7 @@ export class Control {
           }
         }
         if (element.controlId) {
-          // 移除控件所在标题及列表上下文信息
+          // 컨트롤이 있는 제목 및 목록 컨텍스트 정보 제거
           const controlElement = omitObject(element, [
             ...TITLE_CONTEXT_ATTR,
             ...LIST_CONTEXT_ATTR
@@ -1358,14 +1358,14 @@ export class Control {
     const positionContext = position.getPositionContext()
     if (!positionContext) return null
     const controlElement = this.activeControl.getElement()
-    // 获取上一个控件上下文本信息
+    // 이전 컨트롤 컨텍스트 정보 획득
     function getPreContext(
       elementList: IElement[],
       start: number
     ): INextControlContext | null {
       for (let e = start; e > 0; e--) {
         const element = elementList[e]
-        // 表格元素
+        // 테이블 요소
         if (element.type === ElementType.TABLE) {
           const trList = element.trList || []
           for (let r = trList.length - 1; r >= 0; r--) {
@@ -1397,7 +1397,7 @@ export class Control {
         ) {
           continue
         }
-        // 找到尾部第一个非占位符元素
+        // 끝부의 첫 번째 비자리표시자 요소 찾기
         let nextIndex = e
         while (nextIndex > 0) {
           const nextElement = elementList[nextIndex]
@@ -1419,7 +1419,7 @@ export class Control {
       }
       return null
     }
-    // 当前上下文控件信息
+    // 현재 컨텍스트 컨트롤 정보
     const { startIndex } = this.range.getRange()
     const elementList = this.getElementList()
     const context = getPreContext(elementList, startIndex)
@@ -1431,7 +1431,7 @@ export class Control {
         nextIndex: context.nextIndex
       }
     }
-    // 控件在单元内时继续循环
+    // 컨트롤이 셀 내에 있을 때 계속 루프
     if (controlElement.tableId) {
       const originalElementList = this.draw.getOriginalElementList()
       const { index, trIndex, tdIndex } = positionContext
@@ -1459,7 +1459,7 @@ export class Control {
           }
         }
       }
-      // 跳出表格继续循环
+      // 테이블에서 나와 계속 루프
       const context = getPreContext(originalElementList, index! - 1)
       if (context) {
         return {
@@ -1479,14 +1479,14 @@ export class Control {
     const positionContext = position.getPositionContext()
     if (!positionContext) return null
     const controlElement = this.activeControl.getElement()
-    // 获取下一个控件上下文本信息
+    // 다음 컨트롤 컨텍스트 정보 획득
     function getNextContext(
       elementList: IElement[],
       start: number
     ): INextControlContext | null {
       for (let e = start; e < elementList.length; e++) {
         const element = elementList[e]
-        // 表格元素
+        // 테이블 요소
         if (element.type === ElementType.TABLE) {
           const trList = element.trList || []
           for (let r = 0; r < trList.length; r++) {
@@ -1529,7 +1529,7 @@ export class Control {
       }
       return null
     }
-    // 当前上下文控件信息
+    // 현재 컨텍스트 컨트롤 정보
     const { endIndex } = this.range.getRange()
     const elementList = this.getElementList()
     const context = getNextContext(elementList, endIndex)
@@ -1541,7 +1541,7 @@ export class Control {
         nextIndex: context.nextIndex
       }
     }
-    // 控件在单元内时继续循环
+    // 컨트롤이 셀 내에 있을 때 계속 루프
     if (controlElement.tableId) {
       const originalElementList = this.draw.getOriginalElementList()
       const { index, trIndex, tdIndex } = positionContext
@@ -1569,7 +1569,7 @@ export class Control {
           }
         }
       }
-      // 跳出表格继续循环
+      // 테이블에서 나와 계속 루프
       const context = getNextContext(originalElementList, index! + 1)
       if (context) {
         return {
@@ -1594,13 +1594,13 @@ export class Control {
     if (!context) return
     const { nextIndex, positionContext } = context
     const position = this.draw.getPosition()
-    // 设置上下文
+    // 컨텍스트 설정
     position.setPositionContext(positionContext)
     this.draw.getRange().replaceRange({
       startIndex: nextIndex,
       endIndex: nextIndex
     })
-    // 重新渲染并定位
+    // 재렌더링 및 위치 지정
     this.draw.render({
       curIndex: nextIndex,
       isCompute: false,
@@ -1619,20 +1619,20 @@ export class Control {
     if (!rowElement.control?.minWidth) return
     const { scale } = this.options
     const controlMinWidth = rowElement.control.minWidth * scale
-    // 设置首字符偏移量：如果控件内设置对齐方式&&存在设置最小宽度
+    // 첫 글자 오프셋 설정: 컨트롤 내에 정렬 방식 설정 && 최소 너비 설정 존재시
     let controlFirstElement: IRowElement | null = null
     if (
       rowElement.control?.minWidth &&
       (rowElement.control?.rowFlex === RowFlex.CENTER ||
         rowElement.control?.rowFlex === RowFlex.RIGHT)
     ) {
-      // 计算当前控件内容宽度是否超出最小宽度设置
+      // 현재 컨트롤 콘텐츠 너비가 최소 너비 설정을 초과하는지 계산
       let controlContentWidth = rowElement.metrics.width
       let controlElementIndex = row.elementList.length - 1
       while (controlElementIndex >= 0) {
         const controlRowElement = row.elementList[controlElementIndex]
         controlContentWidth += controlRowElement.metrics.width
-        // 找到首字符结束循环
+        // 첫 글자를 찾아 순환 종료
         if (
           row.elementList[controlElementIndex - 1]?.controlComponent ===
           ControlComponent.PREFIX
@@ -1642,29 +1642,29 @@ export class Control {
         }
         controlElementIndex--
       }
-      // 计算首字符偏移量
+      // 첫 글자 오프셋 계산
       if (controlFirstElement) {
         if (controlContentWidth < controlMinWidth) {
           if (rowElement.control.rowFlex === RowFlex.CENTER) {
             controlFirstElement.left =
               (controlMinWidth - controlContentWidth) / 2
           } else if (rowElement.control.rowFlex === RowFlex.RIGHT) {
-            // 最小宽度 - 实际宽度 - 后缀元素宽度
+            // 최소 너비 - 실제 너비 - 접미사 요소 너비
             controlFirstElement.left =
               controlMinWidth - controlContentWidth - rowElement.metrics.width
           }
         }
       }
     }
-    // 设置后缀偏移量：消费小于实际最小宽度
+    // 접미사 오프셋 설정: 실제 최소 너비보다 작음
     const extraWidth = controlMinWidth - controlRealWidth
     if (extraWidth > 0) {
       const controlFirstElementLeft = controlFirstElement?.left || 0
-      // 超出行宽时截断
+      // 행 너비를 초과할 때 잘라냄
       const rowRemainingWidth =
         availableWidth - row.width - rowElement.metrics.width
       const left = Math.min(rowRemainingWidth, extraWidth)
-      // 后缀偏移量需减去首字符的偏移量，避免重复偏移
+      // 접미사 오프셋에서 첫 글자 오프셋을 뺀야 함, 중복 오프셋 방지
       rowElement.left = left - controlFirstElementLeft
       row.width += left - controlFirstElementLeft
     }

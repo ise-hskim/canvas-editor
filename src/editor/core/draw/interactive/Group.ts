@@ -80,7 +80,7 @@ export class Group {
 
   public deleteGroup(groupId: string) {
     if (this.draw.isReadonly()) return
-    // 仅主体内容可以成组
+    // 메인 콘텐츠만 그룹화 가능
     const elementList = this.draw.getOriginalMainElementList()
     const groupElementList = this.getElementListByGroupId(elementList, groupId)
     if (!groupElementList.length) return
@@ -89,7 +89,7 @@ export class Group {
       const groupIds = element.groupIds!
       const groupIndex = groupIds.findIndex(id => id === groupId)
       groupIds.splice(groupIndex, 1)
-      // 不包含成组时删除字段，减少存储及内存占用
+      // 그룹이 없을 때 필드 삭제로 저장 공간 및 메모리 사용량 감소
       if (!groupIds.length) {
         delete element.groupIds
       }
@@ -173,7 +173,7 @@ export class Group {
 
   public render(ctx: CanvasRenderingContext2D) {
     if (!this.fillRectMap.size) return
-    // 当前激活组信息
+    // 현재 활성 그룹 정보
     const range = this.range.getRange()
     const elementList = this.draw.getElementList()
     const anchorGroupIds = elementList[range.endIndex]?.groupIds

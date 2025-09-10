@@ -22,7 +22,7 @@ export function right(evt: KeyboardEvent, host: CanvasEvent) {
   const { startIndex, endIndex } = rangeManager.getRange()
   const isCollapsed = rangeManager.getIsCollapsed()
   let elementList = draw.getElementList()
-  // 表单模式下控件移动
+  // 폼 모드에서 컨트롤 이동
   const control = draw.getControl()
   if (
     draw.getMode() === EditorMode.FORM &&
@@ -35,11 +35,11 @@ export function right(evt: KeyboardEvent, host: CanvasEvent) {
     })
     return
   }
-  // 单词整体移动
+  // 단어 전체 이동
   let moveCount = 1
   if (isMod(evt)) {
     const LETTER_REG = draw.getLetterReg()
-    // 起始位置
+    // 시작 위치
     const moveStartIndex =
       evt.shiftKey && !isCollapsed && startIndex === cursorPosition?.index
         ? endIndex
@@ -57,13 +57,13 @@ export function right(evt: KeyboardEvent, host: CanvasEvent) {
     }
   }
   const curIndex = endIndex + moveCount
-  // shift则缩放选区
+  // shift 키로 선택 영역 조정
   let anchorStartIndex = curIndex
   let anchorEndIndex = curIndex
   if (evt.shiftKey && cursorPosition) {
     if (startIndex !== endIndex) {
       if (startIndex === cursorPosition.index) {
-        // 增大选区
+        // 선택 영역 확대
         anchorStartIndex = startIndex
         anchorEndIndex = curIndex
       } else {
@@ -74,11 +74,11 @@ export function right(evt: KeyboardEvent, host: CanvasEvent) {
       anchorStartIndex = startIndex
     }
   }
-  // 表格单元格间跳转
+  // 테이블 셀 간 이동
   if (!evt.shiftKey) {
     const element = elementList[endIndex]
     const nextElement = elementList[endIndex + 1]
-    // 后一个元素是表格，则进入单元格第一个起始位置
+    // 다음 요소가 테이블이면 셀의 첫 번째 시작 위치로 진입
     if (nextElement?.type === ElementType.TABLE) {
       const trList = nextElement.trList!
       const nextTr = trList[0]
@@ -96,7 +96,7 @@ export function right(evt: KeyboardEvent, host: CanvasEvent) {
       anchorEndIndex = 0
       draw.getTableTool().render()
     } else if (element.tableId) {
-      // 在表格单元格内&单元格元素最后
+      // 테이블 셀 내부 & 셀 요소의 마지막
       if (!nextElement) {
         const originalElementList = draw.getOriginalElementList()
         const trList = originalElementList[positionContext.index!].trList!
@@ -107,7 +107,7 @@ export function right(evt: KeyboardEvent, host: CanvasEvent) {
           for (let d = 0; d < tdList.length; d++) {
             const td = tdList[d]
             if (td.id !== element.tdId) continue
-            // 移动到表格后
+            // 테이블 뒤로 이동
             if (r === trList.length - 1 && d === tdList.length - 1) {
               position.setPositionContext({
                 isTable: false
@@ -117,7 +117,7 @@ export function right(evt: KeyboardEvent, host: CanvasEvent) {
               elementList = draw.getElementList()
               draw.getTableTool().dispose()
             } else {
-              // 下一个单元格
+              // 다음 셀
               let nextTrIndex = r
               let nextTdIndex = d + 1
               if (nextTdIndex > tdList.length - 1) {
@@ -145,7 +145,7 @@ export function right(evt: KeyboardEvent, host: CanvasEvent) {
       }
     }
   }
-  // 执行跳转
+  // 이동 실행
   const maxElementListIndex = elementList.length - 1
   if (
     anchorStartIndex > maxElementListIndex ||
@@ -153,7 +153,7 @@ export function right(evt: KeyboardEvent, host: CanvasEvent) {
   ) {
     return
   }
-  // 隐藏元素跳过
+  // 숨겨진 요소 건너뛰기
   const newElementList = draw.getElementList()
   anchorStartIndex = getNonHideElementIndex(
     newElementList,
@@ -165,7 +165,7 @@ export function right(evt: KeyboardEvent, host: CanvasEvent) {
     anchorEndIndex,
     LocationPosition.AFTER
   )
-  // 设置上下文
+  // 컨텍스트 설정
   rangeManager.setRange(anchorStartIndex, anchorEndIndex)
   const isAnchorCollapsed = anchorStartIndex === anchorEndIndex
   draw.render({

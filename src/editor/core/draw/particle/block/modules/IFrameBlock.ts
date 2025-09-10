@@ -10,11 +10,11 @@ export class IFrameBlock {
 
   private _defineIframeProperties(iframeWindow: Window) {
     Object.defineProperties(iframeWindow, {
-      // 禁止获取parent避免安全漏洞
+      // parent 접근 금지로 보안 취약점 방지
       parent: {
         get: () => null
       },
-      // 用于区分上下文
+      // 컨텍스트 구분용
       __POWERED_BY_CANVAS_EDITOR__: {
         get: () => true
       }
@@ -35,7 +35,7 @@ export class IFrameBlock {
       iframe.srcdoc = block.iframeBlock.srcdoc
     }
     blockItemContainer.append(iframe)
-    // 重新定义iframe上属性
+    // iframe 속성 재정의
     this._defineIframeProperties(iframe.contentWindow!)
   }
 }
