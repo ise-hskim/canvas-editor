@@ -1,6 +1,7 @@
 import { ILang } from '../../interface/i18n/I18n'
 import zhCN from './lang/zh-CN.json'
 import en from './lang/en.json'
+import koKR from './lang/ko-KR.json'
 import { mergeObject } from '../../utils'
 import { DeepPartial } from '../../interface/Common'
 
@@ -9,7 +10,8 @@ export class I18n {
 
   private langMap: Map<string, ILang> = new Map([
     ['zhCN', zhCN],
-    ['en', en]
+    ['en', en],
+    ['koKR', koKR]
   ])
 
   constructor(locale: string) {

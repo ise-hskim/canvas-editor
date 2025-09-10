@@ -3,7 +3,7 @@ import { NumberType } from '../../../dataset/enum/Common'
 import { RowFlex } from '../../../dataset/enum/Row'
 import { DeepRequired } from '../../../interface/Common'
 import { IEditorOption } from '../../../interface/Editor'
-import { convertNumberToChinese } from '../../../utils'
+import { convertNumberToKorean } from '../../../utils'
 import { Draw } from '../Draw'
 
 export class PageNumber {
@@ -22,8 +22,8 @@ export class PageNumber {
     numberType: NumberType
   ) {
     const pageNoText =
-      numberType === NumberType.CHINESE
-        ? convertNumberToChinese(pageNo)
+      numberType === NumberType.KOREAN
+        ? convertNumberToKorean(pageNo)
         : `${pageNo}`
     return text.replace(replaceReg, pageNoText)
   }

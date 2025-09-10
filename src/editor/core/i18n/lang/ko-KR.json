@@ -1,0 +1,92 @@
+{
+  "contextmenu": {
+    "global": {
+      "cut": "잘라내기",
+      "copy": "복사",
+      "paste": "붙여넣기",
+      "selectAll": "전체 선택",
+      "print": "인쇄"
+    },
+    "control": {
+      "delete": "컨트롤 삭제"
+    },
+    "hyperlink": {
+      "delete": "링크 삭제",
+      "cancel": "링크 취소",
+      "edit": "링크 편집"
+    },
+    "image": {
+      "change": "이미지 변경",
+      "saveAs": "이미지로 저장",
+      "textWrap": "텍스트 배치",
+      "textWrapType": {
+        "embed": "텍스트 줄 안",
+        "upDown": "위 아래 배치",
+        "surround": "사방 배치",
+        "floatTop": "텍스트 위",
+        "floatBottom": "텍스트 아래"
+      }
+    },
+    "table": {
+      "insertRowCol": "행/열 삽입",
+      "insertTopRow": "위에 1행 삽입",
+      "insertBottomRow": "아래에 1행 삽입",
+      "insertLeftCol": "왼쪽에 1열 삽입",
+      "insertRightCol": "오른쪽에 1열 삽입",
+      "deleteRowCol": "행/열 삭제",
+      "deleteRow": "1행 삭제",
+      "deleteCol": "1열 삭제",
+      "deleteTable": "표 전체 삭제",
+      "mergeCell": "셀 병합",
+      "mergeCancelCell": "병합 취소",
+      "verticalAlign": "세로 맞춤",
+      "verticalAlignTop": "위쪽 맞춤",
+      "verticalAlignMiddle": "가운데 맞춤",
+      "verticalAlignBottom": "아래쪽 맞춤",
+      "border": "표 테두리",
+      "borderAll": "모든 테두리",
+      "borderEmpty": "테두리 없음",
+      "borderDash": "점선 테두리",
+      "borderExternal": "바깥쪽 테두리",
+      "borderInternal": "안쪽 테두리",
+      "borderTd": "셀 테두리",
+      "borderTdTop": "위쪽 테두리",
+      "borderTdRight": "오른쪽 테두리",
+      "borderTdBottom": "아래쪽 테두리",
+      "borderTdLeft": "왼쪽 테두리",
+      "borderTdForward": "대각선(↘)",
+      "borderTdBack": "대각선(↙)"
+    }
+  },
+  "datePicker": {
+    "now": "현재",
+    "confirm": "확인",
+    "return": "날짜 선택",
+    "timeSelect": "시간 선택",
+    "weeks": {
+      "sun": "일",
+      "mon": "월",
+      "tue": "화",
+      "wed": "수",
+      "thu": "목",
+      "fri": "금",
+      "sat": "토"
+    },
+    "year": "년",
+    "month": "월",
+    "hour": "시",
+    "minute": "분",
+    "second": "초"
+  },
+  "frame": {
+    "header": "머리글",
+    "footer": "바닥글"
+  },
+  "pageBreak": {
+    "displayName": "페이지 나누기"
+  },
+  "zone": {
+    "headerTip": "더블클릭하여 머리글 편집",
+    "footerTip": "더블클릭하여 바닥글 편집"
+  }
+}

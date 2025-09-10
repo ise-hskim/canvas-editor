@@ -150,10 +150,10 @@ export function mergeOption(
 
   return {
     mode: EditorMode.EDIT,
-    locale: 'zhCN',
+    locale: 'koKR',
     defaultType: 'TEXT',
     defaultColor: '#000000',
-    defaultFont: 'Microsoft YaHei',
+    defaultFont: 'Malgun Gothic',
     defaultSize: 16,
     minSize: 5,
     maxSize: 72,
