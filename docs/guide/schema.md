@@ -1,8 +1,8 @@
-# 数据结构
+# 데이터 구조
 
 ```typescript
 interface IElement {
-  // 基础
+  // 기본
   id?: string;
   type?: {
     TEXT = 'text',
@@ -22,11 +22,11 @@ interface IElement {
     BLOCK = 'block'
   };
   value: string;
-  valueList?: IElement[]; // 复合元素（超链接、标题、列表等）使用
+  valueList?: IElement[]; // 복합 요소(하이퍼링크, 제목, 목록 등) 사용
   extension?: unknown;
   externalId?: string;
   hide?: boolean;
-  // 样式
+  // 스타일
   font?: string;
   size?: number;
   width?: number;
@@ -49,9 +49,9 @@ interface IElement {
   textDecoration?: {
     style?: TextDecorationStyle;
   };
-  // 组信息-可用于批注等其他成组使用场景
+  // 그룹 정보 - 주석 등 다른 그룹 사용 시나리오에 사용 가능
   groupIds?: string[];
-  // 表格
+  // 표
   conceptId?: string;
   colgroup?: {
     width: number;
@@ -81,13 +81,13 @@ interface IElement {
   borderWidth?: number;
   borderExternalWidth?: number;
   tableToolDisabled?: boolean;
-  // 超链接
+  // 하이퍼링크
   url?: string;
-  // 上下标
+  // 상하 첫자
   actualSize?: number;
-  // 分割线
+  // 구분선
   dashArray?: number[];
-  // 控件
+  // 컨트롤
   control?: {
     type: {
       TEXT = 'text',
@@ -144,19 +144,19 @@ interface IElement {
     CHECKBOX = 'checkbox',
     RADIO = 'radio'
   };
-  // 复选框
+  // 체크박스
   checkbox?: {
     value: boolean | null;
   };
-  // 单选框
+  // 라디오 버튼
   radio?: {
     value: boolean | null;
   };
   // LaTeX
   laTexSVG?: string;
-  // 日期
+  // 날짜
   dateFormat?: string;
-  // 图片
+  // 이미지
   imgDisplay?: {
     INLINE = 'inline',
     BLOCK = 'block'
@@ -167,7 +167,7 @@ interface IElement {
     pageNo?: number;
   }
   imgToolDisabled?: boolean;
-  // 内容块
+  // 콘텐츠 블록
   block?: {
     type: {
       IFRAME = 'iframe',
@@ -181,18 +181,18 @@ interface IElement {
       src: string;
     };
   };
-  // 标题
+  // 제목
   level?: TitleLevel;
   title?: {
     conceptId?: string;
     deletable?: boolean;
     disabled?: boolean;
   };
-  // 列表
+  // 목록
   listType?: ListType;
   listStyle?: ListStyle;
   listWrap?: boolean;
-  // 区域
+  // 영역
   areaId?: string;
   area?: {
     extension?: unknown;

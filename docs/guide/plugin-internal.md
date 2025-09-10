@@ -1,12 +1,12 @@
-# 官方插件
+# 공식 플러그인
 
 ::: tip
-官方维护插件仓库：https://github.com/Hufe921/canvas-editor-plugin
+공식 관리 플러그인 저장소: https://github.com/Hufe921/canvas-editor-plugin
 
-官方维护插件演示地址：https://hufe.club/canvas-editor-plugin
+공식 관리 플러그인 데모 주소: https://hufe.club/canvas-editor-plugin
 :::
 
-## 条形码
+## 바코드
 
 ```javascript
 import Editor from "@hufe921/canvas-editor"
@@ -23,7 +23,7 @@ instance.executeInsertBarcode1D(
 )
 ```
 
-## 二维码
+## QR 코드
 
 ```javascript
 import Editor from "@hufe921/canvas-editor"
@@ -40,7 +40,7 @@ instance.executeInsertBarcode2D(
 )
 ```
 
-## 代码块
+## 코드 블록
 
 ```javascript
 import Editor from "@hufe921/canvas-editor"
@@ -84,7 +84,7 @@ command.executeImportExcel({
 })
 ```
 
-## 悬浮工具
+## 플로팅 도구모음
 
 ```javascript
 import Editor from '@hufe921/canvas-editor'
@@ -94,7 +94,7 @@ const instance = new Editor()
 instance.use(floatingToolbarPlugin)
 ```
 
-## 流程图
+## 플로우차트
 
 ```javascript
 import Editor from '@hufe921/canvas-editor'
@@ -110,7 +110,7 @@ command.executeLoadDiagram({
 })
 ```
 
-## 大小写转换
+## 대소문자 변환
 
 ```javascript
 import Editor from '@hufe921/canvas-editor'

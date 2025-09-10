@@ -1,6 +1,6 @@
 import Editor from '../../../src/editor'
 
-describe('菜单-格式刷', () => {
+describe('메뉴-서식 복사', () => {
   beforeEach(() => {
     cy.visit('http://localhost:3000/canvas-editor/')
 
@@ -10,7 +10,7 @@ describe('菜单-格式刷', () => {
   const text = 'canvas-editor'
   const textLength = text.length
 
-  it('格式刷', () => {
+  it('서식 복사', () => {
     cy.getEditor().then((editor: Editor) => {
       editor.command.executeSelectAll()
 

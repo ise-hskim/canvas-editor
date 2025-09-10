@@ -1,6 +1,6 @@
 import Editor from '../../../src/editor'
 
-describe('菜单-日期选择器', () => {
+describe('메뉴-날짜 선택기', () => {
   beforeEach(() => {
     cy.visit('http://localhost:3000/canvas-editor/')
 

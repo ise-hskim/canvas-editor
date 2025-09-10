@@ -1,6 +1,6 @@
-# 实例 API
+# 인스턴스 API
 
-## 使用方式
+## 사용 방법
 
 ```javascript
 import Editor from "@hufe921/canvas-editor"
@@ -11,14 +11,14 @@ instance.apiName()
 
 ## destroy
 
-功能：销毁编辑器
+기능: 에디터 소멸
 
-用法：
+사용법:
 
 ```javascript
 instance.destroy()
 ```
 
 ::: warning
-仅销毁编辑器 dom 及相关事件，菜单栏、工具栏、外部变量等需自行处理。
+에디터 DOM과 관련 이벤트만 소멸하며, 메뉴 막대, 도구 모음, 외부 변수 등은 직접 처리해야 합니다.
 :::

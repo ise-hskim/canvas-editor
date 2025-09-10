@@ -1,17 +1,17 @@
 import Editor, { ControlType, ElementType } from '../../../src/editor'
 
-describe('控件-列举型', () => {
+describe('컨트롤-선택형', () => {
   beforeEach(() => {
     cy.visit('http://localhost:3000/canvas-editor/')
 
     cy.get('canvas').first().as('canvas').should('have.length', 1)
   })
 
-  const text = `有`
+  const text = `있음`
   const elementType: ElementType = <ElementType>'control'
   const controlType: ControlType = <ControlType>'select'
 
-  it('列举型', () => {
+  it('선택형', () => {
     cy.getEditor().then((editor: Editor) => {
       editor.command.executeSelectAll()
 
@@ -24,14 +24,14 @@ describe('控件-列举型', () => {
           control: {
             type: controlType,
             value: null,
-            placeholder: '列举型',
+            placeholder: '선택형',
             valueSets: [
               {
-                value: '有',
+                value: '있음',
                 code: '98175'
               },
               {
-                value: '无',
+                value: '없음',
                 code: '98176'
               }
             ]

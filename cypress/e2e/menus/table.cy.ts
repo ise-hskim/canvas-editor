@@ -1,13 +1,13 @@
 import Editor from '../../../src/editor'
 
-describe('菜单-表格', () => {
+describe('메뉴-표', () => {
   beforeEach(() => {
     cy.visit('http://localhost:3000/canvas-editor/')
 
     cy.get('canvas').first().as('canvas').should('have.length', 1)
   })
 
-  it('表格', () => {
+  it('표', () => {
     cy.getEditor().then((editor: Editor) => {
       editor.command.executeSelectAll()
 

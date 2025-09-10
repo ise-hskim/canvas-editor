@@ -1,10 +1,10 @@
-# 通用 API
+# 공통 API
 
 ## splitText
 
-功能：拆分字符
+기능: 문자 분할
 
-用法：
+사용법:
 
 ```javascript
 import { splitText } from '@hufe921/canvas-editor'
@@ -14,9 +14,9 @@ splitText(text: string): string[]
 
 ## createDomFromElementList
 
-功能：根据 elementList 创建 dom 树
+기능: elementList를 기반으로 DOM 트리 생성
 
-用法：
+사용법:
 
 ```javascript
 import { createDomFromElementList } from '@hufe921/canvas-editor'
@@ -26,9 +26,9 @@ createDomFromElementList(elementList: IElement[], options?: IEditorOption): HTML
 
 ## getElementListByHTML
 
-功能：根据 HTML 创建 elementList
+기능: HTML을 기반으로 elementList 생성
 
-用法：
+사용법:
 
 ```javascript
 import { getElementListByHTML } from '@hufe921/canvas-editor'
@@ -38,9 +38,9 @@ getElementListByHTML(htmlText: string, options: IGetElementListByHTMLOption): IE
 
 ## getTextFromElementList
 
-功能：根据 elementList 创建文本
+기능: elementList를 기반으로 텍스트 생성
 
-用法：
+사용법:
 
 ```javascript
 import { getTextFromElementList } from '@hufe921/canvas-editor'

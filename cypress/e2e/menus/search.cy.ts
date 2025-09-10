@@ -1,6 +1,6 @@
 import Editor, { ElementType } from '../../../src/editor'
 
-describe('菜单-搜索', () => {
+describe('메뉴-검색', () => {
   beforeEach(() => {
     cy.visit('http://localhost:3000/canvas-editor/')
 
@@ -11,7 +11,7 @@ describe('菜单-搜索', () => {
   const replaceText = 'replace'
   const type: ElementType = <ElementType>'table'
 
-  it('搜索', () => {
+  it('검색', () => {
     cy.getEditor().then((editor: Editor) => {
       editor.command.executeSelectAll()
 
@@ -79,7 +79,7 @@ describe('菜单-搜索', () => {
 
       cy.get('.menu-item__search__collapse input').eq(0).type(searchText)
 
-      // 搜索导航
+      // 검색 내비게이션
       cy.get('.menu-item__search__collapse .arrow-right').click()
       cy.get('.menu-item__search__collapse__search .search-result').should(
         'have.text',
@@ -96,10 +96,10 @@ describe('菜单-搜索', () => {
         .then(() => {
           const data = editor.command.getValue().data.main
 
-          // 普通文本
+          // 일반 텍스트
           expect(data[0].value).to.be.eq(replaceText)
 
-          // 表格内文本
+          // 표 내부 텍스트
           expect(data[1].trList![0].tdList[0].value[0].value).to.be.eq(
             replaceText
           )

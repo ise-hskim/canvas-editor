@@ -1,6 +1,6 @@
 import Editor from '../../../src/editor'
 
-describe('菜单-清除格式', () => {
+describe('메뉴-서식 지우기', () => {
   beforeEach(() => {
     cy.visit('http://localhost:3000/canvas-editor/')
 
@@ -10,7 +10,7 @@ describe('菜单-清除格式', () => {
   const text = 'canvas-editor'
   const textLength = text.length
 
-  it('清除格式', () => {
+  it('서식 지우기', () => {
     cy.getEditor().then((editor: Editor) => {
       editor.command.executeSelectAll()
 

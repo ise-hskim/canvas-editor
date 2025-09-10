@@ -1,13 +1,13 @@
 import Editor from '../../../src/editor'
 
-describe('菜单-分割线', () => {
+describe('메뉴-구분선', () => {
   beforeEach(() => {
     cy.visit('http://localhost:3000/canvas-editor/')
 
     cy.get('canvas').first().as('canvas').should('have.length', 1)
   })
 
-  it('分割线', () => {
+  it('구분선', () => {
     cy.getEditor().then((editor: Editor) => {
       editor.command.executeSelectAll()
 

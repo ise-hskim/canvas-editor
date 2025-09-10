@@ -1,13 +1,13 @@
 import Editor from '../../../src/editor'
 
-describe('菜单-分页符', () => {
+describe('메뉴-페이지 구분기호', () => {
   beforeEach(() => {
     cy.visit('http://localhost:3000/canvas-editor/')
 
     cy.get('canvas').first().as('canvas').should('have.length', 1)
   })
 
-  it('分页符', () => {
+  it('페이지 구분기호', () => {
     cy.getEditor().then((editor: Editor) => {
       editor.command.executeSelectAll()
 

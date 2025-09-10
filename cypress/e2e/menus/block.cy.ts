@@ -1,6 +1,6 @@
 import Editor from '../../../src/editor'
 
-describe('菜单-内容块', () => {
+describe('메뉴-콘텐츠 블록', () => {
   const url = 'http://localhost:3000/canvas-editor/'
 
   beforeEach(() => {
@@ -9,7 +9,7 @@ describe('菜单-内容块', () => {
     cy.get('canvas').first().as('canvas').should('have.length', 1)
   })
 
-  it('内容块', () => {
+  it('콘텐츠 블록', () => {
     cy.getEditor().then((editor: Editor) => {
       editor.command.executeSelectAll()
 

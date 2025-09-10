@@ -14,7 +14,7 @@ export default defineConfig({
     logo: '/favicon.png',
     nav: [
       {
-        text: '指南',
+        text: '가이드',
         link: '/guide/start',
         activeMatch: '/guide/'
       },
@@ -23,68 +23,68 @@ export default defineConfig({
         link: 'https://hufe.club/canvas-editor'
       },
       {
-        text: '官方插件',
+        text: '공식 플러그인',
         link: '/guide/plugin-internal.html'
       },
       {
-        text: '赞助',
+        text: '후원',
         link: 'https://hufe.club/donate.jpg'
       }
     ],
     sidebar: [
       {
-        text: '开始',
+        text: '시작',
         items: [
-          { text: '入门', link: '/guide/start' },
-          { text: '配置', link: '/guide/option' },
-          { text: '国际化', link: '/guide/i18n' },
-          { text: '数据结构', link: '/guide/schema' }
+          { text: '시작하기', link: '/guide/start' },
+          { text: '설정', link: '/guide/option' },
+          { text: '국제화', link: '/guide/i18n' },
+          { text: '데이터 구조', link: '/guide/schema' }
         ]
       },
       {
-        text: '命令',
+        text: '명령',
         items: [
-          { text: '执行动作命令', link: '/guide/command-execute' },
-          { text: '获取数据命令', link: '/guide/command-get' }
+          { text: '실행 액션 명령', link: '/guide/command-execute' },
+          { text: '데이터 조회 명령', link: '/guide/command-get' }
         ]
       },
       {
-        text: '监听',
+        text: '리스너',
         items: [
-          { text: '事件监听(listener)', link: '/guide/listener' },
-          { text: '事件监听(eventBus)', link: '/guide/eventbus' }
+          { text: '이벤트 리스너(listener)', link: '/guide/listener' },
+          { text: '이벤트 리스너(eventBus)', link: '/guide/eventbus' }
         ]
       },
       {
-        text: '快捷键',
+        text: '단축키',
         items: [
-          { text: '内部快捷键', link: '/guide/shortcut-internal' },
-          { text: '自定义快捷键', link: '/guide/shortcut-custom' }
+          { text: '내장 단축키', link: '/guide/shortcut-internal' },
+          { text: '사용자 정의 단축키', link: '/guide/shortcut-custom' }
         ]
       },
       {
-        text: '右键菜单',
+        text: '우클릭 메뉴',
         items: [
-          { text: '内部右键菜单', link: '/guide/contextmenu-internal' },
-          { text: '自定义右键菜单', link: '/guide/contextmenu-custom' }
+          { text: '내장 우클릭 메뉴', link: '/guide/contextmenu-internal' },
+          { text: '사용자 정의 우클릭 메뉴', link: '/guide/contextmenu-custom' }
         ]
       },
       {
-        text: '重写方法',
-        items: [{ text: '重写方法', link: '/guide/override' }]
+        text: '오버라이드 메소드',
+        items: [{ text: '오버라이드 메소드', link: '/guide/override' }]
       },
       {
         text: 'API',
         items: [
-          { text: '实例API', link: '/guide/api-instance' },
-          { text: '通用API', link: '/guide/api-common' }
+          { text: '인스턴스 API', link: '/guide/api-instance' },
+          { text: '공통 API', link: '/guide/api-common' }
         ]
       },
       {
-        text: '插件',
+        text: '플러그인',
         items: [
-          { text: '自定义插件', link: '/guide/plugin-custom' },
-          { text: '官方插件', link: '/guide/plugin-internal' }
+          { text: '사용자 정의 플러그인', link: '/guide/plugin-custom' },
+          { text: '공식 플러그인', link: '/guide/plugin-internal' }
         ]
       }
     ],
@@ -101,8 +101,8 @@ export default defineConfig({
   },
   locales: {
     root: {
-      label: '简体中文',
-      lang: 'zh-CN'
+      label: '한국어',
+      lang: 'ko-KR'
     },
     en: {
       label: 'English',

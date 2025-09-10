@@ -1,19 +1,19 @@
-# 事件监听(eventBus)
+# 이벤트 리스너(eventBus)
 
-## 使用方式
+## 사용법
 
 ```javascript
 import Editor from "@hufe921/canvas-editor"
 
 const instance = new Editor(container, <IElement[]>data, options)
 
-// 注册
+// 등록
 instance.eventBus.on<K keyof EventMap>(
   eventName: K,
   callback: EventMap[K]
 )
 
-// 移除
+// 제거
 instance.eventBus.off<K keyof EventMap>(
   eventName: K,
   callback: EventMap[K]
@@ -22,9 +22,9 @@ instance.eventBus.off<K keyof EventMap>(
 
 ## rangeStyleChange
 
-功能：选区样式发生改变
+기능: 선택 영역 스타일 변경
 
-用法：
+용법:
 
 ```javascript
 instance.eventBus.on('rangeStyleChange', (payload: IRangeStyle) => void)
@@ -32,9 +32,9 @@ instance.eventBus.on('rangeStyleChange', (payload: IRangeStyle) => void)
 
 ## visiblePageNoListChange
 
-功能：可见页发生改变
+기능: 보이는 페이지 변경
 
-用法：
+용법:
 
 ```javascript
 instance.eventBus.on('visiblePageNoListChange', (payload: number[]) => void)
@@ -42,9 +42,9 @@ instance.eventBus.on('visiblePageNoListChange', (payload: number[]) => void)
 
 ## intersectionPageNoChange
 
-功能：当前页发生改变
+기능: 현재 페이지 변경
 
-用法：
+용법:
 
 ```javascript
 instance.eventBus.on('intersectionPageNoChange', (payload: number) => void)
@@ -52,9 +52,9 @@ instance.eventBus.on('intersectionPageNoChange', (payload: number) => void)
 
 ## pageSizeChange
 
-功能：当前页数发生改变
+기능: 현재 페이지 수 변경
 
-用法：
+용법:
 
 ```javascript
 instance.eventBus.on('pageSizeChange', (payload: number) => void)
@@ -62,9 +62,9 @@ instance.eventBus.on('pageSizeChange', (payload: number) => void)
 
 ## pageScaleChange
 
-功能：当前页面缩放比例发生改变
+기능: 현재 페이지 확대/축소 비율 변경
 
-用法：
+용법:
 
 ```javascript
 instance.eventBus.on('pageScaleChange', (payload: number) => void)
@@ -72,9 +72,9 @@ instance.eventBus.on('pageScaleChange', (payload: number) => void)
 
 ## contentChange
 
-功能：当前内容发生改变
+기능: 현재 콘텐츠 변경
 
-用法：
+용법:
 
 ```javascript
 instance.eventBus.on('contentChange', () => void)
@@ -82,9 +82,9 @@ instance.eventBus.on('contentChange', () => void)
 
 ## controlChange
 
-功能：当前光标所在控件发生改变
+기능: 현재 커서 위치 컴트롤 변경
 
-用法：
+용법:
 
 ```javascript
 instance.eventBus.on('controlChange', (payload: IControlChangeResult) => void)
@@ -92,9 +92,9 @@ instance.eventBus.on('controlChange', (payload: IControlChangeResult) => void)
 
 ## controlContentChange
 
-功能：控件内容发生改变
+기능: 컴트롤 콘텐츠 변경
 
-用法：
+용법:
 
 ```javascript
 instance.eventBus.on('controlContentChange', (payload: IControlContentChangeResult) => void)
@@ -102,9 +102,9 @@ instance.eventBus.on('controlContentChange', (payload: IControlContentChangeResu
 
 ## pageModeChange
 
-功能：页面模式发生改变
+기능: 페이지 모드 변경
 
-用法：
+용법:
 
 ```javascript
 instance.eventBus.on('pageModeChange', (payload: PageMode) => void)
@@ -112,9 +112,9 @@ instance.eventBus.on('pageModeChange', (payload: PageMode) => void)
 
 ## saved
 
-功能：文档执行保存
+기능: 문서 저장 실행
 
-用法：
+용법:
 
 ```javascript
 instance.eventBus.on('saved', (payload: IEditorResult) => void)
@@ -122,9 +122,9 @@ instance.eventBus.on('saved', (payload: IEditorResult) => void)
 
 ## zoneChange
 
-功能：区域发生改变
+기능: 영역 변경
 
-用法：
+용법:
 
 ```javascript
 instance.eventBus.on('zoneChange', (payload: EditorZone) => void)
@@ -132,9 +132,9 @@ instance.eventBus.on('zoneChange', (payload: EditorZone) => void)
 
 ## mousemove
 
-功能：编辑器 mousemove 事件监听
+기능: 편집기 mousemove 이벤트 리스너
 
-用法：
+용법:
 
 ```javascript
 instance.eventBus.on('mousemove', (evt: MouseEvent) => void)
@@ -142,9 +142,9 @@ instance.eventBus.on('mousemove', (evt: MouseEvent) => void)
 
 ## mouseenter
 
-功能：编辑器 mouseenter 事件监听
+기능: 편집기 mouseenter 이벤트 리스너
 
-用法：
+용법:
 
 ```javascript
 instance.eventBus.on('mouseenter', (evt: MouseEvent) => void)
@@ -152,9 +152,9 @@ instance.eventBus.on('mouseenter', (evt: MouseEvent) => void)
 
 ## mouseleave
 
-功能：编辑器 mouseleave 事件监听
+기능: 편집기 mouseleave 이벤트 리스너
 
-用法：
+용법:
 
 ```javascript
 instance.eventBus.on('mouseleave', (evt: MouseEvent) => void)
@@ -162,9 +162,9 @@ instance.eventBus.on('mouseleave', (evt: MouseEvent) => void)
 
 ## mousedown
 
-功能：编辑器 mousedown 事件监听
+기능: 편집기 mousedown 이벤트 리스너
 
-用法：
+용법:
 
 ```javascript
 instance.eventBus.on('mousedown', (evt: MouseEvent) => void)
@@ -172,9 +172,9 @@ instance.eventBus.on('mousedown', (evt: MouseEvent) => void)
 
 ## mouseup
 
-功能：编辑器 mouseup 事件监听
+기능: 편집기 mouseup 이벤트 리스너
 
-用法：
+용법:
 
 ```javascript
 instance.eventBus.on('mouseup', (evt: MouseEvent) => void)
@@ -182,9 +182,9 @@ instance.eventBus.on('mouseup', (evt: MouseEvent) => void)
 
 ## click
 
-功能：编辑器 click 事件监听
+기능: 편집기 click 이벤트 리스너
 
-用法：
+용법:
 
 ```javascript
 instance.eventBus.on('click', (evt: MouseEvent) => void)
@@ -192,9 +192,9 @@ instance.eventBus.on('click', (evt: MouseEvent) => void)
 
 ## input
 
-功能：编辑器 input 事件监听
+기능: 편집기 input 이벤트 리스너
 
-用法：
+용법:
 
 ```javascript
 instance.eventBus.on('input', (evt: Event) => void)
@@ -202,9 +202,9 @@ instance.eventBus.on('input', (evt: Event) => void)
 
 ## positionContextChange
 
-功能：上下文内容发生改变
+기능: 컨텍스트 콘텐츠 변경
 
-用法：
+용법:
 
 ```javascript
 instance.eventBus.on('positionContextChange', (payload: IPositionContextChangePayload) => void)
@@ -212,9 +212,9 @@ instance.eventBus.on('positionContextChange', (payload: IPositionContextChangePa
 
 ## imageSizeChange
 
-功能：图片尺寸发生改变事件
+기능: 이미지 크기 변경 이벤트
 
-用法：
+용법:
 
 ```javascript
 instance.eventBus.on('imageSizeChange', (payload: { element: IElement }) => void)
@@ -222,9 +222,9 @@ instance.eventBus.on('imageSizeChange', (payload: { element: IElement }) => void
 
 ## imageMousedown
 
-功能：图片 mousedown 事件
+기능: 이미지 mousedown 이벤트
 
-用法：
+용법:
 
 ```javascript
 instance.eventBus.on('imageMousedown', (payload: {

@@ -1,52 +1,52 @@
-# 入门
+# 시작하기
 
-> 所见即所得的富文本编辑器。
+> WYSIWYG(보는 그대로 얻는) 리치 텍스트 에디터입니다.
 
-得益于光标及文字排版的完全自行实现。绘制底层也可由 svg 渲染，详见代码：[feature/svg](https://github.com/Hufe921/canvas-editor/tree/feature/svg)；或借助 pdfjs 可以完成 pdf 的绘制，详见代码：[feature/pdf](https://github.com/Hufe921/canvas-editor/tree/feature/pdf)。
+커서와 텍스트 레이아웃을 완전히 자체 구현한 것의 이점을 누릴 수 있습니다. 렌더링 계층도 SVG로 렌더링할 수 있습니다. 코드 참조: [feature/svg](https://github.com/Hufe921/canvas-editor/tree/feature/svg). 또는 PDF.js를 활용하여 PDF 렌더링을 완성할 수 있습니다. 코드 참조: [feature/pdf](https://github.com/Hufe921/canvas-editor/tree/feature/pdf).
 
 ::: warning
-官方仅提供编辑器核心层 npm 包，菜单栏或其他外部工具可自行参考文档扩展，或直接参考[官方](https://github.com/Hufe921/canvas-editor)实现，详见[demo](https://hufe.club/canvas-editor/)。
+공식적으로는 편집기 핵심 계층 npm 패키지만 제공하며, 메뉴바나 기타 외부 도구는 문서를 참조하여 직접 확장하거나 [공식](https://github.com/Hufe921/canvas-editor) 구현을 직접 참조할 수 있습니다. [데모](https://hufe.club/canvas-editor/) 참조.
 :::
 
-## 功能点
+## 기능
 
-- 富文本操作（撤销、重做、字体、字号、加粗、斜体、下划线、删除线、上下标、对齐方式、标题、列表.....）
-- 插入元素（表格、图片、链接、代码块、分页符、Math 公式、日期选择器、内容块......）
-- 打印（基于 canvas 转图片、pdf 绘制）
-- 控件（单选、文本、日期、单选框组、复选框组）
-- 右键菜单（内部、自定义）
-- 快捷键（内部、自定义）
-- 拖拽（文字、元素、控件）
-- 页眉、页脚、页码
-- 页边距
-- 分页
-- 水印
-- 批注
-- 目录
-- [插件](https://github.com/Hufe921/canvas-editor-plugin)
+- 리치 텍스트 조작(실행취소, 다시 실행, 글꼴, 글꼴 크기, 두께, 기울임꼴, 밑줄, 취소선, 위/아래 첨자, 정렬 방식, 제목, 목록, ...)
+- 요소 삽입(표, 이미지, 링크, 코드 블록, 페이지 구분자, Math 수식, 날짜 선택기, 콘텐츠 블록, ...)
+- 인쇄(Canvas를 이미지로 변환, PDF 렌더링 기반)
+- 컴트롤(단일 선택, 텍스트, 날짜, 단일 선택 그룹, 체크박스 그룹)
+- 우클릭 메뉴(내장, 사용자 정의)
+- 단축키(내장, 사용자 정의)
+- 드래그 앤 드롭(텍스트, 요소, 컴트롤)
+- 페이지 머리글, 페이지 바닥글, 페이지 번호
+- 페이지 여백
+- 페이지 나누기
+- 워터마크
+- 주석
+- 목차
+- [플러그인](https://github.com/Hufe921/canvas-editor-plugin)
 
-## 待开发
+## 개발 예정
 
-- 计算性能
-- 控件规则
-- 表格分页
-- vue、react 等框架开箱即用版
+- 계산 성능
+- 컴트롤 규칙
+- 표 페이지 나누기
+- Vue, React 등 프레임워크 바로 사용 가능 버전
 
-## Step. 1: 下载 npm 包
+## Step. 1: npm 패키지 다운로드
 
 ```sh
 npm i @hufe921/canvas-editor --save
 ```
 
-## Step. 2: 准备一个容器
+## Step. 2: 컨테이너 준비
 
 ```html
 <div class="canvas-editor"></div>
 ```
 
-## Step. 3: 实例化编辑器
+## Step. 3: 편집기 인스턴스 생성
 
-- 仅包含正文内容
+- 본문 콘텐츠만 포함
 
 ```javascript
 import Editor from '@hufe921/canvas-editor'
@@ -62,7 +62,7 @@ new Editor(
 )
 ```
 
-- 包含正文、页眉、页脚内容
+- 본문, 페이지 머리글, 페이지 바닥글 콘텐츠 포함
 
 ```javascript
 import Editor from '@hufe921/canvas-editor'
@@ -92,6 +92,6 @@ new Editor(
 )
 ```
 
-## Step. 4: 配置编辑器
+## Step. 4: 편집기 설정
 
-详见下一节
+자세한 내용은 다음 섹션 참조

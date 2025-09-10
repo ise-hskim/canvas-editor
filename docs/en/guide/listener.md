@@ -117,7 +117,7 @@ instance.listener.saved = (payload: IEditorResult) => {}
 
 ## zoneChange
 
-Feature: 区域发生改变
+Feature: Zone changed
 
 Usage:
 

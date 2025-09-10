@@ -1,6 +1,6 @@
-# 执行动作命令
+# 액션 명령 실행
 
-## 使用方式
+## 사용 방법
 
 ```javascript
 import Editor from "@hufe921/canvas-editor"
@@ -11,9 +11,9 @@ instance.command.commandName()
 
 ## executeMode
 
-功能：切换编辑器模式（编辑、清洁、只读、表单）
+기능：에디터 모드 전환（편집, 정리, 읽기 전용, 양식）
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeMode(editorMode: EditorMode)
@@ -21,9 +21,9 @@ instance.command.executeMode(editorMode: EditorMode)
 
 ## executeCut
 
-功能：剪切
+기능：잘라내기
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeCut()
@@ -31,9 +31,9 @@ instance.command.executeCut()
 
 ## executeCopy
 
-功能：复制
+기능：복사
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeCopy(payload?: ICopyOption)
@@ -41,9 +41,9 @@ instance.command.executeCopy(payload?: ICopyOption)
 
 ## executePaste
 
-功能：粘贴
+기능：붙여넣기
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executePaste(payload?: IPasteOption)
@@ -51,9 +51,9 @@ instance.command.executePaste(payload?: IPasteOption)
 
 ## executeSelectAll
 
-功能：全选
+기능：전체 선택
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeSelectAll()
@@ -61,9 +61,9 @@ instance.command.executeSelectAll()
 
 ## executeBackspace
 
-功能：向前删除
+기능：앞으로 삭제
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeBackspace()
@@ -71,9 +71,9 @@ instance.command.executeBackspace()
 
 ## executeSetRange
 
-功能：设置选区
+기능：선택 영역 설정
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeSetRange(
@@ -89,9 +89,9 @@ instance.command.executeSetRange(
 
 ## executeReplaceRange
 
-功能：替换选区
+기능：선택 영역 교체
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeReplaceRange(range: IRange)
@@ -99,9 +99,9 @@ instance.command.executeReplaceRange(range: IRange)
 
 ## executeSetPositionContext
 
-功能：设置位置上下文
+기능：위치 컨텍스트 설정
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeSetPositionContext(range: IRange)
@@ -109,9 +109,9 @@ instance.command.executeSetPositionContext(range: IRange)
 
 ## executeForceUpdate
 
-功能：强制重新渲染文档
+기능：문서 강제 재렌더링
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeForceUpdate(options?: IForceUpdateOption)
@@ -119,9 +119,9 @@ instance.command.executeForceUpdate(options?: IForceUpdateOption)
 
 ## executeBlur
 
-功能：设置编辑器失焦
+기능：에디터 포커스 해제 설정
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeBlur()
@@ -129,9 +129,9 @@ instance.command.executeBlur()
 
 ## executeUndo
 
-功能：撤销
+기능：실행 취소
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeUndo()
@@ -139,9 +139,9 @@ instance.command.executeUndo()
 
 ## executeRedo
 
-功能：重做
+기능：다시 실행
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeRedo()
@@ -149,9 +149,9 @@ instance.command.executeRedo()
 
 ## executePainter
 
-功能：格式刷-复制样式
+기능：서식 복사-스타일 복사
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executePainter()
@@ -159,9 +159,9 @@ instance.command.executePainter()
 
 ## executeApplyPainterStyle
 
-功能：格式刷-应用样式
+기능：서식 복사-스타일 적용
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeApplyPainterStyle()
@@ -169,9 +169,9 @@ instance.command.executeApplyPainterStyle()
 
 ## executeFormat
 
-功能：清除样式
+기능：스타일 지우기
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeFormat(options?: IRichtextOption)
@@ -179,9 +179,9 @@ instance.command.executeFormat(options?: IRichtextOption)
 
 ## executeFont
 
-功能：设置字体
+기능：글꼴 설정
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeFont(font: string, options?: IRichtextOption)
@@ -189,9 +189,9 @@ instance.command.executeFont(font: string, options?: IRichtextOption)
 
 ## executeSize
 
-功能：设置字号
+기능：글자 크기 설정
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeSize(size: number, options?: IRichtextOption)
@@ -199,9 +199,9 @@ instance.command.executeSize(size: number, options?: IRichtextOption)
 
 ## executeSizeAdd
 
-功能：增大字号
+기능：글자 크기 증가
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeSizeAdd(options?: IRichtextOption)
@@ -209,9 +209,9 @@ instance.command.executeSizeAdd(options?: IRichtextOption)
 
 ## executeSizeMinus
 
-功能：减小字号
+기능：글자 크기 감소
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeSizeMinus(options?: IRichtextOption)
@@ -219,9 +219,9 @@ instance.command.executeSizeMinus(options?: IRichtextOption)
 
 ## executeBold
 
-功能：字体加粗
+기능：글꼴 굵게
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeBold(options?: IRichtextOption)
@@ -229,9 +229,9 @@ instance.command.executeBold(options?: IRichtextOption)
 
 ## executeItalic
 
-功能：字体斜体
+기능：글꼴 기울임
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeItalic(options?: IRichtextOption)
@@ -239,9 +239,9 @@ instance.command.executeItalic(options?: IRichtextOption)
 
 ## executeUnderline
 
-功能：下划线
+기능：밑줄
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeUnderline(textDecoration?: ITextDecoration, options?: IRichtextOption)
@@ -249,9 +249,9 @@ instance.command.executeUnderline(textDecoration?: ITextDecoration, options?: IR
 
 ## executeStrikeout
 
-功能：删除线
+기능：취소선
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeStrikeout(options?: IRichtextOption)
@@ -259,9 +259,9 @@ instance.command.executeStrikeout(options?: IRichtextOption)
 
 ## executeSuperscript
 
-功能：上标
+기능：위 첨자
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeSuperscript(options?: IRichtextOption)
@@ -269,9 +269,9 @@ instance.command.executeSuperscript(options?: IRichtextOption)
 
 ## executeSubscript
 
-功能：上下标
+기능：아래 첨자
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeSubscript(options?: IRichtextOption)
@@ -279,9 +279,9 @@ instance.command.executeSubscript(options?: IRichtextOption)
 
 ## executeColor
 
-功能：字体颜色
+기능：글꼴 색상
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeColor(color: string | null, options?: IRichtextOption)
@@ -289,9 +289,9 @@ instance.command.executeColor(color: string | null, options?: IRichtextOption)
 
 ## executeHighlight
 
-功能：高亮
+기능：하이라이트
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeHighlight(color: string | null, options?: IRichtextOption)
@@ -299,9 +299,9 @@ instance.command.executeHighlight(color: string | null, options?: IRichtextOptio
 
 ## executeTitle
 
-功能：标题设置
+기능：제목 설정
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeTitle(TitleLevel | null)
@@ -309,9 +309,9 @@ instance.command.executeTitle(TitleLevel | null)
 
 ## executeList
 
-功能：列表设置
+기능：목록 설정
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeList(listType: ListType | null, listStyle?: ListStyle)
@@ -319,9 +319,9 @@ instance.command.executeList(listType: ListType | null, listStyle?: ListStyle)
 
 ## executeRowFlex
 
-功能：行对齐
+기능：행 정렬
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeRowFlex(rowFlex: RowFlex)
@@ -329,9 +329,9 @@ instance.command.executeRowFlex(rowFlex: RowFlex)
 
 ## executeRowMargin
 
-功能：行间距
+기능：행 간격
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeRowMargin(rowMargin: number)
@@ -339,9 +339,9 @@ instance.command.executeRowMargin(rowMargin: number)
 
 ## executeInsertTable
 
-功能：插入表格
+기능：테이블 삽입
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeInsertTable(row: number, col: number)
@@ -349,9 +349,9 @@ instance.command.executeInsertTable(row: number, col: number)
 
 ## executeInsertTableTopRow
 
-功能：向上插入一行
+기능：위로 한 행 삽입
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeInsertTableTopRow()
@@ -359,9 +359,9 @@ instance.command.executeInsertTableTopRow()
 
 ## executeInsertTableBottomRow
 
-功能：向下插入一行
+기능：아래로 한 행 삽입
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeInsertTableBottomRow()
@@ -369,9 +369,9 @@ instance.command.executeInsertTableBottomRow()
 
 ## executeInsertTableLeftCol
 
-功能：向左插入一列
+기능：왼쪽으로 한 열 삽입
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeInsertTableLeftCol()
@@ -379,9 +379,9 @@ instance.command.executeInsertTableLeftCol()
 
 ## executeInsertTableRightCol
 
-功能：向右插入一列
+기능：오른쪽으로 한 열 삽입
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeInsertTableRightCol()
@@ -389,9 +389,9 @@ instance.command.executeInsertTableRightCol()
 
 ## executeDeleteTableRow
 
-功能：删除当前行
+기능：현재 행 삭제
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeDeleteTableRow()
@@ -399,9 +399,9 @@ instance.command.executeDeleteTableRow()
 
 ## executeDeleteTableCol
 
-功能：删除当前列
+기능：현재 열 삭제
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeDeleteTableCol()
@@ -409,9 +409,9 @@ instance.command.executeDeleteTableCol()
 
 ## executeDeleteTable
 
-功能：删除表格
+기능：테이블 삭제
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeDeleteTable()
@@ -419,9 +419,9 @@ instance.command.executeDeleteTable()
 
 ## executeMergeTableCell
 
-功能：合并表格
+기능：테이블 병합
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeMergeTableCell()
@@ -429,9 +429,9 @@ instance.command.executeMergeTableCell()
 
 ## executeCancelMergeTableCell
 
-功能：取消合并表格
+기능：테이블 병합 취소
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeCancelMergeTableCell()
@@ -439,9 +439,9 @@ instance.command.executeCancelMergeTableCell()
 
 ## executeSplitVerticalTableCell
 
-功能：分隔当前单元格（垂直方向）
+기능：현재 셀 분할(수직 방향)
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeSplitVerticalTableCell()
@@ -449,9 +449,9 @@ instance.command.executeSplitVerticalTableCell()
 
 ## executeSplitHorizontalTableCell
 
-功能：分隔当前单元格（水平方向）
+기능：현재 셀 분할(수평 방향)
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeSplitHorizontalTableCell()
@@ -459,9 +459,9 @@ instance.command.executeSplitHorizontalTableCell()
 
 ## executeTableTdVerticalAlign
 
-功能：表格单元格垂直对齐方式
+기능：테이블 셀 수직 정렬 방식
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeTableTdVerticalAlign(payload: VerticalAlign)
@@ -469,9 +469,9 @@ instance.command.executeTableTdVerticalAlign(payload: VerticalAlign)
 
 ## executeTableBorderType
 
-功能：表格边框类型
+기능：테이블 테두리 유형
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeTableBorderType(payload: TableBorder)
@@ -479,9 +479,9 @@ instance.command.executeTableBorderType(payload: TableBorder)
 
 ## executeTableBorderColor
 
-功能：表格边框颜色
+기능：테이블 테두리 색상
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeTableBorderColor(payload: string)
@@ -489,9 +489,9 @@ instance.command.executeTableBorderColor(payload: string)
 
 ## executeTableTdBorderType
 
-功能：表格单元格边框类型
+기능：테이블 셀 테두리 유형
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeTableTdBorderType(payload: TdBorder)
@@ -499,9 +499,9 @@ instance.command.executeTableTdBorderType(payload: TdBorder)
 
 ## executeTableTdSlashType
 
-功能：表格单元格内斜线
+기능：테이블 셀 내 대각선
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeTableTdSlashType(payload: TdSlash)
@@ -509,9 +509,9 @@ instance.command.executeTableTdSlashType(payload: TdSlash)
 
 ## executeTableTdBackgroundColor
 
-功能：表格单元格背景色
+기능：테이블 셀 배경색
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeTableTdBackgroundColor(payload: string)
@@ -519,9 +519,9 @@ instance.command.executeTableTdBackgroundColor(payload: string)
 
 ## executeTableSelectAll
 
-功能：选中整个表格
+기능：전체 테이블 선택
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeTableSelectAll()
@@ -529,9 +529,9 @@ instance.command.executeTableSelectAll()
 
 ## executeImage
 
-功能：插入图片
+기능：이미지 삽입
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeImage({
@@ -545,9 +545,9 @@ instance.command.executeImage({
 
 ## executeHyperlink
 
-功能：插入链接
+기능：링크 삽입
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeHyperlink({
@@ -560,9 +560,9 @@ instance.command.executeHyperlink({
 
 ## executeDeleteHyperlink
 
-功能：删除链接
+기능：링크 삭제
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeDeleteHyperlink()
@@ -570,9 +570,9 @@ instance.command.executeDeleteHyperlink()
 
 ## executeCancelHyperlink
 
-功能：取消链接
+기능：링크 취소
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeCancelHyperlink()
@@ -580,9 +580,9 @@ instance.command.executeCancelHyperlink()
 
 ## executeEditHyperlink
 
-功能：编辑链接
+기능：링크 편집
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeEditHyperlink(newUrl: string)
@@ -590,9 +590,9 @@ instance.command.executeEditHyperlink(newUrl: string)
 
 ## executeSeparator
 
-功能：插入分割线
+기능：구분선 삽입
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeSeparator(dashArray: number[])
@@ -600,9 +600,9 @@ instance.command.executeSeparator(dashArray: number[])
 
 ## executePageBreak
 
-功能：分页符
+기능：페이지 나누기
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executePageBreak()
@@ -610,9 +610,9 @@ instance.command.executePageBreak()
 
 ## executeAddWatermark
 
-功能：添加水印
+기능：워터마크 추가
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeAddWatermark({
@@ -626,9 +626,9 @@ instance.command.executeAddWatermark({
 
 ## executeDeleteWatermark
 
-功能：删除水印
+기능：워터마크 삭제
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeDeleteWatermark()
@@ -636,9 +636,9 @@ instance.command.executeDeleteWatermark()
 
 ## executeSearch
 
-功能：搜索
+기능：검색
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeSearch(keyword: string)
@@ -646,9 +646,9 @@ instance.command.executeSearch(keyword: string)
 
 ## executeSearchNavigatePre
 
-功能：搜索导航-上一个
+기능：검색 탐색-이전
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeSearchNavigatePre()
@@ -656,9 +656,9 @@ instance.command.executeSearchNavigatePre()
 
 ## executeSearchNavigateNext
 
-功能：搜索导航-下一个
+기능：검색 탐색-다음
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeSearchNavigateNext()
@@ -666,9 +666,9 @@ instance.command.executeSearchNavigateNext()
 
 ## executeReplace
 
-功能：搜索替换
+기능：검색 바꾸기
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeReplace(newWord: string, option?: IReplaceOption)
@@ -676,9 +676,9 @@ instance.command.executeReplace(newWord: string, option?: IReplaceOption)
 
 ## executePrint
 
-功能：打印
+기능：인쇄
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executePrint()
@@ -686,9 +686,9 @@ instance.command.executePrint()
 
 ## executeReplaceImageElement
 
-功能：替换图片
+기능：이미지 교체
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeReplaceImageElement(newUrl: string)
@@ -696,9 +696,9 @@ instance.command.executeReplaceImageElement(newUrl: string)
 
 ## executeSaveAsImageElement
 
-功能：另存为图片
+기능：이미지로 다른 이름으로 저장
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeSaveAsImageElement()
@@ -706,9 +706,9 @@ instance.command.executeSaveAsImageElement()
 
 ## executeChangeImageDisplay
 
-功能：改变图片行显示方式
+기능：이미지 행 표시 방식 변경
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeChangeImageDisplay(element: IElement, display: ImageDisplay)
@@ -716,9 +716,9 @@ instance.command.executeChangeImageDisplay(element: IElement, display: ImageDisp
 
 ## executePageMode
 
-功能：页面模式
+기능：페이지 모드
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executePageMode(pageMode: PageMode)
@@ -726,9 +726,9 @@ instance.command.executePageMode(pageMode: PageMode)
 
 ## executePageScale
 
-功能：设置缩放比例
+기능：확대/축소 비율 설정
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executePageScale(scale: number)
@@ -736,9 +736,9 @@ instance.command.executePageScale(scale: number)
 
 ## executePageScaleRecovery
 
-功能：恢复页面原始缩放比例
+기능：페이지 원본 확대/축소 비율 복원
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executePageScaleRecovery()
@@ -746,9 +746,9 @@ instance.command.executePageScaleRecovery()
 
 ## executePageScaleMinus
 
-功能：页面缩小
+기능：페이지 축소
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executePageScaleMinus()
@@ -756,9 +756,9 @@ instance.command.executePageScaleMinus()
 
 ## executePageScaleAdd
 
-功能：页面放大
+기능：페이지 확대
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executePageScaleAdd()
@@ -766,9 +766,9 @@ instance.command.executePageScaleAdd()
 
 ## executePaperSize
 
-功能：设置纸张大小
+기능：용지 크기 설정
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executePaperSize(width: number, height: number)
@@ -776,9 +776,9 @@ instance.command.executePaperSize(width: number, height: number)
 
 ## executePaperDirection
 
-功能：设置纸张方向
+기능：용지 방향 설정
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executePaperDirection(paperDirection: PaperDirection)
@@ -786,9 +786,9 @@ instance.command.executePaperDirection(paperDirection: PaperDirection)
 
 ## executeSetPaperMargin
 
-功能：设置纸张页边距
+기능：용지 여백 설정
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeSetPaperMargin([top: number, right: number, bottom: number, left: number])
@@ -796,9 +796,9 @@ instance.command.executeSetPaperMargin([top: number, right: number, bottom: numb
 
 ## executeSetMainBadge
 
-功能：设置正文徽章
+기능：본문 뱃지 설정
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeSetMainBadge(payload: IBadge | null)
@@ -806,9 +806,9 @@ instance.command.executeSetMainBadge(payload: IBadge | null)
 
 ## executeSetAreaBadge
 
-功能：设置区域徽章
+기능：영역 뱃지 설정
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeSetAreaBadge(payload: IAreaBadge[])
@@ -816,9 +816,9 @@ instance.command.executeSetAreaBadge(payload: IAreaBadge[])
 
 ## executeInsertElementList
 
-功能：插入元素
+기능：요소 삽입
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeInsertElementList(elementList: IElement[], options?: IInsertElementListOption)
@@ -826,9 +826,9 @@ instance.command.executeInsertElementList(elementList: IElement[], options?: IIn
 
 ## executeAppendElementList
 
-功能：追加元素
+기능：요소 추가
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeAppendElementList(elementList: IElement[], options?: IAppendElementListOption)
@@ -836,9 +836,9 @@ instance.command.executeAppendElementList(elementList: IElement[], options?: IAp
 
 ## executeUpdateElementById
 
-功能：根据 id 修改元素属性
+기능：ID로 요소 속성 수정
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeUpdateElementById(payload: IUpdateElementByIdOption)
@@ -846,9 +846,9 @@ instance.command.executeUpdateElementById(payload: IUpdateElementByIdOption)
 
 ## executeDeleteElementById
 
-功能：根据 id 删除元素
+기능：ID로 요소 삭제
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeDeleteElementById(payload: IDeleteElementByIdOption)
@@ -856,9 +856,9 @@ instance.command.executeDeleteElementById(payload: IDeleteElementByIdOption)
 
 ## executeSetValue
 
-功能：设置编辑器数据
+기능：에디터 데이터 설정
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeSetValue(payload: Partial<IEditorData>, options?: ISetValueOption)
@@ -866,9 +866,9 @@ instance.command.executeSetValue(payload: Partial<IEditorData>, options?: ISetVa
 
 ## executeRemoveControl
 
-功能：删除控件
+기능：컨트롤 삭제
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeRemoveControl(payload?: IRemoveControlOption)
@@ -876,9 +876,9 @@ instance.command.executeRemoveControl(payload?: IRemoveControlOption)
 
 ## executeSetLocale
 
-功能：设置本地语言
+기능：로컬 언어 설정
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeSetLocale(locale: string)
@@ -886,9 +886,9 @@ instance.command.executeSetLocale(locale: string)
 
 ## executeLocationCatalog
 
-功能：定位目录位置
+기능：디렉토리 위치 찾기
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeLocationCatalog(titleId: string)
@@ -896,9 +896,9 @@ instance.command.executeLocationCatalog(titleId: string)
 
 ## executeWordTool
 
-功能：文字工具（删除空行、行首空格）
+기능：텍스트 도구(빈 줄 삭제, 줄 첫 공백)
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeWordTool()
@@ -906,9 +906,9 @@ instance.command.executeWordTool()
 
 ## executeSetHTML
 
-功能：设置编辑器 HTML 数据
+기능：에디터 HTML 데이터 설정
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeSetHTML(payload: Partial<IEditorHTML)
@@ -916,9 +916,9 @@ instance.command.executeSetHTML(payload: Partial<IEditorHTML)
 
 ## executeSetGroup
 
-功能：设置成组
+기능：그룹 설정
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeSetGroup()
@@ -926,9 +926,9 @@ instance.command.executeSetGroup()
 
 ## executeDeleteGroup
 
-功能：删除成组
+기능：그룹 삭제
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeDeleteGroup(groupId: string)
@@ -936,9 +936,9 @@ instance.command.executeDeleteGroup(groupId: string)
 
 ## executeLocationGroup
 
-功能：定位成组位置
+기능：그룹 위치 찾기
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeLocationGroup(groupId: string)
@@ -946,9 +946,9 @@ instance.command.executeLocationGroup(groupId: string)
 
 ## executeSetZone
 
-功能：设置激活区域（页眉、正文、页脚）
+기능：활성 영역 설정(머리글, 본문, 바닥글)
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeSetZone(zone: EditorZone)
@@ -956,9 +956,9 @@ instance.command.executeSetZone(zone: EditorZone)
 
 ## executeSetControlValue
 
-功能：设置控件值
+기능：컨트롤 값 설정
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeSetControlValue(payload: ISetControlValueOption)
@@ -966,9 +966,9 @@ instance.command.executeSetControlValue(payload: ISetControlValueOption)
 
 ## executeSetControlValueList
 
-功能：批量设置控件值
+기능：컨트롤 값 일괄 설정
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeSetControlValueList(payload: ISetControlValueOption[])
@@ -976,9 +976,9 @@ instance.command.executeSetControlValueList(payload: ISetControlValueOption[])
 
 ## executeSetControlExtension
 
-功能：设置控件扩展值
+기능：컨트롤 확장 값 설정
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeSetControlExtension(payload: ISetControlExtensionOption)
@@ -986,9 +986,9 @@ instance.command.executeSetControlExtension(payload: ISetControlExtensionOption)
 
 ## executeSetControlExtensionList
 
-功能：批量设置控件扩展值
+기능：컨트롤 확장 값 일괄 설정
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeSetControlExtensionList(payload: ISetControlExtensionOption[])
@@ -996,9 +996,9 @@ instance.command.executeSetControlExtensionList(payload: ISetControlExtensionOpt
 
 ## executeSetControlProperties
 
-功能：设置控件属性
+기능：컨트롤 속성 설정
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeSetControlProperties(payload: ISetControlProperties)
@@ -1006,9 +1006,9 @@ instance.command.executeSetControlProperties(payload: ISetControlProperties)
 
 ## executeSetControlPropertiesList
 
-功能：批量设置控件属性
+기능：컨트롤 속성 일괄 설정
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeSetControlPropertiesList(payload: ISetControlProperties[])
@@ -1016,9 +1016,9 @@ instance.command.executeSetControlPropertiesList(payload: ISetControlProperties[
 
 ## executeSetControlHighlight
 
-功能：设置控件高亮（根据关键词）
+기능：컨트롤 하이라이트 설정(키워드 기반)
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeSetControlHighlight(payload: ISetControlHighlightOption)
@@ -1026,9 +1026,9 @@ instance.command.executeSetControlHighlight(payload: ISetControlHighlightOption)
 
 ## executeLocationControl
 
-功能：定位并激活控件
+기능：컨트롤 위치 찾기 및 활성화
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeLocationControl(controlId: string, options?: ILocationControlOption)
@@ -1036,9 +1036,9 @@ instance.command.executeLocationControl(controlId: string, options?: ILocationCo
 
 ## executeInsertControl
 
-功能：插入控件
+기능：컨트롤 삽입
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeInsertControl(payload: IElement)
@@ -1046,9 +1046,9 @@ instance.command.executeInsertControl(payload: IElement)
 
 ## executeUpdateOptions
 
-功能：修改配置
+기능：설정 수정
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeUpdateOptions(payload: IUpdateOption)
@@ -1056,9 +1056,9 @@ instance.command.executeUpdateOptions(payload: IUpdateOption)
 
 ## executeInsertTitle
 
-功能：插入标题
+기능：제목 삽입
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeInsertTitle(payload: IElement)
@@ -1066,9 +1066,9 @@ instance.command.executeInsertTitle(payload: IElement)
 
 ## executeFocus
 
-功能：光标聚焦
+기능：커서 포커스
 
-用法：
+사용법：
 
 ```javascript
 instance.command.executeFocus(payload?: IFocusOption)
@@ -1076,7 +1076,7 @@ instance.command.executeFocus(payload?: IFocusOption)
 
 ## executeInsertArea
 
-功能： 插入区域
+기능： 영역 삽입
 
 ```js
 const areaId = instance.command.executeInsertArea(payload: IInsertAreaOption)
@@ -1084,7 +1084,7 @@ const areaId = instance.command.executeInsertArea(payload: IInsertAreaOption)
 
 ## executeSetAreaProperties
 
-功能：设置区域属性
+기능：영역 속성 설정
 
 ```js
 instance.command.executeSetAreaProperties(payload: ISetAreaPropertiesOption)
@@ -1092,7 +1092,7 @@ instance.command.executeSetAreaProperties(payload: ISetAreaPropertiesOption)
 
 ## executeSetAreaValue
 
-功能：设置区域值
+기능：영역 값 설정
 
 ```js
 instance.command.executeSetAreaValue(payload: ISetAreaValueOption)
@@ -1100,7 +1100,7 @@ instance.command.executeSetAreaValue(payload: ISetAreaValueOption)
 
 ## executeLocationArea
 
-功能：定位区域位置
+기능：영역 위치 찾기
 
 ```js
 instance.command.executeLocationArea(areaId: string, options?: ILocationAreaOption)

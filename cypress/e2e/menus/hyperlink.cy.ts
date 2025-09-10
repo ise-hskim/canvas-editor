@@ -1,6 +1,6 @@
 import Editor from '../../../src/editor'
 
-describe('菜单-超链接', () => {
+describe('메뉴-하이퍼링크', () => {
   beforeEach(() => {
     cy.visit('http://localhost:3000/canvas-editor/')
 
@@ -10,7 +10,7 @@ describe('菜单-超链接', () => {
   const text = 'canvas-editor'
   const url = 'https://hufe.club/canvas-editor'
 
-  it('超链接', () => {
+  it('하이퍼링크', () => {
     cy.getEditor().then((editor: Editor) => {
       editor.command.executeSelectAll()
 

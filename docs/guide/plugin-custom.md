@@ -1,24 +1,24 @@
-# 自定义插件
+# 사용자 정의 플러그인
 
 ::: tip
-官方维护插件仓库：https://github.com/Hufe921/canvas-editor-plugin
+공식 관리 플러그인 저장소: https://github.com/Hufe921/canvas-editor-plugin
 :::
 
-## 开发插件
+## 플러그인 개발
 
 ```javascript
 export function myPlugin(editor: Editor, options?: Option) {
-  // 1. 修改方法，详见：src/plugins/copy
+  // 1. 메서드 수정, 자세한 내용: src/plugins/copy
   editor.command.updateFunction = () => {}
 
-  // 2. 增加方法，详见：src/plugins/markdown
+  // 2. 메서드 추가, 자세한 내용: src/plugins/markdown
   editor.command.addFunction = () => {}
 
-  // 3. 事件监听、快捷键、右键菜单、重写方法等组合处理
+  // 3. 이벤트 리스늤, 단축키, 우클릭 메뉴, 메서드 재정의 등의 조합 처리
 }
 ```
 
-## 使用插件
+## 플러그인 사용
 
 ```javascript
 instance.use(myPlugin, options?: Option)

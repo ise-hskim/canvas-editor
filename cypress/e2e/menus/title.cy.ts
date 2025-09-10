@@ -1,6 +1,6 @@
 import Editor, { ElementType, TitleLevel } from '../../../src/editor'
 
-describe('菜单-标题', () => {
+describe('메뉴-제목', () => {
   const url = 'http://localhost:3000/canvas-editor/'
 
   beforeEach(() => {
@@ -13,7 +13,7 @@ describe('菜单-标题', () => {
   const elementType = <ElementType>'title'
   const level = <TitleLevel>'first'
 
-  it('标题', () => {
+  it('제목', () => {
     cy.getEditor().then((editor: Editor) => {
       editor.command.executeSelectAll()
 

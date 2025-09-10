@@ -636,7 +636,7 @@ instance.command.executeDeleteWatermark()
 
 ## executeSearch
 
-Feature: 搜索
+Feature: Search
 
 Usage:
 

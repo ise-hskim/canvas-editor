@@ -1,6 +1,6 @@
 import Editor from '../../../src/editor'
 
-describe('菜单-水印', () => {
+describe('메뉴-워터마크', () => {
   beforeEach(() => {
     cy.visit('http://localhost:3000/canvas-editor/')
 
@@ -10,7 +10,7 @@ describe('菜单-水印', () => {
   const text = 'canvas-editor'
   const size = 80
 
-  it('添加水印', () => {
+  it('워터마크 추가', () => {
     cy.getEditor().then((editor: Editor) => {
       cy.get('.menu-item__watermark').click()
 
@@ -41,7 +41,7 @@ describe('菜单-水印', () => {
     })
   })
 
-  it('删除水印', () => {
+  it('워터마크 삭제', () => {
     cy.getEditor().then((editor: Editor) => {
       cy.get('.menu-item__watermark').click()
 

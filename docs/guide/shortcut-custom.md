@@ -1,6 +1,6 @@
-# 自定义快捷键
+# 사용자 정의 단축키
 
-## 使用方式
+## 사용 방법
 
 ```javascript
 import Editor from "@hufe921/canvas-editor"
@@ -11,7 +11,7 @@ instance.register.shortcutList([
       key: KeyMap;
       ctrl?: boolean;
       meta?: boolean;
-      mod?: boolean; // windows:ctrl || mac:command
+      mod?: boolean; // Windows: Ctrl || Mac: Command
       shift?: boolean;
       alt?: boolean;
       isGlobal?: boolean;

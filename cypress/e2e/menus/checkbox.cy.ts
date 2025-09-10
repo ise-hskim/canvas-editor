@@ -1,6 +1,6 @@
 import Editor, { ElementType } from '../../../src/editor'
 
-describe('菜单-复选框', () => {
+describe('메뉴-체크박스', () => {
   beforeEach(() => {
     cy.visit('http://localhost:3000/canvas-editor/')
 
@@ -9,7 +9,7 @@ describe('菜单-复选框', () => {
 
   const type: ElementType = <ElementType>'checkbox'
 
-  it('代码块', () => {
+  it('코드 블록', () => {
     cy.getEditor().then((editor: Editor) => {
       editor.command.executeSelectAll()
 

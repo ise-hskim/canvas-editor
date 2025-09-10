@@ -1,6 +1,6 @@
 import Editor from '../../../src/editor'
 
-describe('菜单-撤销&重做', () => {
+describe('메뉴-실행취소&다시실행', () => {
   beforeEach(() => {
     cy.visit('http://localhost:3000/canvas-editor/')
 
@@ -9,7 +9,7 @@ describe('菜单-撤销&重做', () => {
 
   const text = 'canvas-editor'
 
-  it('撤销', () => {
+  it('실행취소', () => {
     cy.getEditor().then((editor: Editor) => {
       editor.command.executeSelectAll()
 
@@ -27,7 +27,7 @@ describe('菜单-撤销&重做', () => {
     })
   })
 
-  it('重做', () => {
+  it('다시실행', () => {
     cy.getEditor().then((editor: Editor) => {
       editor.command.executeSelectAll()
 

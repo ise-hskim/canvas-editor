@@ -1,6 +1,6 @@
 import Editor, { ControlType, ElementType } from '../../../src/editor'
 
-describe('控件-文本型', () => {
+describe('컨트롤-텍스트형', () => {
   beforeEach(() => {
     cy.visit('http://localhost:3000/canvas-editor/')
 
@@ -11,7 +11,7 @@ describe('控件-文本型', () => {
   const elementType: ElementType = <ElementType>'control'
   const controlType: ControlType = <ControlType>'text'
 
-  it('文本型', () => {
+  it('텍스트형', () => {
     cy.getEditor().then((editor: Editor) => {
       editor.command.executeSelectAll()
 
@@ -24,7 +24,7 @@ describe('控件-文本型', () => {
           control: {
             type: controlType,
             value: null,
-            placeholder: '文本型'
+            placeholder: '텍스트형'
           }
         }
       ])

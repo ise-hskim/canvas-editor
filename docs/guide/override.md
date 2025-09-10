@@ -1,6 +1,6 @@
-# 重写方法
+# 메서드 재정의
 
-## 使用方式
+## 사용 방법
 
 ```javascript
 import Editor from "@hufe921/canvas-editor"
@@ -12,15 +12,15 @@ instance.override.overrideFunction = () => unknown | IOverrideResult
 
 ```typescript
 interface IOverrideResult {
-  preventDefault?: boolean // 阻止执行内部默认方法。默认阻止
+  preventDefault?: boolean // 내부 기본 메서드 실행 차단. 기본값은 차단
 }
 ```
 
 ## paste
 
-功能：重写粘贴方法
+기능: 붙여넣기 메서드 재정의
 
-用法：
+사용법:
 
 ```javascript
 instance.override.paste = (evt?: ClipboardEvent) => unknown | IOverrideResult
@@ -28,9 +28,9 @@ instance.override.paste = (evt?: ClipboardEvent) => unknown | IOverrideResult
 
 ## copy
 
-功能：重写复制方法
+기능: 복사 메서드 재정의
 
-用法：
+사용법:
 
 ```javascript
 instance.override.copy = () => unknown | IOverrideResult
@@ -38,9 +38,9 @@ instance.override.copy = () => unknown | IOverrideResult
 
 ## drop
 
-功能：重写拖放方法
+기능: 드래그 앤 드롭 메서드 재정의
 
-用法：
+사용법:
 
 ```javascript
 instance.override.drop = (evt: DragEvent) => unknown | IOverrideResult

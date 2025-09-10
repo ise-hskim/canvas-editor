@@ -1,10 +1,10 @@
-# 事件监听(listener)
+# 이벤트 리스너(listener)
 
 ::: warning
-listener 只能响应一个方法，后续不再添加新监听方法，推荐使用 eventBus 进行事件监听。
+listener는 하나의 메서드만 응답할 수 있으며, 향후 새로운 리스너 메서드를 추가하지 않습니다. 이벤트 리스늤에는 eventBus를 사용하는 것을 강력히 방법니다.
 :::
 
-## 使用方式
+## 사용 방법
 
 ```javascript
 import Editor from "@hufe921/canvas-editor"
@@ -15,9 +15,9 @@ instance.listener.eventName = ()=>{}
 
 ## rangeStyleChange
 
-功能：选区样式发生改变
+기능: 선택 영역 스타일 변경
 
-用法：
+사용법:
 
 ```javascript
 instance.listener.rangeStyleChange = (payload: IRangeStyle) => {}
@@ -25,9 +25,9 @@ instance.listener.rangeStyleChange = (payload: IRangeStyle) => {}
 
 ## visiblePageNoListChange
 
-功能：可见页发生改变
+기능: 표시되는 페이지 변경
 
-用法：
+사용법:
 
 ```javascript
 instance.listener.visiblePageNoListChange = (payload: number[]) => {}
@@ -35,9 +35,9 @@ instance.listener.visiblePageNoListChange = (payload: number[]) => {}
 
 ## intersectionPageNoChange
 
-功能：当前页发生改变
+기능: 현재 페이지 변경
 
-用法：
+사용법:
 
 ```javascript
 instance.listener.intersectionPageNoChange = (payload: number) => {}
@@ -45,9 +45,9 @@ instance.listener.intersectionPageNoChange = (payload: number) => {}
 
 ## pageSizeChange
 
-功能：当前页数发生改变
+기능: 현재 페이지 수 변경
 
-用法：
+사용법:
 
 ```javascript
 instance.listener.pageSizeChange = (payload: number) => {}
@@ -55,9 +55,9 @@ instance.listener.pageSizeChange = (payload: number) => {}
 
 ## pageScaleChange
 
-功能：当前页面缩放比例发生改变
+기능: 현재 페이지 확대/축소 비율 변경
 
-用法：
+사용법:
 
 ```javascript
 instance.listener.pageScaleChange = (payload: number) => {}
@@ -65,9 +65,9 @@ instance.listener.pageScaleChange = (payload: number) => {}
 
 ## contentChange
 
-功能：当前内容发生改变
+기능: 현재 콘텐츠 변경
 
-用法：
+사용법:
 
 ```javascript
 instance.listener.contentChange = () => {}
@@ -75,9 +75,9 @@ instance.listener.contentChange = () => {}
 
 ## controlChange
 
-功能：当前光标所在控件发生改变
+기능: 현재 커서가 위치한 컨트롤 변경
 
-用法：
+사용법:
 
 ```javascript
 instance.listener.controlChange = (payload: IControlChangeResult) => {}
@@ -85,9 +85,9 @@ instance.listener.controlChange = (payload: IControlChangeResult) => {}
 
 ## controlContentChange
 
-功能：控件内容发生改变
+기능: 컨트롤 콘텐츠 변경
 
-用法：
+사용법:
 
 ```javascript
 instance.listener.controlContentChange = (
@@ -97,9 +97,9 @@ instance.listener.controlContentChange = (
 
 ## pageModeChange
 
-功能：页面模式发生改变
+기능: 페이지 모드 변경
 
-用法：
+사용법:
 
 ```javascript
 instance.listener.pageModeChange = (payload: PageMode) => {}
@@ -107,9 +107,9 @@ instance.listener.pageModeChange = (payload: PageMode) => {}
 
 ## saved
 
-功能：文档执行保存
+기능: 문서 저장 실행
 
-用法：
+사용법:
 
 ```javascript
 instance.listener.saved = (payload: IEditorResult) => {}
@@ -117,9 +117,9 @@ instance.listener.saved = (payload: IEditorResult) => {}
 
 ## zoneChange
 
-功能：区域发生改变
+기능: 영역 변경
 
-用法：
+사용법:
 
 ```javascript
 instance.listener.zoneChange = (payload: EditorZone) => {}
