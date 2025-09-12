@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "commonjs",
+    "lib": ["ES2020", "DOM"],
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "outDir": "../../../../../dist/test",
+    "rootDir": "../../../../",
+    "types": ["node"]
+  },
+  "include": [
+    "../**/*.ts",
+    "converter.test.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

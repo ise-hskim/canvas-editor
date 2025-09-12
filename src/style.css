@@ -391,6 +391,30 @@ ul {
   background-image: url('./assets/images/table.svg');
 }
 
+.menu-item__table-background {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.menu-item__table-background i {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background-image: url('./assets/images/table-background.svg');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.menu-item__table-background input {
+  display: none;
+}
+
+.menu-item__table-background:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
 .menu-item .menu-item__table__collapse {
   width: 270px;
   height: 310px;

@@ -55,7 +55,8 @@
       "borderTdBottom": "아래쪽 테두리",
       "borderTdLeft": "왼쪽 테두리",
       "borderTdForward": "대각선(↘)",
-      "borderTdBack": "대각선(↙)"
+      "borderTdBack": "대각선(↙)",
+      "backgroundColor": "셀 배경색"
     }
   },
   "datePicker": {

@@ -24,29 +24,33 @@
         <div class="menu-item__format" title="서식 지우기">
           <i></i>
         </div>
+        <div class="menu-item__import-hwpx" title="HWPX JSON 가져오기" style="margin-left: 10px; cursor: pointer;">
+          <i style="font-style: normal;">📄</i>
+          <input type="file" id="hwpxJsonFile" accept=".json" style="display: none;">
+        </div>
       </div>
       <div class="menu-divider"></div>
       <div class="menu-item">
         <div class="menu-item__font">
-          <span class="select" title="글꼴">맑은 고딕</span>
+          <span class="select" title="글꼴">애플고딕</span>
           <div class="options">
             <ul>
-              <li data-family="Microsoft YaHei" style="font-family:'Microsoft YaHei';">맑은 고딕</li>
-              <li data-family="바탕" style="font-family:'바탕';">중국 송체</li>
-              <li data-family="돋움" style="font-family:'돋움';">중국 흔체</li>
-              <li data-family="휴먼명조" style="font-family:'휴먼명조';">중국 방송체</li>
-              <li data-family="궁서" style="font-family:'궁서';">중국 해서체</li>
-              <li data-family="휴먼아미체" style="font-family:'휴먼아미체';">중국 호박체</li>
-              <li data-family="궁서" style="font-family:'궁서';">중국 해서체</li>
-              <li data-family="휴먼편지체" style="font-family:'휴먼편지체';">중국 례서체</li>
-              <li data-family="휴먼옥파체" style="font-family:'휴먼옥파체';">중국 신위체</li>
-              <li data-family="휴먼매직체" style="font-family:'휴먼매직체';">중국 행해서체</li>
-              <li data-family="휴먼가람체" style="font-family:'휴먼가람체';">중국 중송체</li>
-              <li data-family="휴먼엔틱체" style="font-family:'휴먼엔틱체';">중국 채운체</li>
+              <li data-family="AppleGothic" style="font-family:'AppleGothic';">애플고딕</li>
+              <li data-family="AppleMyungjo" style="font-family:'AppleMyungjo';">애플명조</li>
+              <li data-family="Apple SD Gothic Neo" style="font-family:'Apple SD Gothic Neo';">애플 SD 고딕 Neo</li>
+              <li data-family="-apple-system" style="font-family:'-apple-system';">시스템 폰트</li>
+              <li data-family="SF Pro Display" style="font-family:'SF Pro Display';">SF Pro Display</li>
+              <li data-family="SF Pro Text" style="font-family:'SF Pro Text';">SF Pro Text</li>
+              <li data-family="Helvetica Neue" style="font-family:'Helvetica Neue';">Helvetica Neue</li>
+              <li data-family="Helvetica" style="font-family:'Helvetica';">Helvetica</li>
               <li data-family="Arial" style="font-family:'Arial';">Arial</li>
-              <li data-family="Segoe UI" style="font-family:'Segoe UI';">Segoe UI</li>
-              <li data-family="Ink Free" style="font-family:'Ink Free';">Ink Free</li>
-              <li data-family="Fantasy" style="font-family:'Fantasy';">Fantasy</li>
+              <li data-family="Times New Roman" style="font-family:'Times New Roman';">Times New Roman</li>
+              <li data-family="Georgia" style="font-family:'Georgia';">Georgia</li>
+              <li data-family="Verdana" style="font-family:'Verdana';">Verdana</li>
+              <li data-family="Monaco" style="font-family:'Monaco';">Monaco</li>
+              <li data-family="Menlo" style="font-family:'Menlo';">Menlo</li>
+              <li data-family="Courier New" style="font-family:'Courier New';">Courier New</li>
+              <li data-family="Noto Sans KR" style="font-family:'Noto Sans KR';">Noto Sans KR</li>
             </ul>
           </div>
         </div>
@@ -219,6 +223,10 @@
       <div class="menu-item">
         <div class="menu-item__table">
           <i title="표"></i>
+        </div>
+        <div class="menu-item__table-background">
+          <i title="표 셀 배경색"></i>
+          <input type="color" id="table-background">
         </div>
         <div class="menu-item__table__collapse">
           <div class="table-close">×</div>

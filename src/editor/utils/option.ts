@@ -153,7 +153,7 @@ export function mergeOption(
     locale: 'koKR',
     defaultType: 'TEXT',
     defaultColor: '#000000',
-    defaultFont: 'Malgun Gothic',
+    defaultFont: 'AppleGothic',
     defaultSize: 16,
     minSize: 5,
     maxSize: 72,

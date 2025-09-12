@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HWPX to Canvas Editor Viewer</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: #f5f5f5;
+      padding: 20px;
+    }
+    
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    
+    .header {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .header h1 {
+      font-size: 24px;
+      color: #333;
+      margin-bottom: 10px;
+    }
+    
+    .controls {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+    }
+    
+    .btn {
+      padding: 8px 16px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    
+    .btn:hover {
+      background: #0056b3;
+    }
+    
+    .btn-secondary {
+      background: #6c757d;
+    }
+    
+    .btn-secondary:hover {
+      background: #545b62;
+    }
+    
+    .file-input {
+      display: none;
+    }
+    
+    .file-label {
+      display: inline-block;
+      padding: 8px 16px;
+      background: #28a745;
+      color: white;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    
+    .file-label:hover {
+      background: #218838;
+    }
+    
+    .main-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      height: calc(100vh - 200px);
+    }
+    
+    .panel {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .panel-header {
+      padding: 15px;
+      border-bottom: 1px solid #e0e0e0;
+      font-weight: 600;
+      color: #555;
+    }
+    
+    .panel-content {
+      flex: 1;
+      overflow: auto;
+      padding: 15px;
+    }
+    
+    #jsonInput {
+      width: 100%;
+      height: 100%;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 10px;
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      resize: none;
+    }
+    
+    #editorContainer {
+      width: 100%;
+      height: 100%;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      background: white;
+    }
+    
+    .status {
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 4px;
+      font-size: 14px;
+      display: none;
+    }
+    
+    .status.success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+      display: block;
+    }
+    
+    .status.error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+      display: block;
+    }
+    
+    .status.info {
+      background: #d1ecf1;
+      color: #0c5460;
+      border: 1px solid #bee5eb;
+      display: block;
+    }
+    
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-top: 10px;
+    }
+    
+    .stat-item {
+      background: #f8f9fa;
+      padding: 8px;
+      border-radius: 4px;
+      text-align: center;
+    }
+    
+    .stat-label {
+      font-size: 12px;
+      color: #6c757d;
+    }
+    
+    .stat-value {
+      font-size: 18px;
+      font-weight: bold;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>📄 HWPX to Canvas Editor Viewer</h1>
+      <p style="color: #666;">HWPX JSON을 Canvas Editor로 변환하고 렌더링합니다</p>
+      
+      <div class="controls">
+        <label class="file-label" for="jsonFile">
+          📁 JSON 파일 선택
+          <input type="file" id="jsonFile" class="file-input" accept=".json">
+        </label>
+        <button class="btn" onclick="convertAndRender()">🔄 변환 및 렌더링</button>
+        <button class="btn btn-secondary" onclick="loadSample()">📝 샘플 로드</button>
+        <button class="btn btn-secondary" onclick="clearAll()">🗑️ 초기화</button>
+      </div>
+      
+      <div id="status" class="status"></div>
+      
+      <div class="stats" id="stats" style="display:none;">
+        <div class="stat-item">
+          <div class="stat-label">문단</div>
+          <div class="stat-value" id="statParagraphs">0</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">테이블</div>
+          <div class="stat-value" id="statTables">0</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">이미지</div>
+          <div class="stat-value" id="statImages">0</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">요소</div>
+          <div class="stat-value" id="statElements">0</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="main-content">
+      <div class="panel">
+        <div class="panel-header">📥 HWPX JSON 입력</div>
+        <div class="panel-content">
+          <textarea id="jsonInput" placeholder="HWPX JSON을 여기에 붙여넣거나 파일을 선택하세요..."></textarea>
+        </div>
+      </div>
+      
+      <div class="panel">
+        <div class="panel-header">📝 Canvas Editor 렌더링</div>
+        <div class="panel-content">
+          <div id="editorContainer"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Canvas Editor 라이브러리 -->
+  <script type="module">
+    import Editor from './src/editor/index.ts'
+    
+    window.Editor = Editor
+    window.editorInstance = null
+    
+    // 파일 선택 이벤트
+    document.getElementById('jsonFile').addEventListener('change', async (e) => {
+      const file = e.target.files[0]
+      if (file) {
+        const text = await file.text()
+        document.getElementById('jsonInput').value = text
+        showStatus('JSON 파일을 로드했습니다', 'info')
+      }
+    })
+    
+    // 상태 메시지 표시
+    window.showStatus = function(message, type = 'info') {
+      const statusEl = document.getElementById('status')
+      statusEl.textContent = message
+      statusEl.className = `status ${type}`
+      
+      if (type !== 'error') {
+        setTimeout(() => {
+          statusEl.style.display = 'none'
+        }, 5000)
+      }
+    }
+    
+    // 통계 업데이트
+    window.updateStats = function(stats) {
+      document.getElementById('stats').style.display = 'grid'
+      document.getElementById('statParagraphs').textContent = stats.paragraphs || 0
+      document.getElementById('statTables').textContent = stats.tables || 0
+      document.getElementById('statImages').textContent = stats.images || 0
+      document.getElementById('statElements').textContent = stats.elements || 0
+    }
+    
+    // 변환 및 렌더링
+    window.convertAndRender = async function() {
+      const jsonText = document.getElementById('jsonInput').value
+      
+      if (!jsonText.trim()) {
+        showStatus('JSON 데이터를 입력해주세요', 'error')
+        return
+      }
+      
+      try {
+        // JSON 파싱
+        const hwpxJson = JSON.parse(jsonText)
+        showStatus('JSON 파싱 중...', 'info')
+        
+        // ProcessorManager를 사용한 변환
+        const elements = await convertHWPXToCanvas(hwpxJson)
+        
+        // 통계
+        const stats = {
+          paragraphs: countElements(elements, 'PARAGRAPH'),
+          tables: countElements(elements, 'TABLE'),
+          images: countElements(elements, 'IMAGE'),
+          elements: elements.length
+        }
+        updateStats(stats)
+        
+        // Canvas Editor로 렌더링
+        renderInEditor(elements)
+        
+        showStatus('✅ 변환 및 렌더링 완료!', 'success')
+      } catch (error) {
+        console.error('변환 에러:', error)
+        showStatus(`❌ 에러: ${error.message}`, 'error')
+      }
+    }
+    
+    // HWPX JSON을 Canvas Editor 형식으로 변환
+    window.convertHWPXToCanvas = async function(hwpxJson) {
+      const elements = []
+      
+      // 실제 구조 파싱
+      if (hwpxJson.content && hwpxJson.content.sections) {
+        for (const section of hwpxJson.content.sections) {
+          if (section && section.data && section.data.parsed_structure) {
+            const sectionElements = processNode(section.data.parsed_structure)
+            elements.push(...sectionElements)
+          }
+        }
+      }
+      
+      return elements
+    }
+    
+    // 노드 처리 (간단한 버전)
+    window.processNode = function(node) {
+      const elements = []
+      
+      if (!node) return elements
+      
+      // 텍스트 노드
+      if (node.tag === 't' && node.text) {
+        // 각 문자를 개별 요소로
+        for (const char of node.text) {
+          elements.push({
+            value: char
+          })
+        }
+      }
+      
+      // 문단
+      if (node.tag === 'p') {
+        // 문단 내 텍스트 처리
+        if (node.children) {
+          for (const child of node.children) {
+            elements.push(...processNode(child))
+          }
+        }
+        // 문단 끝에 줄바꿈
+        elements.push({
+          value: '\n'
+        })
+      }
+      
+      // run 노드
+      if (node.tag === 'run' && node.children) {
+        for (const child of node.children) {
+          elements.push(...processNode(child))
+        }
+      }
+      
+      // 테이블
+      if (node.tag === 'tbl') {
+        // 간단한 테이블 구조
+        const table = {
+          type: 'table',
+          value: '',
+          colgroup: [],
+          trList: []
+        }
+        
+        // 테이블 행 처리
+        if (node.children) {
+          for (const child of node.children) {
+            if (child.tag === 'tr') {
+              const tr = {
+                height: 30,
+                tdList: []
+              }
+              
+              // 셀 처리
+              if (child.children) {
+                for (const cell of child.children) {
+                  if (cell.tag === 'tc') {
+                    tr.tdList.push({
+                      colspan: 1,
+                      rowspan: 1,
+                      value: processNode(cell)
+                    })
+                  }
+                }
+              }
+              
+              table.trList.push(tr)
+            }
+          }
+          
+          // colgroup 설정
+          if (table.trList.length > 0 && table.trList[0].tdList.length > 0) {
+            for (let i = 0; i < table.trList[0].tdList.length; i++) {
+              table.colgroup.push({ width: 100 })
+            }
+          }
+        }
+        
+        elements.push(table)
+      }
+      
+      // 재귀적으로 자식 노드 처리
+      if (node.children && node.tag !== 'p' && node.tag !== 'run' && node.tag !== 'tbl') {
+        for (const child of node.children) {
+          elements.push(...processNode(child))
+        }
+      }
+      
+      return elements
+    }
+    
+    // 요소 타입 카운트
+    window.countElements = function(elements, type) {
+      let count = 0
+      for (const el of elements) {
+        if (el.type === type.toLowerCase()) {
+          count++
+        }
+        // 중첩 요소 처리
+        if (el.valueList) {
+          count += countElements(el.valueList, type)
+        }
+        if (el.trList) {
+          for (const tr of el.trList) {
+            if (tr.tdList) {
+              for (const td of tr.tdList) {
+                if (td.value && Array.isArray(td.value)) {
+                  count += countElements(td.value, type)
+                }
+              }
+            }
+          }
+        }
+      }
+      return count
+    }
+    
+    // Canvas Editor에서 렌더링
+    window.renderInEditor = function(elements) {
+      // 기존 에디터 제거
+      if (window.editorInstance) {
+        window.editorInstance.destroy()
+      }
+      
+      // 컨테이너 초기화
+      const container = document.getElementById('editorContainer')
+      container.innerHTML = ''
+      
+      // 새 에디터 생성
+      window.editorInstance = new Editor(container, {
+        main: elements,
+        header: [],
+        footer: []
+      }, {
+        mode: 'edit',
+        height: 600,
+        width: container.offsetWidth,
+        pageMode: 'paging',
+        pageNumber: {
+          format: '{pageNo}/{pageCount}'
+        },
+        watermark: {
+          data: ''
+        }
+      })
+    }
+    
+    // 샘플 데이터 로드
+    window.loadSample = function() {
+      const sampleJson = {
+        content: {
+          sections: [{
+            data: {
+              parsed_structure: {
+                tag: 'sec',
+                children: [
+                  {
+                    tag: 'p',
+                    children: [
+                      {
+                        tag: 'run',
+                        children: [
+                          {
+                            tag: 't',
+                            text: 'HWPX to Canvas Editor 변환 테스트'
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    tag: 'p',
+                    children: [
+                      {
+                        tag: 'run',
+                        children: [
+                          {
+                            tag: 't',
+                            text: '이것은 샘플 문서입니다. 한글과 영문 English Text가 섞여 있습니다.'
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    tag: 'p',
+                    children: [
+                      {
+                        tag: 'run',
+                        children: [
+                          {
+                            tag: 't',
+                            text: '여러 문단으로 구성된 문서를 테스트합니다.'
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          }]
+        }
+      }
+      
+      document.getElementById('jsonInput').value = JSON.stringify(sampleJson, null, 2)
+      showStatus('샘플 데이터를 로드했습니다', 'info')
+    }
+    
+    // 초기화
+    window.clearAll = function() {
+      document.getElementById('jsonInput').value = ''
+      if (window.editorInstance) {
+        window.editorInstance.destroy()
+        document.getElementById('editorContainer').innerHTML = ''
+      }
+      document.getElementById('stats').style.display = 'none'
+      showStatus('초기화되었습니다', 'info')
+    }
+    
+    // 페이지 로드 시 샘플 로드
+    window.addEventListener('load', () => {
+      loadSample()
+    })
+  </script>
+</body>
+</html>

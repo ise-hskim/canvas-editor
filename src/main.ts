@@ -1,6 +1,7 @@
 import { commentList, data, options } from './mock'
 import './style.css'
 import prism from 'prismjs'
+import { HWPXToCanvasConverter } from './converters/hwpx-to-canvas/HWPXToCanvasConverter'
 import Editor, {
   BlockType,
   Command,
@@ -129,6 +130,63 @@ window.onload = function () {
       console.log('서식')
       instance.command.executeFormat()
     }
+  
+  // HWPX JSON 가져오기 기능
+  const hwpxButton = document.querySelector<HTMLDivElement>('.menu-item__import-hwpx')
+  const hwpxFileInput = document.getElementById('hwpxJsonFile') as HTMLInputElement
+  
+  if (hwpxButton && hwpxFileInput) {
+    hwpxButton.onclick = function() {
+      hwpxFileInput.click()
+    }
+    
+    hwpxFileInput.onchange = async function(e) {
+      const file = (e.target as HTMLInputElement).files?.[0]
+      if (!file) return
+      
+      try {
+        const text = await file.text()
+        const hwpxJson = JSON.parse(text)
+        
+        // HWPX JSON을 Canvas Editor 요소로 변환
+        const elements = convertHWPXToCanvasElements(hwpxJson)
+        
+        // 에디터에 새 내용 설정
+        instance.command.executeSetValue({
+          main: elements,
+          header: [],
+          footer: []
+        })
+        
+        alert(`✅ HWPX 문서를 성공적으로 가져왔습니다!`)
+      } catch (error) {
+        console.error('HWPX 가져오기 실패:', error)
+        alert('❌ HWPX JSON 파일을 읽는 중 오류가 발생했습니다.')
+      }
+    }
+  }
+  
+  // HWPX JSON을 Canvas Editor 형식으로 변환하는 함수
+  function convertHWPXToCanvasElements(hwpxJson: any): IElement[] {
+    // Converter 인스턴스 생성
+    const converter = new HWPXToCanvasConverter({
+      preserveStyles: true,
+      preserveLayout: true,
+      tableDefaultBorder: true,
+      preserveTableStyles: true
+    })
+    
+    // 동기 변환 수행
+    const result = converter.convertSync(hwpxJson)
+    
+    if (result.success && result.data) {
+      console.log('Conversion stats:', result.stats)
+      return result.data.data.main || []
+    } else {
+      console.error('Conversion failed:', result.errors)
+      return []
+    }
+  }
 
   // 3. | 글꼴 | 글꼴 크게 | 글꼴 작게 | 굵게 | 기울임꼴 | 밑줄 | 취소선 | 위 첨자 | 아래 첨자 | 글꼴 색상 | 배경색 |
   const fontDom = document.querySelector<HTMLDivElement>('.menu-item__font')!
@@ -426,6 +484,25 @@ window.onload = function () {
     // 선택 적용
     instance.command.executeInsertTable(rowIndex, colIndex)
     recoveryTable()
+  }
+  
+  // 테이블 배경색
+  const tableBackgroundControlDom = document.querySelector<HTMLInputElement>('#table-background')!
+  tableBackgroundControlDom.oninput = function () {
+    const rangeContext = instance.command.getRangeContext()
+    if (rangeContext && rangeContext.isTable) {
+      instance.command.executeTableTdBackgroundColor(tableBackgroundControlDom.value)
+    }
+  }
+  const tableBackgroundDom = document.querySelector<HTMLDivElement>('.menu-item__table-background')!
+  tableBackgroundDom.onclick = function () {
+    const rangeContext = instance.command.getRangeContext()
+    if (!rangeContext || !rangeContext.isTable) {
+      alert('테이블 셀을 먼저 선택해주세요.')
+      return
+    }
+    console.log('테이블 배경색')
+    tableBackgroundControlDom.click()
   }
 
   const imageDom = document.querySelector<HTMLDivElement>('.menu-item__image')!

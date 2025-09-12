@@ -37,7 +37,8 @@ const {
     DELETE_COL,
     DELETE_TABLE,
     MERGE_CELL,
-    CANCEL_MERGE_CELL
+    CANCEL_MERGE_CELL,
+    BACKGROUND_COLOR
   }
 } = INTERNAL_CONTEXT_MENU_KEY
 
@@ -326,6 +327,26 @@ export const tableMenus: IRegisterContextMenu[] = [
     },
     callback: (command: Command) => {
       command.executeCancelMergeTableCell()
+    }
+  },
+  {
+    key: BACKGROUND_COLOR,
+    i18nPath: 'contextmenu.table.backgroundColor',
+    icon: 'highlight',
+    when: payload => {
+      return (
+        !payload.isReadonly &&
+        payload.isInTable &&
+        payload.options.mode !== EditorMode.FORM
+      )
+    },
+    callback: (command: Command) => {
+      const input = document.createElement('input')
+      input.type = 'color'
+      input.onchange = () => {
+        command.executeTableTdBackgroundColor(input.value)
+      }
+      input.click()
     }
   }
 ]
