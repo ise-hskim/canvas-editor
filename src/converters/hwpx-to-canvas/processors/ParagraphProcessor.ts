@@ -100,8 +100,8 @@ export class ParagraphProcessor extends BaseProcessor {
       }
     }
 
-    // 문단 끝에 줄바꿈 추가
-    if (elements.length > 0) {
+    // 문단 끝에 줄바꿈 추가 (테이블 셀 내부가 아닌 경우에만)
+    if (elements.length > 0 && !context?.isInsideTableCell) {
       elements.push({
         type: ElementType.TEXT,
         value: '\n'

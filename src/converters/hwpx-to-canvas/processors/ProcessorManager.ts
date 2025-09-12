@@ -102,11 +102,13 @@ export class ProcessorManager {
    */
   process(node: HWPXNode, context?: ProcessorContext): IElement[] {
     // 메타데이터 태그는 건너뛰지만 자식은 처리
+    // 주의: sz, pos, outMargin은 테이블 컨텍스트에서는 처리해야 함
     const METADATA_TAGS = new Set([
       'secPr', 'ctrl', 'container', 'linesegarray', 'markStart', 'markEnd',
       'colPr', 'pagePr', 'grid', 'startNum', 'visibility', 'lineNumberShape',
       'offset', 'orgSz', 'curSz', 'flip', 'rotationInfo', 'renderingInfo',
-      'sz', 'pos', 'outMargin', 'rect', 'pageNum', 'drawText', 'linkinfo', 'lineseg',
+      // 'sz', 'pos', 'outMargin' - 테이블에서 필요하므로 제거
+      'rect', 'pageNum', 'drawText', 'linkinfo', 'lineseg',
       // 추가 메타데이터 태그들
       'pageBorderFill', 'footNotePr', 'endNotePr', 'pageHiding', 'placement',
       'noteLine', 'noteSpacing', 'layoutCompatibility', 'compatibleDocument',
@@ -134,9 +136,13 @@ export class ProcessorManager {
     const processor = this.findProcessor(node)
     
     if (processor) {
+      // TableProcessor는 메타데이터 태그를 직접 처리해야 함
+      if (processor instanceof TableProcessor) {
+        // 테이블은 원본 노드 그대로 전달 (메타데이터 포함)
+        return processor.process(node, enrichedContext)
+      }
       // Processor에 processorMap 전달을 위해 특별 처리
-      if (processor instanceof ParagraphProcessor || 
-          processor instanceof TableProcessor) {
+      if (processor instanceof ParagraphProcessor) {
         // 자식 노드 처리를 위해 ProcessorManager 참조 필요
         return this.processWithChildren(node, processor, enrichedContext)
       }

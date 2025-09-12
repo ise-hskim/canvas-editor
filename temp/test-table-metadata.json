@@ -1,0 +1,99 @@
+{
+  "content": {
+    "sections": [
+      {
+        "data": {
+          "parsed_structure": {
+            "tag": "section",
+            "children": [
+              {
+                "tag": "p",
+                "children": [
+                  {
+                    "tag": "run",
+                    "children": [
+                      {
+                        "tag": "t",
+                        "text": "Test paragraph"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "tag": "tbl",
+                "children": [
+                  {
+                    "tag": "sz",
+                    "attributes": {
+                      "width": "45231",
+                      "height": "36846"
+                    }
+                  },
+                  {
+                    "tag": "pos",
+                    "attributes": {
+                      "vertAlign": "TOP",
+                      "horzAlign": "LEFT"
+                    }
+                  },
+                  {
+                    "tag": "outMargin",
+                    "attributes": {
+                      "left": "283",
+                      "right": "283",
+                      "top": "283",
+                      "bottom": "283"
+                    }
+                  },
+                  {
+                    "tag": "inMargin",
+                    "attributes": {
+                      "left": "141",
+                      "right": "141",
+                      "top": "141",
+                      "bottom": "141"
+                    }
+                  },
+                  {
+                    "tag": "tr",
+                    "children": [
+                      {
+                        "tag": "tc",
+                        "children": [
+                          {
+                            "tag": "p",
+                            "children": [
+                              {
+                                "tag": "t",
+                                "text": "Cell 1"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "tag": "tc",
+                        "children": [
+                          {
+                            "tag": "p",
+                            "children": [
+                              {
+                                "tag": "t",
+                                "text": "Cell 2"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      }
+    ]
+  }
+}

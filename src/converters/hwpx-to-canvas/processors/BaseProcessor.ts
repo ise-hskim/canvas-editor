@@ -48,6 +48,11 @@ export interface ProcessorContext {
   inTable?: boolean
 
   /**
+   * 테이블 셀 내부인지 여부 (테이블 셀 내부 문단 처리용)
+   */
+  isInsideTableCell?: boolean
+
+  /**
    * 리스트 내부인지 여부
    */
   inList?: boolean
@@ -76,11 +81,13 @@ export abstract class BaseProcessor implements IProcessor {
   abstract supportedTags: string[]
   
   // 무시해야 할 메타데이터 태그들
+  // 주의: sz, pos, outMargin은 테이블 내에서는 스타일 정보로 사용됨
   protected static readonly METADATA_TAGS = new Set([
     'secPr', 'ctrl', 'container', 'linesegarray', 'markStart', 'markEnd',
     'colPr', 'pagePr', 'grid', 'startNum', 'visibility', 'lineNumberShape',
     'offset', 'orgSz', 'curSz', 'flip', 'rotationInfo', 'renderingInfo',
-    'sz', 'pos', 'outMargin', 'rect', 'pageNum', 'drawText', 'linkinfo', 'lineseg',
+    // 'sz', 'pos', 'outMargin' - 테이블에서는 필요하므로 제거
+    'rect', 'pageNum', 'drawText', 'linkinfo', 'lineseg',
     // 추가 메타데이터 태그들
     'pageBorderFill', 'footNotePr', 'endNotePr', 'pageHiding', 'placement',
     'noteLine', 'noteSpacing', 'layoutCompatibility', 'compatibleDocument',

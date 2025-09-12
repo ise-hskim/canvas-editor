@@ -1,0 +1,180 @@
+{
+  "data": {
+    "header": [],
+    "main": [
+      {
+        "type": "text",
+        "value": "테"
+      },
+      {
+        "type": "text",
+        "value": "이"
+      },
+      {
+        "type": "text",
+        "value": "블"
+      },
+      {
+        "type": "text",
+        "value": " "
+      },
+      {
+        "type": "text",
+        "value": "테"
+      },
+      {
+        "type": "text",
+        "value": "스"
+      },
+      {
+        "type": "text",
+        "value": "트"
+      },
+      {
+        "type": "text",
+        "value": "\n"
+      },
+      {
+        "type": "table",
+        "value": "",
+        "width": 600,
+        "height": 200,
+        "borderType": "all",
+        "borderColor": "#000000",
+        "borderWidth": 1,
+        "colgroup": [
+          { "width": 200 },
+          { "width": 200 },
+          { "width": 200 }
+        ],
+        "trList": [
+          {
+            "height": 50,
+            "tdList": [
+              {
+                "colspan": 1,
+                "rowspan": 1,
+                "backgroundColor": "#f0f0f0",
+                "verticalAlign": "middle",
+                "value": [
+                  { "type": "text", "value": "헤", "bold": true },
+                  { "type": "text", "value": "더", "bold": true },
+                  { "type": "text", "value": " ", "bold": true },
+                  { "type": "text", "value": "1", "bold": true }
+                ]
+              },
+              {
+                "colspan": 1,
+                "rowspan": 1,
+                "backgroundColor": "#f0f0f0",
+                "verticalAlign": "middle",
+                "value": [
+                  { "type": "text", "value": "헤", "bold": true },
+                  { "type": "text", "value": "더", "bold": true },
+                  { "type": "text", "value": " ", "bold": true },
+                  { "type": "text", "value": "2", "bold": true }
+                ]
+              },
+              {
+                "colspan": 1,
+                "rowspan": 1,
+                "backgroundColor": "#f0f0f0",
+                "verticalAlign": "middle",
+                "value": [
+                  { "type": "text", "value": "헤", "bold": true },
+                  { "type": "text", "value": "더", "bold": true },
+                  { "type": "text", "value": " ", "bold": true },
+                  { "type": "text", "value": "3", "bold": true }
+                ]
+              }
+            ]
+          },
+          {
+            "height": 50,
+            "tdList": [
+              {
+                "colspan": 2,
+                "rowspan": 1,
+                "verticalAlign": "top",
+                "value": [
+                  { "type": "text", "value": "병" },
+                  { "type": "text", "value": "합" },
+                  { "type": "text", "value": "된" },
+                  { "type": "text", "value": " " },
+                  { "type": "text", "value": "셀" }
+                ]
+              },
+              {
+                "colspan": 1,
+                "rowspan": 2,
+                "backgroundColor": "#ffe6e6",
+                "verticalAlign": "middle",
+                "value": [
+                  { "type": "text", "value": "세" },
+                  { "type": "text", "value": "로" },
+                  { "type": "text", "value": " " },
+                  { "type": "text", "value": "병" },
+                  { "type": "text", "value": "합" }
+                ]
+              }
+            ]
+          },
+          {
+            "height": 50,
+            "tdList": [
+              {
+                "colspan": 1,
+                "rowspan": 1,
+                "value": [
+                  { "type": "text", "value": "일" },
+                  { "type": "text", "value": "반" },
+                  { "type": "text", "value": " " },
+                  { "type": "text", "value": "셀" },
+                  { "type": "text", "value": " " },
+                  { "type": "text", "value": "1" }
+                ]
+              },
+              {
+                "colspan": 1,
+                "rowspan": 1,
+                "value": [
+                  { "type": "text", "value": "일" },
+                  { "type": "text", "value": "반" },
+                  { "type": "text", "value": " " },
+                  { "type": "text", "value": "셀" },
+                  { "type": "text", "value": " " },
+                  { "type": "text", "value": "2" }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "text",
+        "value": "\n"
+      },
+      {
+        "type": "text",
+        "value": "테"
+      },
+      {
+        "type": "text",
+        "value": "이"
+      },
+      {
+        "type": "text",
+        "value": "블"
+      },
+      {
+        "type": "text",
+        "value": " "
+      },
+      {
+        "type": "text",
+        "value": "끝"
+      }
+    ],
+    "footer": []
+  }
+}
