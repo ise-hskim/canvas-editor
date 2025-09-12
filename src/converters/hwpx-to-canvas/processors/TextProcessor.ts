@@ -2,6 +2,7 @@ import { ElementType } from '../../../editor/dataset/enum/Element'
 import { IElement } from '../../../editor/interface/Element'
 import { IHWPXNode as HWPXNode } from '../types'
 import { BaseProcessor, ProcessorContext } from './BaseProcessor'
+import { StyleParser } from '../styles/StyleParser'
 
 /**
  * 텍스트 요소 처리 Processor
@@ -9,6 +10,12 @@ import { BaseProcessor, ProcessorContext } from './BaseProcessor'
  */
 export class TextProcessor extends BaseProcessor {
   supportedTags = ['t', 'run', 'char', 'hp:t', 'hp:run', 'hp:char']
+  
+  private processorManager: any // ProcessorManager 인스턴스 참조
+
+  setProcessorManager(manager: any): void {
+    this.processorManager = manager
+  }
 
   process(node: HWPXNode, context?: ProcessorContext): IElement[] {
     const elements: IElement[] = []
@@ -22,16 +29,43 @@ export class TextProcessor extends BaseProcessor {
     }
     // run 또는 hp:run - 텍스트 런 (스타일이 적용된 텍스트 단위)
     else if (node.tag === 'run' || node.tag === 'hp:run') {
+      // StyleParser를 사용하여 run의 스타일 추출
+      const runStyle = StyleParser.extractRunStyle(node)
       const charProperties = this.extractCharProperties(node)
-      const newContext = this.mergeContext(context, charProperties)
+      
+      // 두 스타일 소스 병합
+      const mergedStyle = { ...runStyle, ...charProperties }
+      const newContext = this.mergeContext(context, mergedStyle)
       
       if (node.children?.length) {
         for (const child of node.children) {
-          if (child.tag === 'hp:t') {
+          // 메타데이터 태그는 건너뛰지만 자식은 처리
+          if (BaseProcessor.METADATA_TAGS.has(child.tag)) {
+            // 메타데이터 태그의 자식들은 재귀적으로 처리
+            if (child.children?.length && this.processorManager) {
+              for (const grandchild of child.children) {
+                const grandchildElements = this.processorManager.process(grandchild, newContext)
+                elements.push(...grandchildElements)
+              }
+            }
+            continue
+          }
+          // 테이블 처리
+          if (child.tag === 'tbl' && this.processorManager) {
+            const tableElements = this.processorManager.process(child, newContext)
+            elements.push(...tableElements)
+          }
+          // 텍스트 처리
+          else if (child.tag === 't' || child.tag === 'hp:t') {
             const text = this.extractTextFromNode(child)
             if (text) {
               elements.push(...this.createTextElements(text, newContext))
             }
+          }
+          // 기타 노드 처리
+          else if (this.processorManager) {
+            const childElements = this.processorManager.process(child, newContext)
+            elements.push(...childElements)
           }
         }
       }
@@ -52,14 +86,28 @@ export class TextProcessor extends BaseProcessor {
    * 텍스트 노드에서 텍스트 추출
    */
   private extractTextFromNode(node: HWPXNode): string {
+    // null 텍스트는 무시
+    if (node.text === null || node.text === 'null') return ''
     if (node.text) return node.text
     
     // 자식 노드들에서 텍스트 추출
     if (node.children?.length) {
-      return node.children
-        .filter(child => child.tag === '#text' || child.text)
-        .map(child => child.text || '')
-        .join('')
+      let result = ''
+      for (const child of node.children) {
+        // 메타데이터 태그는 건너뛰지만 자식은 처리
+        if (BaseProcessor.METADATA_TAGS.has(child.tag)) {
+          // 메타데이터 태그의 자식들에서 텍스트 추출
+          if (child.children?.length) {
+            result += this.extractTextFromNode({ ...child, tag: 'wrapper', children: child.children })
+          }
+        } else if (child.tag === '#text' || child.text) {
+          const text = child.text || ''
+          if (text !== 'null') {
+            result += text
+          }
+        }
+      }
+      return result
     }
     
     return ''
@@ -90,7 +138,7 @@ export class TextProcessor extends BaseProcessor {
 
     // 컨텍스트에서 스타일 적용
     if (context?.currentStyle) {
-      Object.assign(element, context.currentStyle)
+      StyleParser.applyCharStyle(element, context.currentStyle)
     }
 
     return element

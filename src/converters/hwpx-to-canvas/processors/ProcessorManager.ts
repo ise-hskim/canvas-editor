@@ -31,14 +31,20 @@ export class ProcessorManager {
   private registerDefaultProcessors(): void {
     // 텍스트 처리
     const textProcessor = new TextProcessor()
+    // ProcessorManager 참조 설정
+    ;(textProcessor as any).setProcessorManager(this)
     this.registerProcessor(textProcessor)
 
     // 문단 처리
     const paragraphProcessor = new ParagraphProcessor()
+    // ProcessorManager 참조 설정
+    ;(paragraphProcessor as any).setProcessorManager(this)
     this.registerProcessor(paragraphProcessor)
 
     // 테이블 처리
     const tableProcessor = new TableProcessor()
+    // ProcessorManager 참조 설정
+    ;(tableProcessor as any).setProcessorManager(this)
     this.registerProcessor(tableProcessor)
 
     // 이미지 처리
@@ -95,6 +101,29 @@ export class ProcessorManager {
    * 노드 처리
    */
   process(node: HWPXNode, context?: ProcessorContext): IElement[] {
+    // 메타데이터 태그는 건너뛰지만 자식은 처리
+    const METADATA_TAGS = new Set([
+      'secPr', 'ctrl', 'container', 'linesegarray', 'markStart', 'markEnd',
+      'colPr', 'pagePr', 'grid', 'startNum', 'visibility', 'lineNumberShape',
+      'offset', 'orgSz', 'curSz', 'flip', 'rotationInfo', 'renderingInfo',
+      'sz', 'pos', 'outMargin', 'rect', 'pageNum', 'drawText', 'linkinfo', 'lineseg',
+      // 추가 메타데이터 태그들
+      'pageBorderFill', 'footNotePr', 'endNotePr', 'pageHiding', 'placement',
+      'noteLine', 'noteSpacing', 'layoutCompatibility', 'compatibleDocument',
+      'docOption', 'trackchageConfig', 'winBrush', 'fillBrush',
+      'pt0', 'pt1', 'pt2', 'pt3', 'rotMatrix', 'scaMatrix', 'transMatrix',
+      'breakSetting', 'fwSpace', 'intent', 'newNum', 'beginNum',
+      'lineShape', 'cellAddr', 'diagonal', 'backSlash', 'slash'
+    ])
+    
+    if (METADATA_TAGS.has(node.tag)) {
+      // 메타데이터 태그 자체는 무시하지만, 자식 노드들은 처리
+      if (node.children?.length) {
+        return this.processChildren(node.children, context)
+      }
+      return []
+    }
+
     // 컨텍스트에 ID 생성기 추가
     const enrichedContext: ProcessorContext = {
       ...context,
@@ -152,6 +181,7 @@ export class ProcessorManager {
     const results: IElement[] = []
 
     for (const child of children) {
+      // process 메서드가 이미 메타데이터 태그를 처리하므로 여기서는 모든 자식을 처리
       const elements = this.process(child, context)
       results.push(...elements)
     }

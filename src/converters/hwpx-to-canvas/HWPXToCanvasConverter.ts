@@ -14,11 +14,14 @@ import {
   IElement
 } from './types'
 import { ProcessorManager } from './processors'
+import { StyleLoader } from './styles/StyleLoader'
+import { StyleParser } from './styles/StyleParser'
 
 export class HWPXToCanvasConverter {
   private options: IConverterOptions
   private context!: IConversionContext
   private processorManager: ProcessorManager
+  private styleLoader: StyleLoader
   
   constructor(options: IConverterOptions = {}) {
     // 기본 옵션 설정
@@ -42,6 +45,9 @@ export class HWPXToCanvasConverter {
     
     // ProcessorManager 초기화
     this.processorManager = new ProcessorManager()
+    
+    // StyleLoader 초기화
+    this.styleLoader = new StyleLoader()
   }
   
   /**
@@ -149,6 +155,15 @@ export class HWPXToCanvasConverter {
    * 실제 변환 수행
    */
   private performConversion(hwpxJson: IHWPXJson): IEditorResult {
+    // 0. 스타일 정의 로드
+    if (hwpxJson.content?.header?.parsed_structure) {
+      this.styleLoader.loadFromHeader(hwpxJson.content.header.parsed_structure)
+      StyleParser.setStyleLoader(this.styleLoader)
+      console.log('스타일 정의를 로드했습니다')
+    } else {
+      console.warn('Header 스타일 정의를 찾을 수 없습니다')
+    }
+    
     // 1. 메타데이터 추출
     const metadata = this.extractMetadata(hwpxJson)
     

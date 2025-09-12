@@ -70,23 +70,34 @@ npm run docs:build
 
 ## Converter Development Plan
 
-### Current Status
-- ✅ Basic structure and type system
-- ✅ Font and style mapping tables
-- 🚧 Basic text conversion (temporary implementation)
-- ❌ Processors to implement (see `src/converters/hwpx-to-canvas/TODO.md`)
+### 📋 Detailed Task Checklist & Roadmap
+> **IMPORTANT**: For the complete development roadmap and detailed task checklist, always refer to:
+> ### **[`src/converters/hwpx-to-canvas/TODO.md`](src/converters/hwpx-to-canvas/TODO.md)**
 
-### Next Steps (from TODO.md)
-1. **Phase 1**: Basic text conversion
-2. **Phase 2**: Paragraph structure
-3. **Phase 3**: Character styles
-4. **Phase 4**: Table conversion
-5. **Phase 5**: Image processing
-6. **Phase 6**: Lists and numbering
-7. **Phase 7**: Headers/footers
-8. **Phase 8**: Hyperlinks and controls
-9. **Phase 9**: Error handling
-10. **Phase 10**: Testing and optimization
+The TODO.md file contains:
+- ✅ **Completed Features** (10+ major components with detailed implementation status)
+- 🔥 **Current Priority Tasks** (Milestone 1 - actively working)
+- 🚀 **Future Roadmap** (Milestone 2 - pending Canvas Editor API extensions)
+- 📊 **Metadata Tag Classifications** (26 tags with usage frequencies)
+- 🧪 **Testing Plans** (unit, integration, E2E test specifications)
+- ⚡ **Performance Optimization** targets
+
+### Quick Status Overview
+| Category | Status | Details |
+|----------|--------|---------|
+| **Text Processing** | ✅ Complete | TextProcessor, ParagraphProcessor with style support |
+| **Table Support** | ✅ Complete | TableProcessor with cell merging |
+| **Style System** | ✅ Complete | Dynamic loading from JSON header |
+| **Metadata Filtering** | ✅ Complete | 26 tags filtered, recursive child processing |
+| **Images/Links** | ✅ Complete | ImageProcessor, HyperlinkProcessor |
+| **Lists/Titles** | ✅ Complete | ListProcessor, TitleProcessor |
+| **Error Handling** | 🚧 In Progress | Milestone 1 priority |
+| **Advanced Metadata** | 📅 Planned | Milestone 2 (requires Editor API) |
+
+### Development Workflow
+1. **Check TODO.md first** for current tasks and priorities
+2. **Update TODO.md** when completing tasks or discovering new requirements
+3. **Reference TODO.md** in commit messages for task tracking
 
 ## HWPX to Canvas Editor Converter Foundation
 
@@ -96,9 +107,10 @@ src/converters/hwpx-to-canvas/
 ├── HWPXToCanvasConverter.ts  # Main converter class
 ├── types.ts                  # TypeScript definitions
 ├── mappings.ts               # Font/style mappings
-├── processors/               # Node processors (TODO)
-├── utils/                    # Utilities (TODO)
-├── TODO.md                   # Development roadmap
+├── processors/               # Node processors (10+ implemented)
+├── styles/                   # Style system (StyleLoader, StyleParser)
+├── utils/                    # Utilities (nodeUtils, styleUtils, idGenerator)
+├── TODO.md                   # ⭐ DETAILED TASK CHECKLIST & ROADMAP ⭐
 ├── README.md                 # Usage guide
 └── index.ts                  # Module exports
 ```
@@ -196,11 +208,13 @@ node --experimental-modules --experimental-json-modules test.mjs
 ## Development Guidelines
 
 ### HWPX Converter Development
+- **Always check `TODO.md` first** for current tasks and priorities
 - Implement one processor at a time following TODO.md phases
 - When stuck with build/type errors, use `as any` to continue development
 - Test with real HWPX documents at each phase (`temp/` folder)
 - Use `simple-test.mjs` for quick JSON structure analysis
 - Handle errors gracefully with proper logging
+- **Update `TODO.md`** when tasks are completed or new requirements found
 
 ### Practical Development Tips
 - **Type Issues**: Cast to `any` first, fix types later

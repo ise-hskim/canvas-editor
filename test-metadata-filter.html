@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Metadata Filter Test</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .panel {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+        }
+        
+        h2 {
+            margin-top: 0;
+            color: #333;
+        }
+        
+        .success {
+            background: #d4edda;
+            color: #155724;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        
+        .result-text {
+            font-size: 18px;
+            padding: 10px;
+            background: #f5f5f5;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        
+        pre {
+            background: #f5f5f5;
+            padding: 10px;
+            border-radius: 4px;
+            overflow: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Metadata Filter Test - {} 렌더링 문제 해결 확인</h1>
+    
+    <div id="status"></div>
+    
+    <div class="panel">
+        <h2>첫 번째 텍스트 (변환 결과)</h2>
+        <div id="first-text" class="result-text"></div>
+    </div>
+    
+    <div class="panel">
+        <h2>변환 세부 정보</h2>
+        <div id="details"></div>
+    </div>
+    
+    <script type="module">
+        async function testMetadataFilter() {
+            const statusDiv = document.getElementById('status');
+            const firstTextDiv = document.getElementById('first-text');
+            const detailsDiv = document.getElementById('details');
+            
+            try {
+                statusDiv.innerHTML = '<div>변환 테스트 중...</div>';
+                
+                // HWPX JSON 로드
+                const response = await fetch('/temp/인천정각중학교 교육실습 운영 계획 (1) (1).json');
+                const hwpxJson = await response.json();
+                
+                // Converter 임포트 및 실행
+                const { HWPXToCanvasConverter } = await import('/src/converters/hwpx-to-canvas/HWPXToCanvasConverter.ts');
+                
+                const converter = new HWPXToCanvasConverter({
+                    preserveStyles: true,
+                    preserveLayout: true
+                });
+                
+                console.log('변환 시작...');
+                const result = converter.convertSync(hwpxJson);
+                console.log('변환 결과:', result);
+                
+                if (result.success && result.data) {
+                    const elements = result.data.data.main;
+                    
+                    // 첫 번째 실제 텍스트 찾기
+                    let firstText = '';
+                    let metadataFound = false;
+                    let textStartIndex = -1;
+                    
+                    for (let i = 0; i < Math.min(100, elements.length); i++) {
+                        if (elements[i].value) {
+                            // {} 문자 확인
+                            if (elements[i].value === '{' || elements[i].value === '}') {
+                                metadataFound = true;
+                                firstText += elements[i].value;
+                            } else if (elements[i].value !== '\n' && elements[i].value !== ' ') {
+                                if (textStartIndex === -1) {
+                                    textStartIndex = i;
+                                }
+                                firstText += elements[i].value;
+                                // 첫 50자만 수집
+                                if (firstText.length > 50) break;
+                            }
+                        }
+                    }
+                    
+                    // 결과 표시
+                    if (metadataFound) {
+                        statusDiv.innerHTML = '<div class="error">❌ 메타데이터 {} 가 여전히 렌더링됨</div>';
+                        firstTextDiv.innerHTML = `<span style="color: red;">${firstText}</span>`;
+                    } else if (firstText.startsWith('2024학년도')) {
+                        statusDiv.innerHTML = '<div class="success">✅ 메타데이터 필터링 성공! {} 가 제거됨</div>';
+                        firstTextDiv.innerHTML = `<span style="color: green;">${firstText}</span>`;
+                    } else {
+                        statusDiv.innerHTML = '<div class="error">⚠️ 예상치 못한 첫 텍스트</div>';
+                        firstTextDiv.innerHTML = firstText;
+                    }
+                    
+                    // 세부 정보
+                    detailsDiv.innerHTML = `
+                        <p>총 요소 수: ${elements.length}</p>
+                        <p>첫 텍스트 시작 인덱스: ${textStartIndex}</p>
+                        <p>메타데이터 발견: ${metadataFound ? '예 (문제!)' : '아니오 (정상)'}</p>
+                        <details>
+                            <summary>처음 20개 요소 확인</summary>
+                            <pre>${JSON.stringify(elements.slice(0, 20).map(el => ({
+                                type: el.type,
+                                value: el.value
+                            })), null, 2)}</pre>
+                        </details>
+                    `;
+                    
+                } else {
+                    statusDiv.innerHTML = '<div class="error">변환 실패: ' + (result.errors?.[0]?.message || 'Unknown') + '</div>';
+                }
+                
+            } catch (error) {
+                console.error('Test error:', error);
+                statusDiv.innerHTML = '<div class="error">오류: ' + error.message + '</div>';
+            }
+        }
+        
+        // 자동 실행
+        testMetadataFilter();
+    </script>
+</body>
+</html>

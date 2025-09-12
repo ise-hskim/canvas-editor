@@ -3,6 +3,7 @@ import { RowFlex } from '../../../editor/dataset/enum/Row'
 import { IElement } from '../../../editor/interface/Element'
 import { IHWPXNode as HWPXNode } from '../types'
 import { BaseProcessor, ProcessorContext } from './BaseProcessor'
+import { StyleParser } from '../styles/StyleParser'
 
 /**
  * 문단 요소 처리 Processor
@@ -10,31 +11,92 @@ import { BaseProcessor, ProcessorContext } from './BaseProcessor'
  */
 export class ParagraphProcessor extends BaseProcessor {
   supportedTags = ['p', 'para', 'hp:p', 'hp:para']
+  
+  private processorManager: any // ProcessorManager 인스턴스 참조
+
+  setProcessorManager(manager: any): void {
+    this.processorManager = manager
+  }
 
   process(node: HWPXNode, context?: ProcessorContext): IElement[] {
     const elements: IElement[] = []
     
-    // 문단 속성 추출
+    // StyleParser를 사용하여 문단 스타일 추출
+    const paraStyle = StyleParser.extractParaStyle(node)
+    
+    // 기존 문단 속성도 추출
     const paragraphProps = this.extractParagraphProperties(node)
     
-    // 새로운 컨텍스트 생성
+    // 새로운 컨텍스트 생성 (스타일 병합)
     const paragraphContext: ProcessorContext = {
       ...context,
-      alignment: paragraphProps.alignment,
+      alignment: paraStyle.align || paragraphProps.alignment,
       currentStyle: {
         ...context?.currentStyle,
         ...paragraphProps.style
       }
     }
+    
+    // 정렬 스타일을 첫 번째 요소에 적용
+    let isFirstElement = true
+    let alignmentToApply: RowFlex | undefined = undefined
+    
+    // 정렬 스타일 결정
+    if (paraStyle.align) {
+      const alignMap: Record<string, RowFlex> = {
+        'left': RowFlex.LEFT,
+        'center': RowFlex.CENTER,
+        'right': RowFlex.RIGHT,
+        'justify': RowFlex.ALIGNMENT
+      }
+      alignmentToApply = alignMap[paraStyle.align]
+    }
 
     // 문단 내용 처리
     if (node.children?.length) {
-      // TODO: ProcessorManager를 통해 자식 노드들 처리
-      // 현재는 텍스트만 추출
-      const text = this.extractText(node)
-      if (text) {
-        const textElements = this.createTextElements(text, paragraphContext)
-        elements.push(...textElements)
+      // ProcessorManager를 통해 자식 노드들 처리
+      if (this.processorManager) {
+        for (const child of node.children) {
+          const childElements = this.processorManager.process(child, paragraphContext)
+          
+          // 첫 번째 요소에 정렬 스타일 적용
+          if (isFirstElement && childElements.length > 0) {
+            if (alignmentToApply !== undefined) {
+              childElements[0].rowFlex = alignmentToApply
+            } else if (paraStyle.align) {
+              // convertAlignToRowFlex 사용
+              const rowFlex = StyleParser.convertAlignToRowFlex(paraStyle.align)
+              if (rowFlex !== undefined) {
+                childElements[0].rowFlex = rowFlex
+              }
+            }
+            isFirstElement = false
+          }
+          
+          elements.push(...childElements)
+        }
+      } else {
+        // ProcessorManager가 없으면 기존 방식으로 텍스트만 추출
+        const text = this.extractText(node)
+        if (text) {
+          const textElements = this.createTextElements(text, paragraphContext)
+          
+          // 첫 번째 요소에 정렬 스타일 적용
+          if (isFirstElement && textElements.length > 0) {
+            if (alignmentToApply !== undefined) {
+              textElements[0].rowFlex = alignmentToApply
+            } else if (paraStyle.align) {
+              // convertAlignToRowFlex 사용
+              const rowFlex = StyleParser.convertAlignToRowFlex(paraStyle.align)
+              if (rowFlex !== undefined) {
+                textElements[0].rowFlex = rowFlex
+              }
+            }
+            isFirstElement = false
+          }
+          
+          elements.push(...textElements)
+        }
       }
     }
 

@@ -74,6 +74,21 @@ export interface ProcessorContext {
  */
 export abstract class BaseProcessor implements IProcessor {
   abstract supportedTags: string[]
+  
+  // 무시해야 할 메타데이터 태그들
+  protected static readonly METADATA_TAGS = new Set([
+    'secPr', 'ctrl', 'container', 'linesegarray', 'markStart', 'markEnd',
+    'colPr', 'pagePr', 'grid', 'startNum', 'visibility', 'lineNumberShape',
+    'offset', 'orgSz', 'curSz', 'flip', 'rotationInfo', 'renderingInfo',
+    'sz', 'pos', 'outMargin', 'rect', 'pageNum', 'drawText', 'linkinfo', 'lineseg',
+    // 추가 메타데이터 태그들
+    'pageBorderFill', 'footNotePr', 'endNotePr', 'pageHiding', 'placement',
+    'noteLine', 'noteSpacing', 'layoutCompatibility', 'compatibleDocument',
+    'docOption', 'trackchageConfig', 'winBrush', 'fillBrush',
+    'pt0', 'pt1', 'pt2', 'pt3', 'rotMatrix', 'scaMatrix', 'transMatrix',
+    'breakSetting', 'fwSpace', 'intent', 'newNum', 'beginNum',
+    'lineShape', 'cellAddr', 'diagonal', 'backSlash', 'slash'
+  ])
 
   abstract process(node: HWPXNode, context?: ProcessorContext): IElement[]
 
@@ -96,6 +111,16 @@ export abstract class BaseProcessor implements IProcessor {
     const results: IElement[] = []
 
     for (const child of children) {
+      // 메타데이터 태그는 건너뛰지만 자식은 처리
+      if (BaseProcessor.METADATA_TAGS.has(child.tag)) {
+        // 메타데이터 태그의 자식들은 재귀적으로 처리
+        if (child.children?.length) {
+          const childElements = this.processChildren(child.children, context, processorMap)
+          results.push(...childElements)
+        }
+        continue
+      }
+      
       const processor = processorMap.get(child.tag)
       if (processor) {
         const elements = processor.process(child, context)
@@ -128,11 +153,26 @@ export abstract class BaseProcessor implements IProcessor {
    * @returns 텍스트 내용
    */
   protected extractText(node: HWPXNode): string {
+    // null 텍스트는 무시
+    if (node.text === null || node.text === 'null') return ''
     if (node.text) return node.text
     
     if (node.children?.length) {
       return node.children
-        .map((child: HWPXNode) => this.extractText(child))
+        .map((child: HWPXNode) => {
+          // 메타데이터 태그는 건너뛰지만 자식은 처리
+          if (BaseProcessor.METADATA_TAGS.has(child.tag)) {
+            // 메타데이터 태그의 자식들에서 텍스트 추출
+            if (child.children?.length) {
+              return child.children
+                .map((grandchild: HWPXNode) => this.extractText(grandchild))
+                .join('')
+            }
+            return ''
+          }
+          return this.extractText(child)
+        })
+        .filter(text => text !== 'null' && text !== '') // 'null' 문자열과 빈 문자열 필터링
         .join('')
     }
     

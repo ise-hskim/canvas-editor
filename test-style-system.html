@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HWPX 스타일 시스템 테스트</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .container {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .panel {
+            flex: 1;
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 8px;
+        }
+        
+        h2 {
+            margin-top: 0;
+            color: #333;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 5px;
+        }
+        
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        
+        .success {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        pre {
+            background: #f5f5f5;
+            padding: 10px;
+            border-radius: 4px;
+            overflow: auto;
+            max-height: 400px;
+        }
+        
+        .style-info {
+            background: #e3f2fd;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 4px solid #2196f3;
+        }
+        
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 0;
+        }
+        
+        button:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>HWPX 스타일 시스템 테스트</h1>
+    
+    <button onclick="testStyleSystem()">스타일 시스템 테스트 실행</button>
+    
+    <div id="status"></div>
+    
+    <div class="container">
+        <div class="panel">
+            <h2>스타일 정의 (Header)</h2>
+            <div id="style-definitions"></div>
+        </div>
+        
+        <div class="panel">
+            <h2>변환 결과</h2>
+            <div id="conversion-result"></div>
+        </div>
+    </div>
+    
+    <div class="panel">
+        <h2>제목 스타일 검증</h2>
+        <div id="title-validation"></div>
+    </div>
+    
+    <script type="module">
+        window.testStyleSystem = async function() {
+            const statusDiv = document.getElementById('status');
+            const styleDiv = document.getElementById('style-definitions');
+            const resultDiv = document.getElementById('conversion-result');
+            const validationDiv = document.getElementById('title-validation');
+            
+            try {
+                statusDiv.innerHTML = '<div class="status">스타일 시스템 테스트 중...</div>';
+                
+                // HWPX JSON 로드
+                const response = await fetch('/temp/인천정각중학교 교육실습 운영 계획 (1) (1).json');
+                const hwpxJson = await response.json();
+                
+                // 1. 스타일 정의 분석
+                const header = hwpxJson.content.header.parsed_structure;
+                let charPrCount = 0;
+                let paraPrCount = 0;
+                
+                function countStyles(node) {
+                    if (node.tag === 'charProperties' && node.children) {
+                        charPrCount = node.children.length;
+                    }
+                    if (node.tag === 'paraProperties' && node.children) {
+                        paraPrCount = node.children.length;
+                    }
+                    if (node.children) {
+                        node.children.forEach(countStyles);
+                    }
+                }
+                
+                countStyles(header);
+                
+                styleDiv.innerHTML = `
+                    <div class="style-info">
+                        <h3>Header 스타일 정의</h3>
+                        <p>✅ charProperties: ${charPrCount}개의 문자 스타일</p>
+                        <p>✅ paraProperties: ${paraPrCount}개의 문단 스타일</p>
+                    </div>
+                `;
+                
+                // 특정 스타일 확인 (ID 32 - 제목)
+                function findCharPr32(node) {
+                    if (node.tag === 'charProperties' && node.children) {
+                        const charPr32 = node.children.find(c => c.attributes?.id === '32');
+                        if (charPr32) {
+                            styleDiv.innerHTML += `
+                                <div class="style-info">
+                                    <h4>charPr ID=32 (제목 스타일)</h4>
+                                    <p>height: ${charPr32.attributes?.height} (${Math.round(charPr32.attributes?.height / 100)}pt)</p>
+                                    <p>textColor: ${charPr32.attributes?.textColor}</p>
+                                    <p>bold: ${charPr32.children?.some(c => c.tag === 'bold') ? 'true' : 'false'}</p>
+                                    <p>fontRef: ${JSON.stringify(charPr32.children?.find(c => c.tag === 'fontRef')?.attributes)}</p>
+                                </div>
+                            `;
+                            return true;
+                        }
+                    }
+                    if (node.children) {
+                        for (const child of node.children) {
+                            if (findCharPr32(child)) return true;
+                        }
+                    }
+                    return false;
+                }
+                
+                findCharPr32(header);
+                
+                // 2. Converter 테스트
+                const { HWPXToCanvasConverter } = await import('/src/converters/hwpx-to-canvas/HWPXToCanvasConverter.ts');
+                
+                const converter = new HWPXToCanvasConverter({
+                    preserveStyles: true,
+                    preserveLayout: true,
+                    tableDefaultBorder: true
+                });
+                
+                console.log('변환 시작...');
+                const result = converter.convertSync(hwpxJson);
+                console.log('변환 결과:', result);
+                
+                if (result.success && result.data) {
+                    resultDiv.innerHTML = '<div class="status success">✅ 변환 성공!</div>';
+                    
+                    // 첫 번째 요소들 확인 (제목 찾기)
+                    const elements = result.data.data.main;
+                    let titleFound = false;
+                    
+                    for (let i = 0; i < Math.min(100, elements.length); i++) {
+                        const el = elements[i];
+                        if (el.value === '2' || el.value === '0' || el.value === '2' || el.value === '4') {
+                            // 제목의 첫 글자들
+                            const titleStartIdx = i;
+                            let titleText = '';
+                            let fontSize = null;
+                            let bold = null;
+                            let rowFlex = null;
+                            
+                            // 제목 전체 수집
+                            for (let j = i; j < Math.min(i + 50, elements.length); j++) {
+                                if (elements[j].value === '\n') break;
+                                titleText += elements[j].value || '';
+                                if (fontSize === null && elements[j].size) fontSize = elements[j].size;
+                                if (bold === null && elements[j].bold !== undefined) bold = elements[j].bold;
+                                if (rowFlex === null && elements[j].rowFlex !== undefined) rowFlex = elements[j].rowFlex;
+                            }
+                            
+                            if (titleText.includes('2024학년도')) {
+                                titleFound = true;
+                                validationDiv.innerHTML = `
+                                    <div class="style-info">
+                                        <h3>제목 스타일 검증</h3>
+                                        <p>텍스트: "${titleText}"</p>
+                                        <p>폰트 크기: ${fontSize}pt ${fontSize === 19 ? '✅' : '❌ (19pt여야 함)'}</p>
+                                        <p>굵게: ${bold} ${bold === true ? '✅' : '❌ (true여야 함)'}</p>
+                                        <p>정렬: ${rowFlex} (2 = center) ${rowFlex === 2 ? '✅' : '❌ (center여야 함)'}</p>
+                                    </div>
+                                `;
+                                break;
+                            }
+                        }
+                    }
+                    
+                    if (!titleFound) {
+                        validationDiv.innerHTML = '<div class="status warning">⚠️ 제목을 찾을 수 없습니다</div>';
+                    }
+                    
+                    // 전체 통계
+                    resultDiv.innerHTML += `
+                        <div class="style-info">
+                            <h4>변환 통계</h4>
+                            <p>총 요소 수: ${elements.length}</p>
+                            <p>처리 시간: ${result.stats?.endTime - result.stats?.startTime}ms</p>
+                        </div>
+                    `;
+                    
+                    // 처음 20개 요소 샘플
+                    const sample = elements.slice(0, 20).map(el => ({
+                        type: el.type,
+                        value: el.value,
+                        size: el.size,
+                        bold: el.bold,
+                        rowFlex: el.rowFlex
+                    }));
+                    
+                    resultDiv.innerHTML += `
+                        <details>
+                            <summary>처음 20개 요소</summary>
+                            <pre>${JSON.stringify(sample, null, 2)}</pre>
+                        </details>
+                    `;
+                    
+                    statusDiv.innerHTML = '<div class="status success">✅ 스타일 시스템 테스트 완료!</div>';
+                } else {
+                    resultDiv.innerHTML = '<div class="status error">❌ 변환 실패: ' + (result.errors?.[0]?.message || 'Unknown error') + '</div>';
+                    statusDiv.innerHTML = '<div class="status error">❌ 테스트 실패</div>';
+                }
+                
+            } catch (error) {
+                console.error('Test error:', error);
+                statusDiv.innerHTML = '<div class="status error">❌ 오류: ' + error.message + '</div>';
+            }
+        }
+        
+        // 자동 실행
+        testStyleSystem();
+    </script>
+</body>
+</html>

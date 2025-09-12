@@ -100,11 +100,17 @@ HWPX JSON 구조를 Canvas Editor JSON 구조로 변환하는 converter 개발
 
 ## 5단계: 스타일 처리 시스템 🎨
 
-### 5.1 스타일 파서
-- [ ] `styles/StyleParser.ts`
-  - [ ] paraPr 파싱
-  - [ ] charPr 파싱
-  - [ ] cellPr 파싱
+### 5.1 스타일 로더 & 파서
+- [x] `styles/StyleLoader.ts`
+  - [x] header에서 스타일 정의 로드
+  - [x] charProperties 파싱
+  - [x] paraProperties 파싱
+  - [x] fontfaces 파싱
+- [x] `styles/StyleParser.ts`
+  - [x] StyleLoader 통합
+  - [x] charPr ID 매핑
+  - [x] paraPr ID 매핑
+  - [x] 동적 스타일 적용
 
 ### 5.2 스타일 병합
 - [ ] `styles/StyleMerger.ts`
@@ -117,18 +123,67 @@ HWPX JSON 구조를 Canvas Editor JSON 구조로 변환하는 converter 개발
   - [ ] 스타일 ID 매핑
   - [ ] 스타일 재사용
 
-## 6단계: 메타데이터 처리 📋
+## 6단계: 메타데이터 처리 - Milestone 1 (기본) ✅
 
-### 6.1 헤더 파서
-- [ ] `parsers/HeaderParser.ts`
-  - [ ] fontfaces 파싱
-  - [ ] charProperties 파싱
-  - [ ] paraProperties 파싱
+### 6.1 메타데이터 태그 필터링 (완료)
+- [x] `processors/TextProcessor.ts` 수정
+  - [x] secPr, ctrl, container 등 26개 메타데이터 태그 무시
+  - [x] `{}` 렌더링 문제 해결
+  - [x] 실제 텍스트만 추출
+  - [x] 메타데이터 태그의 자식 노드는 재귀적으로 처리
 
-### 6.2 설정 파서
+### 6.2 헤더 파서 (완료)
+- [x] StyleLoader가 이미 처리
+  - [x] fontfaces 파싱
+  - [x] charProperties 파싱
+  - [x] paraProperties 파싱
+
+## Milestone 2: 고급 메타데이터 바인딩 🚀
+
+> **Note**: 메타데이터를 Canvas Editor에 바인딩하려면 Editor의 추가 기능 구현이 필요합니다.
+> 이 작업들은 Editor 기능이 확장된 후 진행할 예정입니다.
+
+### M2.1 메타데이터 프로세서
+- [ ] `processors/MetadataProcessor.ts`
+  - [ ] 페이지 설정 처리 (secPr, pagePr)
+  - [ ] 섹션 속성 (페이지 크기, 여백, 방향)
+  - [ ] 문서 전체 설정 적용
+  - [ ] Canvas Editor의 페이지 설정 API와 연동
+
+### M2.2 컨테이너/도형 처리
+- [ ] `processors/ContainerProcessor.ts`
+  - [ ] container 태그 처리 (도형, 이미지 컨테이너)
+  - [ ] rect 처리 (사각형 도형)
+  - [ ] offset, sz, pos 처리 (위치와 크기)
+  - [ ] flip, rotation 처리 (변환)
+  - [ ] Canvas Editor의 도형 렌더링 API와 연동
+
+### M2.3 라인 세그먼트 처리
+- [ ] `processors/LineSegmentProcessor.ts`
+  - [ ] linesegarray 처리 (779회 사용)
+  - [ ] lineseg 처리 (823회 사용)
+  - [ ] 텍스트 레이아웃 정보 보존
+  - [ ] Canvas Editor의 텍스트 레이아웃 API와 연동
+
+### M2.4 컨트롤 요소 처리
+- [ ] `processors/ControlProcessor.ts`
+  - [ ] ctrl 태그 처리 (문서 컨트롤)
+  - [ ] colPr 처리 (컬럼 속성)
+  - [ ] markStart/markEnd 처리 (북마크)
+  - [ ] Canvas Editor의 컨트롤 요소 API와 연동
+
+### M2.5 그리기 객체 처리
+- [ ] `processors/DrawingProcessor.ts`
+  - [ ] drawText 처리 (그려진 텍스트)
+  - [ ] linkinfo 처리 (링크 정보)
+  - [ ] pageNum 처리 (페이지 번호)
+  - [ ] Canvas Editor의 그리기 객체 API와 연동
+
+### M2.6 설정 파서
 - [ ] `parsers/SettingsParser.ts`
   - [ ] 문서 설정 추출
   - [ ] 페이지 설정
+  - [ ] Canvas Editor의 문서 설정 API와 연동
 
 ## 7단계: 에러 처리 & 검증 ⚠️
 
@@ -181,21 +236,51 @@ HWPX JSON 구조를 Canvas Editor JSON 구조로 변환하는 converter 개발
 ## 완료된 주요 기능 ✅
 
 1. **기본 텍스트 변환** - TextProcessor 구현 완료
-2. **표 변환** - TableProcessor 구현 완료
+2. **표 변환** - TableProcessor 구현 완료 (병합 처리 포함)
 3. **문단 처리** - ParagraphProcessor 구현 완료
 4. **이미지 처리** - ImageProcessor 구현 완료
 5. **목록 처리** - ListProcessor 구현 완료
 6. **제목 처리** - TitleProcessor 구현 완료
 7. **하이퍼링크 처리** - HyperlinkProcessor 구현 완료
 8. **유틸리티 함수** - nodeUtils, styleUtils, idGenerator 구현 완료
+9. **스타일 시스템** - StyleLoader, StyleParser 구현 완료
+   - JSON header에서 스타일 정의 자동 로드
+   - charPrIDRef/paraPrIDRef 동적 매핑
+   - 19pt bold center 등 실제 스타일 적용
+10. **메타데이터 필터링** - 26개 메타데이터 태그 필터링 완료
+    - `{}` 렌더링 문제 해결
+    - 메타데이터 태그의 자식 노드는 재귀적으로 처리
 
 ## 다음 우선순위 작업 🔥
 
-1. **에러 처리 시스템** - 안정성 확보
-2. **스타일 파서/병합** - 문서 품질 향상
+### Milestone 1 (현재 진행 중)
+1. ~~**메타데이터 태그 필터링**~~ ✅ - `{}` 렌더링 문제 해결 완료
+2. **에러 처리 시스템** - 안정성 확보
 3. **실제 HWPX 파일 테스트** - 실전 검증
 4. **성능 최적화** - 대용량 문서 처리
-5. **추가 Processor** - Control, Separator, Block 등
+
+### Milestone 2 (Editor 기능 확장 후)
+1. **메타데이터 프로세서 구현** - 페이지 설정, 컨테이너 등
+2. **고급 레이아웃 처리** - lineseg (823회), linesegarray (779회)
+3. **도형 및 그리기 객체** - container, rect, drawText
+4. **문서 설정 바인딩** - 페이지 크기, 여백, 방향
+
+## 메타데이터 태그 분류 📊
+
+### 무시해야 할 태그 (26개)
+```
+secPr, ctrl, container, linesegarray, markStart, markEnd,
+colPr, pagePr, grid, startNum, visibility, lineNumberShape,
+offset, orgSz, curSz, flip, rotationInfo, renderingInfo,
+sz, pos, outMargin, rect, pageNum, drawText, linkinfo, lineseg
+```
+
+### 사용 빈도
+- lineseg: 823회
+- linesegarray: 779회
+- sz, pos, outMargin: 각 10회
+- offset: 8회
+- ctrl, orgSz, curSz, flip, rotationInfo, renderingInfo: 각 5회
 
 ## 기술 스택
 - TypeScript

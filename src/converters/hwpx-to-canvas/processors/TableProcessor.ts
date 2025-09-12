@@ -13,6 +13,12 @@ import { BaseProcessor, ProcessorContext } from './BaseProcessor'
  */
 export class TableProcessor extends BaseProcessor {
   supportedTags = ['tbl', 'tr', 'tc', 'hp:tbl', 'hp:tr', 'hp:tc']
+  
+  private processorManager: any // ProcessorManager 인스턴스 참조
+
+  setProcessorManager(manager: any): void {
+    this.processorManager = manager
+  }
 
   process(node: HWPXNode, context?: ProcessorContext): IElement[] {
     const elements: IElement[] = []
@@ -74,6 +80,15 @@ export class TableProcessor extends BaseProcessor {
       tableElement.tableId = context.generateId()
     }
 
+    // 디버그 로그
+    console.log('Created table element:', {
+      type: tableElement.type,
+      width: tableElement.width,
+      colgroup: tableElement.colgroup,
+      trCount: tableElement.trList?.length,
+      firstRowCells: tableElement.trList?.[0]?.tdList?.length
+    })
+
     return tableElement
   }
 
@@ -120,7 +135,15 @@ export class TableProcessor extends BaseProcessor {
     
     // sz 태그에서 전체 너비 확인
     const szNode = node.children?.find(child => child.tag === 'sz')
-    const totalWidth = parseInt(szNode?.attributes?.width || '45000') / 100 // HWPX 단위를 픽셀로 변환
+    const hwpxWidth = parseInt(szNode?.attributes?.width || '45000')
+    // HWPX 단위(1/7200 인치)를 픽셀로 변환 (96 DPI 기준)
+    const totalWidth = Math.round(hwpxWidth * 96 / 7200)
+    
+    console.log('Table size:', {
+      colCnt,
+      hwpxWidth,
+      totalWidthPx: totalWidth
+    })
     
     if (colCnt > 0) {
       // colCnt만큼 균등하게 너비 분배
@@ -194,12 +217,12 @@ export class TableProcessor extends BaseProcessor {
     
     console.log(`Processing row with ${cells.length} cells`)
     
-    let cellIndex = 0
-    for (const cell of cells) {
-      const td = this.processCell(cell, context, cellIndex)
+    // 모든 셀 처리 (병합된 셀도 포함)
+    for (let i = 0; i < cells.length; i++) {
+      const cell = cells[i]
+      const td = this.processCell(cell, context, i)
       if (td) {
         tdList.push(td)
-        cellIndex += td.colspan
       }
     }
 
@@ -241,15 +264,31 @@ export class TableProcessor extends BaseProcessor {
       (td as any).tdId = context.generateId()
     }
 
-    // colspan/rowspan 처리
-    const colspan = this.getAttribute(node, 'colspan')
-    if (colspan) {
-      td.colspan = parseInt(colspan)
-    }
+    // cellSpan 노드에서 colspan/rowspan 추출
+    const cellSpan = node.children?.find(child => child.tag === 'cellSpan')
+    if (cellSpan && cellSpan.attributes) {
+      const colSpan = cellSpan.attributes.colSpan || cellSpan.attributes.colspan
+      const rowSpan = cellSpan.attributes.rowSpan || cellSpan.attributes.rowspan
+      
+      if (colSpan) {
+        td.colspan = parseInt(colSpan)
+      }
+      if (rowSpan) {
+        td.rowspan = parseInt(rowSpan)
+      }
+      
+      console.log('Cell span:', { colspan: td.colspan, rowspan: td.rowspan })
+    } else {
+      // cellSpan이 없으면 attributes에서 직접 확인
+      const colspan = this.getAttribute(node, 'colspan')
+      if (colspan) {
+        td.colspan = parseInt(colspan)
+      }
 
-    const rowspan = this.getAttribute(node, 'rowspan')
-    if (rowspan) {
-      td.rowspan = parseInt(rowspan)
+      const rowspan = this.getAttribute(node, 'rowspan')
+      if (rowspan) {
+        td.rowspan = parseInt(rowspan)
+      }
     }
 
     // 셀 배경색
@@ -260,15 +299,7 @@ export class TableProcessor extends BaseProcessor {
 
     // 셀 내용 처리
     const cellContent = this.extractCellContent(node, context)
-    if (cellContent.length > 0) {
-      td.value = cellContent
-    } else {
-      // 빈 셀이어도 최소한 빈 텍스트 요소 추가
-      td.value = [{
-        type: ElementType.TEXT,
-        value: ''
-      }]
-    }
+    td.value = cellContent // 항상 설정 (빈 배열이어도)
 
     // 셀 너비 - 기본값 설정
     const width = this.getAttribute(node, 'width')
@@ -296,29 +327,50 @@ export class TableProcessor extends BaseProcessor {
   /**
    * 셀 내용 추출
    */
-  private extractCellContent(node: HWPXNode, _context?: ProcessorContext): IElement[] {
+  private extractCellContent(node: HWPXNode, context?: ProcessorContext): IElement[] {
     const elements: IElement[] = []
     
-    // 테이블 컨텍스트 설정 (향후 사용 예정)
-    // const _tableContext: ProcessorContext = {
-    //   ...context,
-    //   inTable: true
-    // }
+    // 테이블 컨텍스트 설정
+    const tableContext: ProcessorContext = {
+      ...context,
+      inTable: true
+    }
 
     // 셀 내의 모든 자식 노드 처리
     if (node.children?.length) {
-      // TODO: ProcessorManager를 통해 자식 노드들 처리
-      // 현재는 텍스트만 추출
-      const text = this.extractText(node)
-      if (text) {
-        const textElements = text.split('').map(char => ({
-          type: ElementType.TEXT,
-          value: char
-        }))
-        elements.push(...textElements)
+      // subList 노드 찾기 (셀의 실제 내용을 담고 있음)
+      const subList = node.children.find(child => child.tag === 'subList')
+      
+      if (subList && subList.children && this.processorManager) {
+        console.log('Processing cell subList with', subList.children.length, 'children')
+        // ProcessorManager를 통해 subList의 자식 노드들 처리
+        for (const child of subList.children) {
+          const childElements = this.processorManager.process(child, tableContext)
+          elements.push(...childElements)
+        }
+      } else {
+        // ProcessorManager가 없거나 subList가 없으면 텍스트만 추출
+        const text = this.extractText(node)
+        console.log('Fallback text extraction:', text)
+        if (text) {
+          const textElements = text.split('').map(char => ({
+            type: ElementType.TEXT,
+            value: char
+          }))
+          elements.push(...textElements)
+        }
       }
     }
 
+    // 빈 셀이면 최소한 빈 텍스트 요소 추가
+    if (elements.length === 0) {
+      elements.push({
+        type: ElementType.TEXT,
+        value: ''
+      })
+    }
+
+    console.log('Cell content elements:', elements.length)
     return elements
   }
 
